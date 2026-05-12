@@ -1,0 +1,37 @@
+====================================================
+      SISTEMA DE PROJETOS DE EXTENSÃO - GUIA RÁPIDO
+====================================================
+
+ESTRUTURA DE PASTAS:
+/controllers -> Lógica de negócio (JavaScript)
+/models      -> Consultas ao Banco de Dados
+/routes      -> Definição de URLs/Endereços
+/views       -> Telas do sistema (HTML/EJS)
+/public      -> Arquivos CSS e Imagens
+/middleware  -> Proteção de rotas (Login)
+/docs        -> Manuais e Documentação
+/trash       -> Arquivos antigos/obsoletos
+
+COMANDOS PRINCIPAIS:
+- npm start: Inicia o sistema e atualiza o banco
+- npm run dev: Inicia em modo de desenvolvimento (Auto-reload)
+- npm run setup: Configura o banco pela primeira vez
+
+BANCO DE DATAS:
+- Host: localhost (ou definido no .env)
+- Database: projetos_extensao
+- Migrações automáticas: Ativas via run_migration_status.js
+
+ARQUIVOS CHAVE:
+- server.js: Arquivo principal do servidor
+- db.js: Conexão com o banco
+- .env: Configurações de ambiente
+
+ACESSO INICIAL:
+URL: http://localhost:3000/login
+User: admin
+Pass: admin123
+
+====================================================
+MAIO/2026 - UNI•CET
+====================================================
