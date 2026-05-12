@@ -1,0 +1,126 @@
+<%- include('../cabecalho', { titulo: 'Avaliacao do Participante' }) %>
+
+<main id="conteudo-principal-form" class="container my-5">
+  <section class="card shadow p-4 p-md-5">
+    <h1 class="fs-4 fw-bold mb-4 border-bottom pb-3">Avaliacao do Participante</h1>
+
+    <div id="form-feedback-message" class="alert d-none" role="alert"></div>
+
+    <form id="formulario-avaliacao_participante" method="POST" action="/avaliacao_participante/salvar">
+
+      <div class="mb-3">
+        <label for="campo-id_avaliacao_participante" class="form-label">id_avaliacao_participante</label>
+        <input id="campo-id_avaliacao_participante" name="id_avaliacao_participante" class="form-control" required placeholder="id_avaliacao_participante" readonly>
+      </div>
+
+      <div class="mb-3">
+        <label for="campo-id_projeto" class="form-label">id_projeto</label>
+        <input id="campo-id_projeto" name="id_projeto" class="form-control" required placeholder="id_projeto" readonly>
+      </div>
+
+      <div class="mb-3">
+        <label for="campo-data_resposta" class="form-label">data_resposta</label>
+        <input id="campo-data_resposta" name="data_resposta" class="form-control" required placeholder="data_resposta" readonly>
+      </div>
+
+      <div class="mb-3">
+        <label for="campo-id_faixa" class="form-label">id_faixa</label>
+        <input id="campo-id_faixa" name="id_faixa" class="form-control" required placeholder="id_faixa" readonly>
+      </div>
+
+      <div class="mb-3">
+        <label for="campo-id_escolaridade" class="form-label">id_escolaridade</label>
+        <input id="campo-id_escolaridade" name="id_escolaridade" class="form-control" required placeholder="id_escolaridade" readonly>
+      </div>
+
+      <div class="mb-3">
+        <label for="campo-reside_na_comunidade" class="form-label">reside_na_comunidade</label>
+        <input id="campo-reside_na_comunidade" name="reside_na_comunidade" class="form-control" required placeholder="reside_na_comunidade" readonly>
+      </div>
+
+      <div class="mb-3">
+        <label for="campo-avaliacao_conteudo" class="form-label">avaliacao_conteudo</label>
+        <input id="campo-avaliacao_conteudo" name="avaliacao_conteudo" class="form-control" required placeholder="avaliacao_conteudo" readonly>
+      </div>
+
+      <div class="mb-3">
+        <label for="campo-atendeu_expectativas" class="form-label">atendeu_expectativas</label>
+        <input id="campo-atendeu_expectativas" name="atendeu_expectativas" class="form-control" required placeholder="atendeu_expectativas" readonly>
+      </div>
+
+      <div class="mb-3">
+        <label for="campo-facilitadores_acessiveis" class="form-label">facilitadores_acessiveis</label>
+        <input id="campo-facilitadores_acessiveis" name="facilitadores_acessiveis" class="form-control" required placeholder="facilitadores_acessiveis" readonly>
+      </div>
+
+      <div class="mb-3">
+        <label for="campo-escuta_comunidade" class="form-label">escuta_comunidade</label>
+        <input id="campo-escuta_comunidade" name="escuta_comunidade" class="form-control" required placeholder="escuta_comunidade" readonly>
+      </div>
+
+      <div class="mb-3">
+        <label for="campo-estrutura_adequada" class="form-label">estrutura_adequada</label>
+        <input id="campo-estrutura_adequada" name="estrutura_adequada" class="form-control" required placeholder="estrutura_adequada" readonly>
+      </div>
+
+      <div class="mb-3">
+        <label for="campo-sente_mais_capacitado" class="form-label">sente_mais_capacitado</label>
+        <input id="campo-sente_mais_capacitado" name="sente_mais_capacitado" class="form-control" required placeholder="sente_mais_capacitado" readonly>
+      </div>
+
+      <div class="mb-3">
+        <label for="campo-contribuicao_pessoal" class="form-label">contribuicao_pessoal</label>
+        <input id="campo-contribuicao_pessoal" name="contribuicao_pessoal" class="form-control" required placeholder="contribuicao_pessoal" readonly>
+      </div>
+
+      <div class="mb-3">
+        <label for="campo-descricao_contribuicao" class="form-label">descricao_contribuicao</label>
+        <input id="campo-descricao_contribuicao" name="descricao_contribuicao" class="form-control" required placeholder="descricao_contribuicao" readonly>
+      </div>
+
+      <div class="mb-3">
+        <label for="campo-pretende_aplicar" class="form-label">pretende_aplicar</label>
+        <input id="campo-pretende_aplicar" name="pretende_aplicar" class="form-control" required placeholder="pretende_aplicar" readonly>
+      </div>
+
+      <div class="mb-3">
+        <label for="campo-motivo_nao_aplicar" class="form-label">motivo_nao_aplicar</label>
+        <input id="campo-motivo_nao_aplicar" name="motivo_nao_aplicar" class="form-control" required placeholder="motivo_nao_aplicar" readonly>
+      </div>
+
+      <div class="mb-3">
+        <label for="campo-recomendaria" class="form-label">recomendaria</label>
+        <input id="campo-recomendaria" name="recomendaria" class="form-control" required placeholder="recomendaria" readonly>
+      </div>
+
+      <div class="mb-3">
+        <label for="campo-comentario_positivo" class="form-label">comentario_positivo</label>
+        <input id="campo-comentario_positivo" name="comentario_positivo" class="form-control" required placeholder="comentario_positivo" readonly>
+      </div>
+
+      <div class="mb-3">
+        <label for="campo-sugestao_melhoria" class="form-label">sugestao_melhoria</label>
+        <input id="campo-sugestao_melhoria" name="sugestao_melhoria" class="form-control" required placeholder="sugestao_melhoria" readonly>
+      </div>
+
+      <div class="mb-3">
+        <label for="campo-sugestoes_futuras" class="form-label">sugestoes_futuras</label>
+        <input id="campo-sugestoes_futuras" name="sugestoes_futuras" class="form-control" required placeholder="sugestoes_futuras" readonly>
+      </div>
+
+      <div class="mb-3">
+        <label for="campo-consentimento" class="form-label">consentimento</label>
+        <input id="campo-consentimento" name="consentimento" class="form-control" required placeholder="consentimento" readonly>
+      </div>
+
+      <div class="mb-3">
+        <label for="campo-assentimento" class="form-label">assentimento</label>
+        <input id="campo-assentimento" name="assentimento" class="form-control" required placeholder="assentimento" readonly>
+      </div>
+
+      <button id="botao-enviar-projeto" class="btn btn-primary btn-sm me-2" type="submit">Salvar</button>
+    </form>
+  </section>
+</main>
+
+<%- include('../rodape') %>

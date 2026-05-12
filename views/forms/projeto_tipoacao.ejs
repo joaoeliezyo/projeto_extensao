@@ -1,0 +1,26 @@
+<%- include('../cabecalho', { titulo: 'Projeto - Tipo de Acao' }) %>
+
+<main id="conteudo-principal-form" class="container my-5">
+  <section class="card shadow p-4 p-md-5">
+    <h1 class="fs-4 fw-bold mb-4 border-bottom pb-3">Vincular Projeto a Tipo de Acao</h1>
+
+    <div id="form-feedback-message" class="alert d-none" role="alert"></div>
+
+    <form id="formulario-projeto_tipoacao" method="POST" action="/projeto_tipoacao/salvar">
+
+      <div class="mb-3">
+        <label for="campo-id_projeto" class="form-label">id_projeto</label>
+        <input id="campo-id_projeto" name="id_projeto" class="form-control" required placeholder="id_projeto" readonly>
+      </div>
+
+      <div class="mb-3">
+        <label for="campo-id_acao" class="form-label">id_acao</label>
+        <input id="campo-id_acao" name="id_acao" class="form-control" required placeholder="id_acao" readonly>
+      </div>
+
+      <button id="botao-enviar-projeto" class="btn btn-primary btn-sm me-2" type="submit">Salvar</button>
+    </form>
+  </section>
+</main>
+
+<%- include('../rodape') %>

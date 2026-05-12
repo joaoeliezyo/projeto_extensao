@@ -1,0 +1,417 @@
+<%- include('../cabecalho', { titulo: 'Relatório de Extensão' }) %>
+
+<%
+  const p = projeto || {};
+  const formatDate = (d) => {
+    if (!d) return '---';
+    try {
+      const dateObj = new Date(d);
+      if (isNaN(dateObj.getTime())) return '---';
+      return dateObj.getUTCDate().toString().padStart(2, '0') + '/' + 
+             (dateObj.getUTCMonth() + 1).toString().padStart(2, '0') + '/' + 
+             dateObj.getUTCFullYear();
+    } catch(e) { return '---'; }
+  };
+%>
+
+<main class="container my-5">
+  <section class="card shadow p-4 p-md-5">
+
+    <h1 class="fs-4 fw-bold mb-4 border-bottom pb-3">
+      <i class="bi bi-file-earmark-text"></i> Relatório de Extensão - <%= p.titulo || '' %>
+    </h1>
+
+    <!-- ===== DADOS DO PROJETO (readonly) ===== -->
+    <h5 class="fw-bold mt-4 mb-3"><i class="bi bi-info-circle"></i> Dados do Projeto</h5>
+
+    <div class="row mb-3">
+      <div class="col-md-6">
+        <label class="form-label fw-semibold">Tipo de Extensão</label>
+        <div class="form-control bg-light"><%= p.tipo_plano_nome || '---' %></div>
+      </div>
+      <div class="col-md-6">
+        <label class="form-label fw-semibold">Título</label>
+        <div class="form-control bg-light"><%= p.titulo || '---' %></div>
+      </div>
+    </div>
+
+    <div class="row mb-3">
+      <div class="col-md-4">
+        <label class="form-label fw-semibold">Período</label>
+        <div class="form-control bg-light">
+          <%= formatDate(p.periodo_inicio) %> a <%= formatDate(p.periodo_fim) %>
+        </div>
+      </div>
+      <div class="col-md-4">
+        <label class="form-label fw-semibold">Tipo de Ação</label>
+        <div class="form-control bg-light">
+          <%= (p.tiposAcao && p.tiposAcao.length > 0) ? p.tiposAcao.map(t => t.nome).join(', ') : '---' %>
+        </div>
+      </div>
+      <div class="col-md-4">
+        <label class="form-label fw-semibold">Área Temática / Linha Programática</label>
+        <div class="form-control bg-light">
+          <%= (p.linhas && p.linhas.length > 0) ? p.linhas.map(l => l.nome).join(', ') : '---' %>
+        </div>
+      </div>
+    </div>
+
+    <div class="row mb-3">
+      <div class="col-md-6">
+        <label class="form-label fw-semibold">Carga Horária</label>
+        <div class="form-control bg-light"><%= p.carga_horaria_total || '---' %> h</div>
+      </div>
+    </div>
+
+    <% if (p.locais && p.locais.length > 0) { %>
+    <div class="mb-3">
+      <label class="form-label fw-semibold">Local de Execução</label>
+      <div class="form-control bg-light" style="height:auto; min-height:38px;">
+        <% p.locais.forEach((loc, i) => { %>
+          <%= loc.endereco %> - <%= loc.bairro %>, <%= loc.cidade %><%= i < p.locais.length - 1 ? '; ' : '' %>
+        <% }) %>
+      </div>
+    </div>
+    <% } %>
+
+    <!-- ===== II - EQUIPE EXECUTORA (readonly) ===== -->
+    <h5 class="fw-bold mt-4 mb-3"><i class="bi bi-people"></i> II - Equipe Executora</h5>
+
+    <div class="row mb-3">
+      <div class="col-md-6">
+        <label class="form-label fw-semibold">Coordenador</label>
+        <div class="form-control bg-light"><%= p.coordenador_nome || '---' %></div>
+      </div>
+      <div class="col-md-6">
+        <label class="form-label fw-semibold">Cursos</label>
+        <div class="form-control bg-light">
+          <%= (p.cursos && p.cursos.length > 0) ? p.cursos.map(c => c.nome_curso).join(', ') : '---' %>
+        </div>
+      </div>
+    </div>
+
+    <% if (p.pessoas && p.pessoas.length > 0) { %>
+    <div class="mb-3">
+      <label class="form-label fw-semibold">Professores / Técnicos</label>
+      <div class="form-control bg-light" style="height:auto; min-height:38px;">
+        <% p.pessoas.forEach((pe, i) => { %>
+          <%= pe.nome %> (<%= pe.papel %>)<%= i < p.pessoas.length - 1 ? ', ' : '' %>
+        <% }) %>
+      </div>
+    </div>
+    <% } %>
+
+    <!-- ===== III - PÚBLICO-ALVO E ABRANGÊNCIA (readonly) ===== -->
+    <h5 class="fw-bold mt-4 mb-3"><i class="bi bi-person-lines-fill"></i> III - Público-Alvo e Abrangência</h5>
+    <div class="mb-3">
+      <div class="form-control bg-light"><%= p.publico_alvo_nome || '---' %></div>
+    </div>
+
+    <!-- ===== IV - OBJETIVOS DA AÇÃO (readonly) ===== -->
+    <h5 class="fw-bold mt-4 mb-3"><i class="bi bi-bullseye"></i> IV - Objetivos da Ação</h5>
+    <div class="mb-3">
+      <div class="form-control bg-light" style="height:auto; min-height:80px; white-space:pre-wrap;"><%= p.objetivo || '---' %></div>
+    </div>
+
+    <!-- ===== VII - ATIVIDADES DESENVOLVIDAS (gerenciavel - FORA do form principal) ===== -->
+    <h5 class="fw-bold mt-4 mb-3">
+      <i class="bi bi-calendar-range"></i> VII - Atividades Desenvolvidas
+      <button type="button" class="btn btn-sm btn-outline-primary float-end" style="font-size:0.688rem" onclick="document.getElementById('form-add-cronograma-rel').style.display = document.getElementById('form-add-cronograma-rel').style.display === 'none' ? 'block' : 'none'"><i class="bi bi-plus"></i> Adicionar Atividade</button>
+    </h5>
+    <% if (p.cronograma && p.cronograma.length > 0) { %>
+    <div class="table-responsive mb-3">
+      <table class="table table-bordered table-striped">
+        <thead class="table-light">
+          <tr>
+            <th>Nº</th>
+            <th>Etapa</th>
+            <th>Data</th>
+            <th>Hora</th>
+            <th>Local</th>
+            <th style="width:60px"></th>
+          </tr>
+        </thead>
+        <tbody>
+          <% p.cronograma.forEach(c => { %>
+          <tr>
+            <td><%= c.numero || '' %></td>
+            <td><%= c.etapa || '' %></td>
+            <td><%= formatDate(c.data) %></td>
+            <td><%= c.hora || '' %></td>
+            <td><%= c.local || '' %></td>
+            <td>
+              <form method="POST" action="/projeto_extensao/<%= p.id_projeto %>/cronograma/<%= c.id %>/delete" onsubmit="return confirm('Excluir esta atividade?')">
+                <input type="hidden" name="from" value="relatorio">
+                <button type="submit" class="btn btn-sm btn-outline-danger" style="font-size:0.625rem; padding:1px 4px" title="Excluir"><i class="bi bi-trash"></i></button>
+              </form>
+            </td>
+          </tr>
+          <% }) %>
+        </tbody>
+      </table>
+    </div>
+    <% } else { %>
+    <p class="text-muted text-center py-3" style="font-size:0.75rem"><i class="bi bi-info-circle"></i> Nenhuma atividade cadastrada. Clique em "Adicionar Atividade" para incluir.</p>
+    <% } %>
+    <div id="form-add-cronograma-rel" style="display:none; border:1px solid #dee2e6; border-radius:6px; padding:12px; margin-bottom:16px; background:#f9fafb">
+      <form method="POST" action="/projeto_extensao/<%= p.id_projeto %>/cronograma" class="row g-2 align-items-end">
+        <input type="hidden" name="from" value="relatorio">
+        <div class="col-md-4"><label class="form-label" style="font-size:0.688rem">Etapa</label><input name="etapa" class="form-control form-control-sm" placeholder="Descrição da atividade" required style="font-size:0.75rem"></div>
+        <div class="col-md-2"><label class="form-label" style="font-size:0.688rem">Data</label><input name="data" type="date" class="form-control form-control-sm" style="font-size:0.75rem"></div>
+        <div class="col-md-2"><label class="form-label" style="font-size:0.688rem">Hora</label><input name="hora" type="text" class="form-control form-control-sm" placeholder="23:59" pattern="([01]?[0-9]|2[0-3]):[0-5][0-9]" title="Formato 24h (HH:mm)" style="font-size:0.75rem"></div>
+        <div class="col-md-3"><label class="form-label" style="font-size:0.688rem">Local</label><input name="local" class="form-control form-control-sm" placeholder="Sala, Auditório..." style="font-size:0.75rem"></div>
+        <div class="col-md-1"><button type="submit" class="btn btn-sm btn-primary" style="font-size:0.688rem"><i class="bi bi-check-lg"></i> Salvar</button></div>
+      </form>
+    </div>
+
+    <!-- ===== FORM DO RELATÓRIO (campos editáveis) ===== -->
+    <form method="POST" action="/projeto_extensao/<%= p.id_projeto %>/relatorio">
+
+      <!-- ===== V - JUSTIFICATIVA (editavel) ===== -->
+      <h5 class="fw-bold mt-4 mb-3"><i class="bi bi-journal-text"></i> V - Justificativa</h5>
+      <div class="mb-3">
+        <p class="text-muted" style="font-size:0.7rem;margin-bottom:6px">Apresente a motivação da ação: demanda social identificada, problemas enfrentados, importância para a comunidade.</p>
+        <textarea name="justificativa" class="form-control" rows="5" placeholder="Descreva a justificativa da ação..."><%= p.justificativa || '' %></textarea>
+      </div>
+
+      <!-- ===== VI - METODOLOGIA (readonly) ===== -->
+      <h5 class="fw-bold mt-4 mb-3"><i class="bi bi-diagram-3"></i> VI - Metodologia</h5>
+      <div class="mb-3">
+        <div class="form-control bg-light" style="height:auto; min-height:80px; white-space:pre-wrap;"><%= p.metodologia || '---' %></div>
+      </div>
+
+      <!-- ===== VIII - RESULTADOS ALCANÇADOS (editavel) ===== -->
+      <h5 class="fw-bold mt-4 mb-3"><i class="bi bi-check2-circle"></i> VIII - Resultados Alcançados</h5>
+      <div class="mb-3">
+        <p class="text-muted" style="font-size:0.7rem;margin-bottom:6px">Inclua resultados qualitativos (mudanças percebidas) e quantitativos (número de beneficiados, atividades executadas).</p>
+        <textarea name="resultados_alcancados" class="form-control" rows="5" placeholder="Descreva os resultados alcançados..."><%= p.resultados_alcancados || '' %></textarea>
+      </div>
+
+      <!-- ===== IX - AVALIAÇÃO DA AÇÃO (editavel) ===== -->
+      <h5 class="fw-bold mt-4 mb-3"><i class="bi bi-chat-left-text"></i> IX - Avaliação da Ação</h5>
+
+      <div class="mb-3">
+        <label class="form-label fw-semibold">Avaliação da Comunidade</label>
+        <p class="text-muted" style="font-size:0.7rem;margin-bottom:6px">Como foi coletado o feedback? O que foi positivo? O que pode ser melhorado?</p>
+        <textarea name="avaliacao_comunidade" class="form-control" rows="5" placeholder="Descreva a avaliação da comunidade sobre a ação..."><%= p.avaliacao_comunidade || '' %></textarea>
+      </div>
+
+      <div class="mb-3">
+        <label class="form-label fw-semibold">Avaliação da Equipe</label>
+        <p class="text-muted" style="font-size:0.7rem;margin-bottom:6px">O que funcionou bem? Dificuldades enfrentadas? Aprendizagens para ações futuras?</p>
+        <textarea name="avaliacao_equipe" class="form-control" rows="5" placeholder="Descreva a avaliação da equipe executora sobre a ação..."><%= p.avaliacao_equipe || '' %></textarea>
+      </div>
+
+      <!-- ===== X - PRODUTOS GERADOS (editavel) ===== -->
+      <h5 class="fw-bold mt-4 mb-3"><i class="bi bi-box-seam"></i> X - Produtos Gerados</h5>
+      <div class="mb-3">
+        <p class="text-muted" style="font-size:0.7rem;margin-bottom:6px">Materiais didáticos, artigos, cartilhas, vídeos, protótipos. Indicar links ou anexos.</p>
+        <textarea name="produtos_gerados" class="form-control" rows="5" placeholder="Liste os produtos gerados pela ação..."><%= p.produtos_gerados || '' %></textarea>
+      </div>
+
+      <!-- ===== XI - VINCULAÇÃO COM OS ODS (editavel) ===== -->
+      <h5 class="fw-bold mt-4 mb-3"><i class="bi bi-globe2"></i> XI - Vinculação com os ODS</h5>
+      <div class="mb-3">
+        <p class="text-muted" style="font-size:0.7rem;margin-bottom:6px">Relacione com 1 a 3 ODS da Agenda 2030 da ONU (ex: ODS 4 – Educação de qualidade).</p>
+        <textarea name="ods" class="form-control" rows="4" placeholder="Indique os Objetivos de Desenvolvimento Sustentável (ODS) vinculados..."><%= p.ods || '' %></textarea>
+      </div>
+
+      <!-- ===== XIII - OBSERVAÇÃO FINAL (editavel) ===== -->
+      <h5 class="fw-bold mt-4 mb-3"><i class="bi bi-pencil-square"></i> XIII - Observação Final</h5>
+      <div class="mb-3">
+        <textarea name="observacao_final" class="form-control" rows="5" placeholder="Observações finais..."><%= p.observacao_final || 'Este relatório atende às diretrizes da Resolução CNE/CES nº 7/2018 e às orientações da política de extensão da instituição, visando demonstrar o impacto social da ação, sua articulação com o ensino e a formação cidadã dos estudantes.' %></textarea>
+      </div>
+
+      <!-- ===== XV - ANEXOS (editavel) ===== -->
+      <h5 class="fw-bold mt-4 mb-3"><i class="bi bi-paperclip"></i> XV - Anexos</h5>
+      <p class="text-muted" style="font-size:0.7rem;margin-bottom:6px">Envie imagens e documentos de suporte (Somente visual no momento)</p>
+      <div class="mb-3">
+        <div class="fm-box" id="fmBox">
+          <!-- DESCRIÇÃO -->
+          <div class="fm-description-wrap">
+            <label class="fm-description-label" for="descriptionField">Descrição</label>
+            <textarea id="descriptionField" name="anexos" class="fm-description-textarea" placeholder="Descreva os anexos ou adicione observações relevantes…" maxlength="1000"><%= p.anexos || '' %></textarea>
+          </div>
+
+          <div class="fm-toolbar">
+            <button type="button" class="fm-btn" id="btnAddFile" title="Adicionar arquivo" aria-label="Adicionar arquivo">
+              <i class="bi bi-cloud-plus"></i>
+            </button>
+            <button type="button" class="fm-btn" title="Nova pasta" aria-label="Nova pasta" style="opacity:0.45;cursor:default;" tabindex="-1">
+              <i class="bi bi-folder-plus"></i>
+            </button>
+            <button type="button" class="fm-btn secondary" id="btnDownloadAll" title="Baixar todos" aria-label="Baixar todos">
+              <i class="bi bi-download"></i>
+            </button>
+            <input type="file" id="fileInput" name="anexos_files" multiple accept="image/*,.pdf,.xls,.xlsx,.doc,.docx" style="display:none" aria-hidden="true">
+          </div>
+
+          <!-- Árvore -->
+          <div class="fm-tree" id="fmTree">
+            <div class="fm-folder-row">
+              <span class="fm-toggle">▼</span>
+              <i class="bi bi-folder-fill" style="color:var(--brand);font-size:1.1rem;"></i>
+              <span>Arquivos</span>
+              <span id="totalCounter" style="font-size:11px;font-family:monospace;color:var(--muted);margin-left:4px;font-weight:400;"></span>
+            </div>
+            <ul class="fm-file-list" id="fileList"></ul>
+          </div>
+
+          <div class="fm-info-bar">
+            <span>Tamanho máximo por arquivo: <strong>10 MB</strong></span>
+            <span>·</span>
+            <span>Máximo de anexos: <strong>6</strong></span>
+          </div>
+        </div>
+      </div>
+      
+      <div class="toast-container-fm" id="toastContainer" aria-live="assertive"></div>
+
+      <!-- ===== BOTÕES ===== -->
+      <div class="d-flex gap-2 mt-4">
+        <button type="submit" class="btn btn-sm btn-primary">
+          <i class="bi bi-save"></i> Salvar
+        </button>
+        <a href="/projeto_extensao/<%= p.id_projeto %>/relatorio/pdf" class="btn btn-sm btn-success" target="_blank">
+          <i class="bi bi-filetype-pdf"></i> Baixar PDF
+        </a>
+        <a href="/projeto_extensao" class="btn btn-sm btn-secondary">
+          <i class="bi bi-arrow-left"></i> Voltar
+        </a>
+      </div>
+
+    </form>
+  </section>
+</main>
+
+<script>
+  // Lógica visual do File Manager
+  const MAX_TOTAL = 6;
+  const MAX_SIZE  = 10 * 1024 * 1024;
+
+  let allFiles = [];
+
+  const fileInput    = document.getElementById("fileInput");
+  const fileList     = document.getElementById("fileList");
+  const totalCounter = document.getElementById("totalCounter");
+  const fmBox        = document.getElementById("fmBox");
+
+  function showToastFM(msg, type = "info", duration = 3500) {
+    const icons = { success: "✅", error: "❌", info: "ℹ️" };
+    const el = document.createElement("div");
+    el.className = `toast-fm ${type}`;
+    el.innerHTML = `<span>${icons[type]}</span><span>${msg}</span>`;
+    document.getElementById("toastContainer").appendChild(el);
+    setTimeout(() => {
+      el.style.animation = "toastOut 0.3s ease both";
+      setTimeout(() => el.remove(), 300);
+    }, duration);
+  }
+
+  function formatSizeFm(bytes) {
+    if (bytes < 1024) return bytes + " B";
+    if (bytes < 1024 * 1024) return (bytes / 1024).toFixed(1) + " KB";
+    return (bytes / (1024 * 1024)).toFixed(2) + " MB";
+  }
+
+  function fileIconHTML(entry) {
+    if (entry.type === "image" && entry.src) {
+      return `<img src="${entry.src}" alt="miniatura" style="width:22px;height:22px;object-fit:cover;border-radius:3px;border:1px solid var(--line);">`;
+    }
+    const n = entry.file.name.toLowerCase();
+    const t = entry.file.type;
+    if (t === "application/pdf" || n.endsWith(".pdf")) {
+      return `<i class="bi bi-file-earmark-pdf-fill" style="color:#e74c3c;font-size:1.2rem;"></i>`;
+    }
+    if (t.includes("wordprocessingml") || n.endsWith(".doc") || n.endsWith(".docx")) {
+      return `<i class="bi bi-file-earmark-word-fill" style="color:#2b579a;font-size:1.2rem;"></i>`;
+    }
+    if (t.includes("excel") || t.includes("spreadsheetml") || n.endsWith(".xls") || n.endsWith(".xlsx")) {
+      return `<i class="bi bi-file-earmark-excel-fill" style="color:#217346;font-size:1.2rem;"></i>`;
+    }
+    return `<i class="bi bi-file-earmark-fill" style="color:var(--muted);font-size:1.2rem;"></i>`;
+  }
+
+  function renderAll() {
+    fileList.innerHTML = "";
+    const total = allFiles.length;
+    totalCounter.textContent = total > 0 ? `(${total})` : "";
+
+    if (total === 0) {
+      const li = document.createElement("li");
+      li.className = "fm-empty";
+      li.textContent = "Nenhum arquivo adicionado.";
+      fileList.appendChild(li);
+      return;
+    }
+
+    allFiles.forEach((entry, index) => {
+      const li = document.createElement("li");
+      li.className = "fm-file-item";
+      li.innerHTML = `
+        <div class="fm-file-icon">${fileIconHTML(entry)}</div>
+        <span class="fm-file-name" title="${entry.file.name}">${entry.file.name}</span>
+        <span class="fm-file-size">${formatSizeFm(entry.file.size)}</span>
+        <button type="button" class="fm-file-remove" onclick="removeFile(${index})" aria-label="Remover ${entry.file.name}" title="Remover"><i class="bi bi-trash"></i></button>
+      `;
+      fileList.appendChild(li);
+    });
+  }
+
+  function handleAllFiles(files) {
+    for (const file of files) {
+      if (allFiles.length >= MAX_TOTAL) {
+        showToastFM(`Máximo de ${MAX_TOTAL} anexos atingido.`, "error");
+        break;
+      }
+      if (file.size > MAX_SIZE) {
+        showToastFM(`"${file.name}" excede 10 MB.`, "error");
+        continue;
+      }
+      const duplicate = allFiles.some(e => e.file.name === file.name && e.file.size === file.size);
+      if (duplicate) {
+        showToastFM(`"${file.name}" já foi adicionado.`, "info", 2500);
+        continue;
+      }
+      const isImage = file.type.startsWith("image/");
+      const entry = { file, type: isImage ? "image" : "doc", src: null };
+      allFiles.push(entry);
+
+      if (isImage) {
+        const reader = new FileReader();
+        reader.onload = (ev) => { entry.src = ev.target.result; renderAll(); };
+        reader.readAsDataURL(file);
+      }
+    }
+    renderAll();
+    fileInput.value = "";
+  }
+
+  window.removeFile = function(index) {
+    const name = allFiles[index].file.name;
+    allFiles.splice(index, 1);
+    renderAll();
+    showToastFM(`"${name}" removido.`, "info", 2000);
+  };
+
+  fmBox.addEventListener("dragover", (e) => { e.preventDefault(); fmBox.classList.add("dragover"); });
+  fmBox.addEventListener("dragleave", (e) => { if (!fmBox.contains(e.relatedTarget)) fmBox.classList.remove("dragover"); });
+  fmBox.addEventListener("drop", (e) => { e.preventDefault(); fmBox.classList.remove("dragover"); handleAllFiles(e.dataTransfer.files); });
+
+  document.getElementById("btnAddFile").addEventListener("click", () => fileInput.click());
+  fileInput.addEventListener("change", (e) => handleAllFiles(e.target.files));
+
+  document.getElementById("btnDownloadAll").addEventListener("click", () => {
+    if (allFiles.length === 0) { showToastFM("Nenhum arquivo para baixar.", "info"); return; }
+    allFiles.forEach(entry => {
+      const url = entry.src || URL.createObjectURL(entry.file);
+      const a = Object.assign(document.createElement("a"), { href: url, download: entry.file.name });
+      a.click();
+      if (!entry.src) setTimeout(() => URL.revokeObjectURL(url), 1000);
+    });
+  });
+
+  renderAll();
+</script>
+
+<%- include('../rodape') %>

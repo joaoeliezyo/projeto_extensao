@@ -1,0 +1,34 @@
+<%- include('../cabecalho', { titulo: 'Linha Programatica' }) %>
+
+<main id="conteudo-principal-form" class="container my-5">
+  <section class="card shadow p-4 p-md-5">
+    <h1 class="fs-4 fw-bold mb-4 border-bottom pb-3">
+      <%= isEdit ? 'Editar Linha Programatica' : 'Cadastrar Linha Programatica' %>
+    </h1>
+
+    <form id="formulario-linha_programatica" method="POST"
+          action="/linha_programatica/<%= isEdit ? linha_programatica.id_linha + '/edit' : 'cadastrar' %>">
+
+      <div class="mb-3">
+        <label for="campo-id_linha" class="form-label">ID da Linha</label>
+        <input id="campo-id_linha" name="id_linha" class="form-control"
+               value="<%= isEdit ? linha_programatica.id_linha : '' %>" readonly>
+      </div>
+
+      <div class="mb-3">
+        <label for="campo-nome" class="form-label">Nome da Linha</label>
+        <input id="campo-nome" name="nome" class="form-control" required
+               placeholder="Digite o nome da linha..."
+               value="<%= isEdit ? linha_programatica.nome : '' %>">
+      </div>
+
+      <button id="botao-enviar-projeto" class="btn btn-primary btn-sm me-2" type="submit">
+        <i class="fas fa-save me-1"></i> <%= isEdit ? 'Salvar Alteracoes' : 'Cadastrar' %>
+      </button>
+
+      <a href="/linha_programatica" class="btn btn-secondary btn-sm">Voltar</a>
+    </form>
+  </section>
+</main>
+
+<%- include('../rodape') %>

@@ -1,0 +1,62 @@
+<%- include('../cabecalho', { titulo: 'Avaliações de Participantes' }) %>
+
+<main id="conteudo-principal-form" class="container my-5">
+  <section class="card shadow p-4 p-md-5">
+    <div class="d-flex align-items-center mb-4 pb-3 border-bottom">
+      <i class="bi bi-people fs-4 me-2"></i>
+      <h1 class="fs-4 fw-bold mb-0">Avaliações de Participantes</h1>
+    </div>
+
+    <div class="d-flex justify-content-end mb-3">
+      <a href="/avaliacao_participante/forms/avaliacao_participante" class="btn btn-primary btn-sm">
+        <i class="bi bi-plus-circle"></i> Nova Avaliação
+      </a>
+    </div>
+
+    <div class="table-responsive">
+      <table class="table table-hover">
+        <thead class="table-light">
+          <tr>
+            <th>ID</th>
+            <th>Projeto</th>
+            <th>Data</th>
+            <th>Faixa Etária</th>
+            <th>Escolaridade</th>
+            <th>Avaliação</th>
+            <th>Expectativas</th>
+            <th>Recomendaria</th>
+            <th>Ações</th>
+          </tr>
+        </thead>
+        <tbody>
+          <% if (dados && dados.length > 0) { %>
+            <% dados.forEach(d => { %>
+              <tr>
+                <td><span class="badge bg-secondary"><%= d.id_avaliacao_participante %></span></td>
+                <td><%= d.id_projeto || '-' %></td>
+                <td><%= d.data_resposta ? new Date(d.data_resposta).toLocaleDateString('pt-BR') : '-' %></td>
+                <td><%= d.id_faixa || '-' %></td>
+                <td><%= d.id_escolaridade || '-' %></td>
+                <td><%= d.avaliacao_conteudo || '-' %></td>
+                <td><%= d.atendeu_expectativas || '-' %></td>
+                <td><%= d.recomendaria || '-' %></td>
+                <td>
+                  <a href="/avaliacao_participante/<%= d.id_avaliacao_participante %>/edit" class="btn btn-primary btn-sm"><i class="bi bi-pencil"></i> Editar</a>
+                  <a href="/avaliacao_participante/<%= d.id_avaliacao_participante %>/delete" class="btn btn-danger btn-sm" onclick="return confirm('Tem certeza que deseja excluir?')"><i class="bi bi-trash"></i> Excluir</a>
+                </td>
+              </tr>
+            <% }) %>
+          <% } else { %>
+            <tr><td colspan="9" class="text-center py-4 text-muted">Nenhuma avaliação encontrada.</td></tr>
+          <% } %>
+        </tbody>
+      </table>
+    </div>
+
+    <div class="mt-3">
+      <a href="/logo" class="btn btn-secondary"><i class="bi bi-arrow-left"></i> Voltar</a>
+    </div>
+  </section>
+</main>
+
+<%- include('../rodape') %>

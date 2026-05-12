@@ -1,0 +1,46 @@
+<%- include('../cabecalho', { titulo: 'Cadastro de Pessoa' }) %>
+
+<main id="conteudo-principal-form" class="container my-5">
+  <section class="card shadow p-4 p-md-5">
+    <h1 class="fs-4 fw-bold mb-4 border-bottom pb-3">Cadastro de Pessoa</h1>
+
+    <div id="form-feedback-message" class="alert d-none" role="alert"></div>
+
+    <form id="formulario-pessoa" method="POST" action="/pessoa/salvar">
+
+      <div class="mb-3">
+        <label for="campo-id_pessoa" class="form-label">id_pessoa</label>
+        <input id="campo-id_pessoa" name="id_pessoa" class="form-control" required placeholder="id_pessoa" readonly>
+      </div>
+
+      <div class="mb-3">
+        <label for="campo-nome" class="form-label">nome</label>
+        <input id="campo-nome" name="nome" class="form-control" required placeholder="nome" readonly>
+      </div>
+
+      <div class="mb-3">
+        <label for="campo-cpf" class="form-label">cpf</label>
+        <input id="campo-cpf" name="cpf" class="form-control" required placeholder="cpf" readonly>
+      </div>
+
+      <div class="mb-3">
+        <label for="campo-email" class="form-label">email</label>
+        <input id="campo-email" name="email" class="form-control" required placeholder="email" readonly>
+      </div>
+
+      <div class="mb-3">
+        <label for="campo-telefone" class="form-label">telefone</label>
+        <input id="campo-telefone" name="telefone" class="form-control" required placeholder="telefone" readonly>
+      </div>
+
+      <div class="mb-3">
+        <label for="campo-id_tipo_pessoa" class="form-label">id_tipo_pessoa</label>
+        <input id="campo-id_tipo_pessoa" name="id_tipo_pessoa" class="form-control" required placeholder="id_tipo_pessoa" readonly>
+      </div>
+
+      <button id="botao-enviar-projeto" class="btn btn-primary btn-sm me-2" type="submit">Salvar</button>
+    </form>
+  </section>
+</main>
+
+<%- include('../rodape') %>

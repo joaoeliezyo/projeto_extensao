@@ -1,0 +1,559 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+
+<head>
+  <meta charset="utf-8">
+  <title>Plano de Atividade de Extensão</title>
+  <style>
+    /* ===== RESET ===== */
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    /* ===== PÁGINA A4 - ABNT NBR 14724 =====
+       Margens: superior 3cm, inferior 2cm, esquerda 3cm, direita 2cm
+       Fonte: Times New Roman 12pt, espaçamento 1.5 */
+    @page {
+      size: A4 portrait;
+      margin: 3cm 2cm 2cm 3cm;
+    }
+
+    body {
+      font-family: 'Times New Roman', Times, serif;
+      font-size: 12pt;
+      color: #000;
+      line-height: 1.5;
+      text-align: justify;
+      background: #fff;
+    }
+
+    /* ===== CABEÇALHO INSTITUCIONAL ===== */
+    .header {
+      text-align: center;
+      margin-bottom: 24pt;
+      padding-bottom: 8pt;
+      border-bottom: 1.5pt solid #000;
+    }
+
+    .header img {
+      height: 60px;
+      margin-bottom: 4pt;
+    }
+
+    .header img {
+      height: 60px;
+      margin-bottom: 4pt;
+    }
+
+    .header-inst {
+      font-size: 11pt;
+      font-weight: bold;
+      text-transform: uppercase;
+      margin: 2pt 0;
+    }
+
+    /* ===== TÍTULO DO DOCUMENTO ===== */
+    .doc-title {
+      text-align: center;
+      font-size: 14pt;
+      font-weight: bold;
+      text-transform: uppercase;
+      margin: 24pt 0 18pt;
+    }
+
+    /* ===== SEÇÕES ===== */
+    .section-title {
+      font-size: 12pt;
+      font-weight: bold;
+      text-transform: uppercase;
+      margin: 18pt 0 8pt;
+      padding-bottom: 2pt;
+      border-bottom: 0.5pt solid #000;
+    }
+
+    /* ===== TABELAS ===== */
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      margin: 6pt 0 12pt;
+      font-size: 11pt;
+    }
+
+    th,
+    td {
+      border: 0.5pt solid #000;
+      padding: 4pt 6pt;
+      text-align: left;
+      vertical-align: top;
+    }
+
+    th {
+      background: #f2f2f2;
+      font-weight: bold;
+      font-size: 10pt;
+      text-transform: uppercase;
+    }
+
+    td.label-cell {
+      font-weight: bold;
+      width: 35%;
+      background: #fafafa;
+    }
+
+    /* ===== BLOCOS DE TEXTO ===== */
+    .text-block {
+      text-align: justify;
+      text-indent: 1.25cm;
+      margin: 4pt 0 12pt;
+      white-space: pre-wrap;
+      word-wrap: break-word;
+    }
+
+    .text-block-no-indent {
+      text-align: justify;
+      margin: 4pt 0 12pt;
+      white-space: pre-wrap;
+      word-wrap: break-word;
+    }
+
+    /* ===== ASSINATURAS ===== */
+    .signature-block {
+      margin-top: 40pt;
+      text-align: center;
+      page-break-inside: avoid;
+    }
+
+    .signature-line {
+      border-bottom: 0.5pt solid #000;
+      width: 280pt;
+      margin: 0 auto 4pt;
+    }
+
+    .signature-name {
+      font-size: 11pt;
+      font-weight: bold;
+    }
+
+    .signature-role {
+      font-size: 10pt;
+    }
+
+    /* ===== PARECER ===== */
+    .parecer-box {
+      border: 0.5pt solid #000;
+      padding: 10pt 12pt;
+      margin-top: 16pt;
+      page-break-inside: avoid;
+    }
+
+    .parecer-box .parecer-title {
+      font-weight: bold;
+      font-size: 10pt;
+      text-transform: uppercase;
+      margin-bottom: 6pt;
+    }
+
+    .parecer-box .parecer-field {
+      margin: 4pt 0;
+      font-size: 11pt;
+    }
+
+    /* ===== DATA CENTRALIZADA ===== */
+    .data-local {
+      text-align: center;
+      margin: 30pt 0 10pt;
+      font-size: 12pt;
+    }
+
+    /* ===== IMPRESSÃO ===== */
+    @media print {
+      body {
+        background: #fff;
+      }
+
+      .no-print {
+        display: none;
+      }
+    }
+
+    /* ===== PAGINAÇÃO ===== */
+    .page-break {
+      page-break-before: always;
+    }
+  </style>
+</head>
+
+<body>
+
+  <% const p=projeto || {}; const formatDate=(d)=> {
+    if (!d) return '___/___/______';
+    try {
+    const dt = new Date(d);
+    const dd = String(dt.getDate()).padStart(2, '0');
+    const mm = String(dt.getMonth() + 1).padStart(2, '0');
+    const yyyy = dt.getFullYear();
+    return dd + '/' + mm + '/' + yyyy;
+    } catch(e) { return '___/___/______'; }
+    };
+    const formatBR = (valor) => {
+    const num = Number(valor);
+    if (Number.isNaN(num)) return valor ?? '0,00';
+    return num.toLocaleString('pt-BR', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+    };
+    const safe = (val) => val || '________________________________________';
+    %>
+
+    <!-- ===== CABEÇALHO INSTITUCIONAL ===== -->
+    <div class="header">
+      <% if (typeof logoSrc !=='undefined' && logoSrc) { %>
+        <img src="<%= logoSrc %>" alt="UNI-CET">
+        <% } %>
+          <p class="header-inst">Centro de Educação Tecnológica de Teresina - CET</p>
+          <p class="header-inst">Centro Universitário Tecnológico de Teresina - UNI-CET</p>
+    </div>
+
+    <!-- ===== TÍTULO ===== -->
+    <div class="doc-title">Plano de Atividade de Extensão</div>
+
+    <!-- ===== TIPO DE EXTENSÃO ===== -->
+    <div class="section-title">Tipo de Extensão</div>
+    <p style="margin: 4pt 0 12pt;">
+      <%= safe(p.tipo_plano_nome) %>
+    </p>
+
+    <!-- ===== I - IDENTIFICAÇÃO ===== -->
+    <div class="section-title">I - Identificação</div>
+    <table>
+      <tr>
+        <td class="label-cell">Título do Projeto</td>
+        <td>
+          <%= safe(p.titulo) %>
+        </td>
+      </tr>
+      <tr>
+        <td class="label-cell">Coordenador(a)</td>
+        <td>
+          <%= safe(p.coordenador_nome) %>
+        </td>
+      </tr>
+      <tr>
+        <td class="label-cell">Linha Programática</td>
+        <td>
+          <%= (p.linhas && p.linhas.length> 0) ? p.linhas.map(l => l.nome).join(', ') : '___' %>
+        </td>
+      </tr>
+      <tr>
+        <td class="label-cell">Tipo de Ação</td>
+        <td>
+          <%= (p.tiposAcao && p.tiposAcao.length> 0) ? p.tiposAcao.map(t => t.nome).join(', ') : '___' %>
+        </td>
+      </tr>
+      <tr>
+        <td class="label-cell">Cursos Envolvidos</td>
+        <td>
+          <%= (p.cursos && p.cursos.length> 0) ? p.cursos.map(c => c.nome_curso).join(', ') : '___' %>
+        </td>
+      </tr>
+      <tr>
+        <td class="label-cell">Período de Execução</td>
+        <td>
+          <%= formatDate(p.periodo_inicio) %> a <%= formatDate(p.periodo_fim) %>
+        </td>
+      </tr>
+      <tr>
+        <td class="label-cell">Carga Horária Total</td>
+        <td>
+          <%= p.carga_horaria_total ? p.carga_horaria_total + ' horas' : '___' %>
+        </td>
+      </tr>
+      <tr>
+        <td class="label-cell">Público-Alvo</td>
+        <td>
+          <%= safe(p.publico_alvo_nome) %>
+        </td>
+      </tr>
+      <% if (p.locais && p.locais.length> 0) { %>
+        <tr>
+          <td class="label-cell">Local de Execução</td>
+          <td>
+            <% p.locais.forEach((loc, i)=> { %><%= loc.endereco %> - <%= loc.bairro %>, <%= loc.cidade %>
+                    <%= i < p.locais.length - 1 ? '; ' : '' %>
+                      <% }) %>
+          </td>
+        </tr>
+        <% } %>
+          <% if (p.instituicoes && p.instituicoes.length> 0) { %>
+            <tr>
+              <td class="label-cell">Instituições Parceiras</td>
+              <td>
+                <% p.instituicoes.forEach((inst, i)=> { %><%= inst.nome %> (<%= inst.sigla %> - <%= inst.tipo %>)<%= i <
+                          p.instituicoes.length - 1 ? '; ' : '' %>
+                          <% }) %>
+              </td>
+            </tr>
+            <% } %>
+    </table>
+
+    <% if (p.pessoas && p.pessoas.length> 0) { %>
+      <p style="font-weight:bold; margin: 8pt 0 4pt;">Equipe do Projeto:</p>
+      <table>
+        <thead>
+          <tr>
+            <th style="width:60%">Nome</th>
+            <th>Função</th>
+          </tr>
+        </thead>
+        <tbody>
+          <% p.pessoas.forEach(pe=> { %>
+            <tr>
+              <td>
+                <%= pe.nome %>
+              </td>
+              <td>
+                <%= pe.papel %>
+              </td>
+            </tr>
+            <% }) %>
+        </tbody>
+      </table>
+      <% } %>
+
+        <!-- ===== II - OBJETIVOS ===== -->
+        <div class="section-title">II - Objetivos</div>
+        <div class="text-block">
+          <%= safe(p.objetivo) %>
+        </div>
+
+        <!-- ===== III - METODOLOGIA ===== -->
+        <div class="section-title">III - Metodologia</div>
+        <div class="text-block">
+          <%= safe(p.metodologia) %>
+        </div>
+
+        <!-- ===== IV - CRONOGRAMA DE ATIVIDADES ===== -->
+        <div class="section-title">IV - Cronograma de Atividades e Ações</div>
+        <% if (p.cronograma && p.cronograma.length> 0) { %>
+          <table>
+            <thead>
+              <tr>
+                <th style="width:30pt">Nº</th>
+                <th>Etapa / Atividade</th>
+                <th style="width:70pt">Data</th>
+                <th style="width:50pt">Hora</th>
+                <th>Local</th>
+              </tr>
+            </thead>
+            <tbody>
+              <% p.cronograma.forEach(c=> { %>
+                <tr>
+                  <td style="text-align:center">
+                    <%= c.numero || '' %>
+                  </td>
+                  <td>
+                    <%= c.etapa || '' %>
+                  </td>
+                  <td style="text-align:center">
+                    <%= formatDate(c.data) %>
+                  </td>
+                  <td style="text-align:center">
+                    <%= c.hora || '' %>
+                  </td>
+                  <td>
+                    <%= c.local || '' %>
+                  </td>
+                </tr>
+                <% }) %>
+            </tbody>
+          </table>
+          <% } else { %>
+            <p style="margin: 4pt 0 12pt;">Nenhuma atividade cadastrada.</p>
+            <% } %>
+
+              <!-- ===== V - CUSTOS DO PROJETO ===== -->
+              <div class="section-title">V - Custos do Projeto</div>
+              <% if (p.custos && p.custos.length> 0) { %>
+                <table>
+                  <thead>
+                    <tr>
+                      <th style="width:25pt">Nº</th>
+                      <th>Descrição da Despesa</th>
+                      <th style="width:35pt">Qtd</th>
+                      <th style="width:70pt">Valor Unit. (R$)</th>
+                      <th style="width:70pt">Valor Total (R$)</th>
+                      <th>Justificativa</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    <% let totalGeral=0; %>
+                      <% p.custos.forEach((cu, idx)=> { %>
+                        <% const qtd=Number(cu.quantitativo || 0); const unit=Number(cu.valor_unitario || 0); const
+                          vt=qtd * unit; totalGeral +=vt; %>
+                          <tr>
+                            <td style="text-align:center">
+                              <%= idx + 1 %>
+                            </td>
+                            <td>
+                              <%= cu.descricao || '' %>
+                            </td>
+                            <td style="text-align:center">
+                              <%= cu.quantitativo || '' %>
+                            </td>
+                            <td style="text-align:right">R$ <%= formatBR(unit) %>
+                            </td>
+                            <td style="text-align:right">R$ <%= formatBR(vt) %>
+                            </td>
+                            <td>
+                              <%= cu.justificativa || '' %>
+                            </td>
+                          </tr>
+                          <% }) %>
+                  </tbody>
+                  <tfoot>
+                    <tr>
+                      <td colspan="4" style="text-align:right; font-weight:bold;">Total Geral:</td>
+                      <td style="text-align:right; font-weight:bold;">R$ <%= formatBR(totalGeral) %>
+                      </td>
+                      <td></td>
+                    </tr>
+                  </tfoot>
+                </table>
+                <% } else { %>
+                  <p style="margin: 4pt 0 12pt;">Nenhum custo cadastrado.</p>
+                  <% } %>
+
+                    <!-- ===== VI - RESULTADOS ESPERADOS ===== -->
+                    <div class="section-title">VI - Resultados Esperados</div>
+                    <div class="text-block">
+                      <%= safe(p.resultados_esperados) %>
+                    </div>
+
+                    <!-- ===== VII - AVALIAÇÃO ===== -->
+                    <div class="section-title">VII - Avaliação</div>
+                    <div class="text-block">
+                      <%= safe(p.avaliacao_descricao) %>
+                    </div>
+
+                    <!-- ===== VIII - REFERÊNCIAS ===== -->
+                    <div class="section-title">VIII - Referências</div>
+                    <div class="text-block-no-indent">
+                      <%= safe(p.referencias) %>
+                    </div>
+
+                    <!-- ===== IX - AUTENTICAÇÃO ===== -->
+                    <div class="page-break"></div>
+                    <div class="section-title">IX - Autenticação</div>
+
+                    <div class="data-local">
+                      Teresina - PI, ______ de ____________________ de ________
+                    </div>
+
+                    <!-- Assinatura do Docente -->
+                    <div class="signature-block">
+                      <div class="signature-line"></div>
+                      <p class="signature-name">
+                        <%= safe(p.coordenador_nome) %>
+                      </p>
+                      <p class="signature-role">Docente Responsável</p>
+                    </div>
+
+                    <!-- Assinatura do Coordenador de Curso -->
+                    <div class="signature-block">
+                      <div class="signature-line"></div>
+                      <p class="signature-role">Coordenador(a) de Curso Responsável</p>
+                    </div>
+
+                    <!-- PARECER - Pró-Reitoria de Pós-Graduação -->
+                    <div class="parecer-box">
+                      <p class="parecer-title">Parecer Técnico - Pró-Reitoria de Pós-Graduação, Pesquisa, Extensão e
+                        Cursos Livres</p>
+                      <p class="parecer-field">PARECER: _______________________________________________________________
+                      </p>
+                      <p class="parecer-field">Teresina, ______ de ____________________ de ________</p>
+                      <div class="signature-block" style="margin-top:20pt">
+                        <div class="signature-line"></div>
+                        <p class="signature-role">Assinatura</p>
+                      </div>
+                    </div>
+
+                    <!-- PARECER - Pró-Reitoria Executiva -->
+                    <div class="parecer-box">
+                      <p class="parecer-title">Parecer Técnico - Pró-Reitoria Executiva de Administração, Inovação e
+                        Tecnologia</p>
+                      <p class="parecer-field">PARECER: _______________________________________________________________
+                      </p>
+                      <p class="parecer-field">Teresina, ______ de ____________________ de ________</p>
+                      <div class="signature-block" style="margin-top:20pt">
+                        <div class="signature-line"></div>
+                        <p class="signature-role">Assinatura</p>
+                      </div>
+                    </div>
+
+                    <!-- PARECER - Pró-Reitoria de Ensino -->
+                    <div class="parecer-box">
+                      <p class="parecer-title">Parecer Técnico - Pró-Reitoria de Ensino de Graduação e Aprendizagem,
+                        Cultura, Relação Comunitária e Responsabilidade Social</p>
+                      <p class="parecer-field">PARECER: _______________________________________________________________
+                      </p>
+                      <p class="parecer-field">Teresina, ______ de ____________________ de ________</p>
+                      <div class="signature-block" style="margin-top:20pt">
+                        <div class="signature-line"></div>
+                        <p class="signature-role">Assinatura</p>
+                      </div>
+                    </div>
+
+                    <!-- PARECER - Gerência de Pesquisa -->
+                    <div class="parecer-box">
+                      <p class="parecer-title">Parecer Técnico - Gerência de Pesquisa, Extensão e Cursos Livres</p>
+                      <p class="parecer-field">PARECER: _______________________________________________________________
+                      </p>
+                      <p class="parecer-field">Teresina, ______ de ____________________ de ________</p>
+                      <div class="signature-block" style="margin-top:20pt">
+                        <div class="signature-line"></div>
+                        <p class="signature-role">Assinatura</p>
+                      </div>
+                    </div>
+
+                    <!-- PARECER - NAP -->
+                    <div class="parecer-box">
+                      <p class="parecer-title">Parecer Técnico - Coordenadoria do Núcleo de Apoio Pedagógico - NAP</p>
+                      <p class="parecer-field">PARECER: _______________________________________________________________
+                      </p>
+                      <p class="parecer-field">Teresina, ______ de ____________________ de ________</p>
+                      <div class="signature-block" style="margin-top:20pt">
+                        <div class="signature-line"></div>
+                        <p class="signature-role">Assinatura</p>
+                      </div>
+                    </div>
+
+                    <!-- PARECER - NDE -->
+                    <div class="parecer-box">
+                      <p class="parecer-title">Parecer Técnico - Núcleo Docente Estruturante - NDE</p>
+                      <p class="parecer-field">PARECER: _______________________________________________________________
+                      </p>
+                      <p class="parecer-field">Teresina, ______ de ____________________ de ________</p>
+                      <p class="parecer-field" style="margin-top:12pt;">Assinaturas:</p>
+                      <div class="signature-block" style="margin-top:16pt">
+                        <div class="signature-line"></div>
+                      </div>
+                      <div class="signature-block" style="margin-top:16pt">
+                        <div class="signature-line"></div>
+                      </div>
+                      <div class="signature-block" style="margin-top:16pt">
+                        <div class="signature-line"></div>
+                      </div>
+                      <div class="signature-block" style="margin-top:16pt">
+                        <div class="signature-line"></div>
+                      </div>
+                      <div class="signature-block" style="margin-top:16pt">
+                        <div class="signature-line"></div>
+                      </div>
+                    </div>
+
+                    <script>
+                      window.onload = function () { window.print(); };
+                    </script>
+</body>
+
+</html>

@@ -1,0 +1,699 @@
+const fs = require('fs');
+const path = require('path');
+
+const projeto_extensaoModel = require('../models/projeto_extensaoModel');
+const cronogramaModel = require('../models/cronogramaModel');
+const projeto_custoModel = require('../models/projeto_custoModel');
+const tipo_acaoModel = require('../models/tipo_acaoModel');
+const linha_programaticaModel = require('../models/linha_programaticaModel');
+const tipo_planoModel = require('../models/tipo_planoModel');
+const publico_alvoModel = require('../models/publico_alvoModel');
+const cursoModel = require('../models/cursoModel');
+const tipo_instituicaoModel = require('../models/tipo_instituicaoModel');
+
+// ajuste esse valor conforme o id real em Papel_Projeto
+const ID_PAPEL_PROFESSOR = 1;
+
+// Normaliza o corpo da request para o formato esperado pelo model
+function mapRequestToRegistro(body) {
+  const {
+    id_projeto,
+    titulo,
+    id_tipo_plano,
+    periodo_inicio,
+    periodo_fim,
+    carga_horaria_total,
+    id_publico_alvo,
+    objetivo,
+    metodologia,
+    tipo_acao_ids,
+    linha_programatica_ids,
+    dadosCursos
+  } = body;
+
+  const mapRel = (ids, idKey) => {
+    if (!ids) return [];
+    const idArray = Array.isArray(ids) ? ids : [ids];
+    return idArray.map(id => ({ [idKey]: id }));
+  };
+
+  let cursos = [];
+  if (dadosCursos) {
+    try {
+      cursos = JSON.parse(dadosCursos);
+    } catch (error) {
+      console.error('Erro ao converter dadosCursos:', error);
+      cursos = [];
+    }
+  }
+
+  return {
+    id_projeto,
+    titulo,
+    id_tipo_plano: id_tipo_plano || null,
+    coordenador_id: null,
+    periodo_inicio: periodo_inicio || null,
+    periodo_fim: periodo_fim || null,
+    carga_horaria_total: carga_horaria_total || null,
+    id_publico_alvo: id_publico_alvo || null,
+    objetivo,
+    metodologia,
+    tiposAcao: mapRel(tipo_acao_ids, 'id_acao'),
+    linhasProgramaticas: mapRel(linha_programatica_ids, 'id_linha'),
+    cursos
+  };
+}
+
+async function listprojeto_extensaos(req, res) {
+  try {
+    const page = parseInt(req.query.page) || 1;
+    const filters = {
+      titulo: req.query.titulo || '',
+      id_tipo_plano: req.query.id_tipo_plano || '',
+      status: req.query.status || '',
+      periodo_inicio_de: req.query.periodo_inicio_de || '',
+      periodo_inicio_ate: req.query.periodo_inicio_ate || ''
+    };
+    const hasFilter = Object.values(filters).some(v => v);
+    const result = hasFilter ? await projeto_extensaoModel.filterprojeto_extensao(filters, page) : await projeto_extensaoModel.getAllprojeto_extensaos(page);
+    const tipoPlanos = await tipo_planoModel.getAlltipo_plano();
+    res.render('consultas/projeto_extensao', {
+      dados: result.rows,
+      filters,
+      tipoPlanos,
+      pagination: { page: result.page, totalPages: result.totalPages, total: result.total }
+    });
+  } catch (error) {
+    console.error('Erro ao buscar projeto_extensaos:', error);
+    res.render('error', {
+      message: 'Erro ao buscar projeto_extensaos',
+      returnLink: '/logo'
+    });
+  }
+}
+
+async function filterprojeto_extensao(req, res) {
+  const { nome } = req.body;
+  try {
+    const projeto_extensaos = await projeto_extensaoModel.getprojeto_extensaosByNome(nome || '');
+    res.render('consultas/projeto_extensao', { dados: projeto_extensaos || [] });
+  } catch (error) {
+    console.error('Erro ao filtrar projeto_extensao:', error);
+    res.render('error', {
+      message: 'Erro ao filtrar projeto_extensao',
+      returnLink: '/logo'
+    });
+  }
+}
+
+async function showCreateForm(req, res) {
+  try {
+    const tipoPlanos = await tipo_planoModel.getAlltipo_plano();
+    const publicosAlvo = await publico_alvoModel.getAllpublico_alvo();
+    const todosTiposAcao = await tipo_acaoModel.getAlltipo_acao();
+    const todasLinhas = await linha_programaticaModel.getAllinha_programatica();
+    const cursos = await cursoModel.getAllCursosComEquipe();
+
+    res.render('forms/projeto_extensao', {
+      projeto_extensao: {},
+      isEdit: false,
+      tipoPlanos,
+      publicosAlvo,
+      cursos,
+      todosTiposAcao,
+      todasLinhas,
+      relTiposAcao: [],
+      cursosPreSelecionados: [],
+      relLinhas: []
+    });
+  } catch (error) {
+    console.error('Erro ao carregar formulário de cadastro:', error);
+    res.render('error', {
+      message: 'Erro ao carregar formulário de cadastro',
+      returnLink: '/projeto_extensao'
+    });
+  }
+}
+
+async function addprojeto_extensao(req, res) {
+  try {
+    const registro = mapRequestToRegistro(req.body);
+    
+    // Define coordenador automático (coordenador do primeiro curso)
+    if (registro.cursos && registro.cursos.length > 0) {
+      const primeiroCurso = await cursoModel.getCursoById(registro.cursos[0].cursoId);
+      if (primeiroCurso && primeiroCurso.coordenador_id) {
+        registro.coordenador_id = primeiroCurso.coordenador_id;
+      }
+    }
+
+    const projetoId = await projeto_extensaoModel.insertprojeto_extensaos(registro);
+
+    await projeto_extensaoModel.updateTipoAcaoProjeto(projetoId, registro.tiposAcao);
+    await projeto_extensaoModel.updateLinhaProgramaticaProjeto(projetoId, registro.linhasProgramaticas);
+    await projeto_extensaoModel.updateCursosProjeto(projetoId, registro.cursos);
+    await projeto_extensaoModel.updatePessoasProjeto(
+      projetoId,
+      registro.cursos,
+      ID_PAPEL_PROFESSOR
+    );
+
+    if (req.files && req.files.length > 0) {
+      await projeto_extensaoModel.insertAnexosProjeto(projetoId, req.files);
+    }
+
+    req.session.flash = { type: 'success', message: 'Projeto criado com sucesso!' };
+    res.redirect('/projeto_extensao');
+  } catch (error) {
+    console.error('Erro ao inserir projeto_extensao:', error);
+    res.render('error', {
+      message: 'Erro ao inserir projeto_extensao',
+      returnLink: '/logo'
+    });
+  }
+}
+
+async function showprojeto_extensao(req, res) {
+  const id = req.params.id;
+  try {
+    const projeto_extensao = await projeto_extensaoModel.getprojeto_extensaosById(id);
+    if (!projeto_extensao) {
+      return res.status(404).send('projeto_extensao nao encontrado');
+    }
+
+    res.render('consultas/projeto_extensao', { dados: [projeto_extensao] });
+  } catch (error) {
+    console.error('Erro ao buscar projeto_extensao:', error);
+    res.render('error', {
+      message: 'Erro ao buscar projeto_extensao',
+      returnLink: '/logo'
+    });
+  }
+}
+
+async function showEditForm(req, res) {
+  const id = req.params.id;
+  try {
+    const projeto_extensao = await projeto_extensaoModel.getprojeto_extensaosById(id);
+    if (!projeto_extensao) {
+      return res.status(404).send('projeto_extensao nao encontrado');
+    }
+
+    const tipoPlanos = await tipo_planoModel.getAlltipo_plano();
+    const publicosAlvo = await publico_alvoModel.getAllpublico_alvo();
+    const todosTiposAcao = await tipo_acaoModel.getAlltipo_acao();
+    const todasLinhas = await linha_programaticaModel.getAllinha_programatica();
+    const relTiposAcao = await projeto_extensaoModel.getTipoAcaoByProjeto(id);
+    const relLinhas = await projeto_extensaoModel.getLinhaProgramaticaByProjeto(id);
+    const cursos = await cursoModel.getAllCursosComEquipe();
+    const anexos = await projeto_extensaoModel.getAnexosByProjeto(id);
+
+    const relCursos = await projeto_extensaoModel.getCursosByProjeto(id);
+    const relPessoas = await projeto_extensaoModel.getPessoasByProjeto(id);
+    const ID_PAPEL_PROFESSOR = 1;
+    const relProfs = relPessoas.filter(p => p.id_papel == ID_PAPEL_PROFESSOR).map(p => String(p.id_pessoa));
+    
+    const cursosPreSelecionados = relCursos.map((c) => {
+      return {
+        cursoId: String(c.id_curso),
+        professores: relProfs
+      };
+    });
+
+    res.render('forms/projeto_extensao', {
+        projeto_extensao,
+        isEdit: true,
+        tipoPlanos,
+        publicosAlvo,
+        cursos,
+        todosTiposAcao,
+        todasLinhas,
+        relTiposAcao,
+        relLinhas,
+        cursosPreSelecionados,
+        anexos
+      });
+    
+  } catch (error) {
+    console.error('Erro ao carregar projeto_extensao para edicao:', error);
+    res.render('error', {
+      message: 'Erro ao carregar projeto_extensao para edicao',
+      returnLink: '/projeto_extensao'
+    });
+  }
+}
+
+async function editprojeto_extensao(req, res) {
+  const id = req.params.id;
+  try {
+    const registro = mapRequestToRegistro(req.body);
+
+    // Define coordenador automático (coordenador do primeiro curso)
+    if (registro.cursos && registro.cursos.length > 0) {
+      const primeiroCurso = await cursoModel.getCursoById(registro.cursos[0].cursoId);
+      if (primeiroCurso && primeiroCurso.coordenador_id) {
+        registro.coordenador_id = primeiroCurso.coordenador_id;
+      }
+    }
+
+    await projeto_extensaoModel.updateprojeto_extensaos(id, registro);
+    await projeto_extensaoModel.updateTipoAcaoProjeto(id, registro.tiposAcao);
+    await projeto_extensaoModel.updateLinhaProgramaticaProjeto(id, registro.linhasProgramaticas);
+    await projeto_extensaoModel.updateCursosProjeto(id, registro.cursos);
+    await projeto_extensaoModel.updatePessoasProjeto(
+      id,
+      registro.cursos,
+      ID_PAPEL_PROFESSOR
+    );
+
+    if (req.files && req.files.length > 0) {
+      await projeto_extensaoModel.insertAnexosProjeto(id, req.files);
+    }
+
+    req.session.flash = { type: 'success', message: 'Projeto atualizado com sucesso!' };
+    res.redirect('/projeto_extensao');
+  } catch (error) {
+    console.error('Erro ao editar projeto_extensao:', error);
+    res.render('error', {
+      message: 'Erro ao editar projeto_extensao',
+      returnLink: '/projeto_extensao'
+    });
+  }
+}
+
+async function showConfirmDeleteForm(req, res) {
+  const id = req.params.id;
+  try {
+    const projeto_extensao = await projeto_extensaoModel.getprojeto_extensaosById(id);
+    if (!projeto_extensao) {
+      return res.status(404).send('projeto_extensao nao encontrado');
+    }
+
+    res.render('confirmDelete', { projeto_extensao });
+  } catch (error) {
+    console.error('Erro ao carregar confirmacao de exclusao:', error);
+    res.render('error', {
+      message: 'Erro ao carregar confirmacao de exclusao',
+      returnLink: '/projeto_extensao'
+    });
+  }
+}
+
+async function deleteprojeto_extensao(req, res) {
+  const id = req.params.id;
+  try {
+    await projeto_extensaoModel.deleteprojeto_extensaos(id);
+    req.session.flash = { type: 'success', message: 'Projeto excluído com sucesso!' };
+    res.redirect('/projeto_extensao');
+  } catch (error) {
+    console.error('Erro ao excluir projeto_extensao:', error);
+    res.render('error', {
+      message: 'Erro ao excluir projeto_extensao',
+      returnLink: '/projeto_extensao'
+    });
+  }
+}
+
+async function showPlano(req, res) {
+  try {
+    const projeto = await projeto_extensaoModel.getProjetoCompletoById(req.params.id);
+    if (!projeto) return res.render('error', { message: 'Projeto não encontrado', returnLink: '/projeto_extensao' });
+    const tiposInstituicao = await tipo_instituicaoModel.getAlltipo_instituicao();
+    res.render('forms/plano_extensao', { projeto, tiposInstituicao });
+  } catch (error) {
+    console.error('Erro ao carregar plano:', error);
+    res.render('error', { message: 'Erro ao carregar plano', returnLink: '/projeto_extensao' });
+  }
+}
+
+async function savePlano(req, res) {
+  try {
+    await projeto_extensaoModel.updatePlano(req.params.id, req.body);
+    req.session.flash = { type: 'success', message: 'Plano salvo com sucesso!' };
+    res.redirect('/projeto_extensao/' + req.params.id + '/plano');
+  } catch (error) {
+    console.error('Erro ao salvar plano:', error);
+    res.render('error', { message: 'Erro ao salvar plano', returnLink: '/projeto_extensao' });
+  }
+}
+
+async function showRelatorio(req, res) {
+  try {
+    const projeto = await projeto_extensaoModel.getProjetoCompletoById(req.params.id);
+    if (!projeto) return res.render('error', { message: 'Projeto não encontrado', returnLink: '/projeto_extensao' });
+    res.render('forms/relatorio_extensao', { projeto });
+  } catch (error) {
+    console.error('Erro ao carregar relatório:', error);
+    res.render('error', { message: 'Erro ao carregar relatório', returnLink: '/projeto_extensao' });
+  }
+}
+
+async function saveRelatorio(req, res) {
+  try {
+    await projeto_extensaoModel.updateRelatorio(req.params.id, req.body);
+    req.session.flash = { type: 'success', message: 'Relatório salvo com sucesso!' };
+    res.redirect('/projeto_extensao/' + req.params.id + '/relatorio');
+  } catch (error) {
+    console.error('Erro ao salvar relatório:', error);
+    res.render('error', { message: 'Erro ao salvar relatório', returnLink: '/projeto_extensao' });
+  }
+}
+
+async function gerarPdfPlano(req, res) {
+  try {
+    const projeto = await projeto_extensaoModel.getProjetoCompletoById(req.params.id);
+    if (!projeto) return res.status(404).send('Projeto não encontrado');
+    const fs = require('fs');
+    const path = require('path');
+    const logoPath = path.join(__dirname, '..', 'views', 'imagens', 'logo-unicet.png');
+    const logoBase64 = fs.readFileSync(logoPath).toString('base64');
+    const logoSrc = 'data:image/png;base64,' + logoBase64;
+    res.render('pdf/plano_pdf', { projeto, logoSrc });
+  } catch (error) {
+    console.error('Erro ao gerar PDF do plano:', error);
+    res.render('error', { message: 'Erro ao gerar PDF', returnLink: '/projeto_extensao/' + req.params.id + '/plano' });
+  }
+}
+
+async function gerarPdfRelatorio(req, res) {
+  try {
+    const projeto = await projeto_extensaoModel.getProjetoCompletoById(req.params.id);
+    if (!projeto) return res.status(404).send('Projeto não encontrado');
+    const fs = require('fs');
+    const path = require('path');
+    const logoPath = path.join(__dirname, '..', 'views', 'imagens', 'logo-unicet.png');
+    const logoBase64 = fs.readFileSync(logoPath).toString('base64');
+    const logoSrc = 'data:image/png;base64,' + logoBase64;
+    res.render('pdf/relatorio_pdf', { projeto, logoSrc });
+  } catch (error) {
+    console.error('Erro ao gerar PDF do relatório:', error);
+    res.render('error', { message: 'Erro ao gerar PDF', returnLink: '/projeto_extensao/' + req.params.id + '/relatorio' });
+  }
+}
+
+// ===== CRUD INLINE: CRONOGRAMA vinculado ao projeto =====
+function getRedirectUrl(req, id) {
+  const from = req.body.from || req.query.from || 'plano';
+  return from === 'relatorio'
+    ? '/projeto_extensao/' + id + '/relatorio'
+    : '/projeto_extensao/' + id + '/plano';
+}
+
+async function addCronogramaProjeto(req, res) {
+  try {
+    const id = req.params.id;
+    const proximoNumero = await cronogramaModel.getNextNumero(id);
+
+    await cronogramaModel.insertCronograma({
+      id_projeto: id,
+      numero: proximoNumero,
+      etapa: req.body.etapa,
+      data: req.body.data || null,
+      hora: req.body.hora || null,
+      local: req.body.local
+    });
+    res.redirect(getRedirectUrl(req, id));
+  } catch (error) {
+    console.error('Erro ao adicionar atividade ao projeto:', error);
+    res.render('error', { message: 'Erro ao adicionar atividade', returnLink: '/projeto_extensao/' + req.params.id + '/plano' });
+  }
+}
+
+async function deleteCronogramaProjeto(req, res) {
+  try {
+    const id = req.params.id;
+    await cronogramaModel.deleteCronograma(req.params.cronId);
+    res.redirect(getRedirectUrl(req, id));
+  } catch (error) {
+    console.error('Erro ao remover atividade:', error);
+    res.render('error', { message: 'Erro ao remover atividade', returnLink: '/projeto_extensao/' + req.params.id + '/plano' });
+  }
+}
+
+async function editCronogramaProjeto(req, res) {
+  try {
+    const id = req.params.id;
+    await cronogramaModel.updateCronograma(req.params.cronId, {
+      numero: req.body.numero,
+      etapa: req.body.etapa,
+      data: req.body.data || null,
+      hora: req.body.hora || null,
+      local: req.body.local
+    });
+    res.redirect(getRedirectUrl(req, id));
+  } catch (error) {
+    console.error('Erro ao editar atividade:', error);
+    res.render('error', { message: 'Erro ao editar atividade', returnLink: '/projeto_extensao/' + req.params.id + '/plano' });
+  }
+}
+
+// ===== CRUD INLINE: CUSTOS vinculados ao projeto =====
+async function addCustoProjeto(req, res) {
+  try {
+    const id = req.params.id;
+    await projeto_custoModel.insertprojeto_custo({
+      id_projeto: id,
+      descricao: req.body.descricao,
+      quantitativo: req.body.quantitativo,
+      valor_unitario: req.body.valor_unitario,
+      justificativa: req.body.justificativa,
+      realizado: req.body.realizado || null,
+      tipo: req.body.tipo || null,
+      fonte_recurso: req.body.fonte_recurso || null
+    });
+    res.redirect(getRedirectUrl(req, id));
+  } catch (error) {
+    console.error('Erro ao adicionar custo ao projeto:', error);
+    res.render('error', { message: 'Erro ao adicionar custo', returnLink: '/projeto_extensao/' + req.params.id + '/plano' });
+  }
+}
+
+async function deleteCustoProjeto(req, res) {
+  try {
+    const id = req.params.id;
+    await projeto_custoModel.deleteprojeto_custo(req.params.custoId);
+    res.redirect(getRedirectUrl(req, id));
+  } catch (error) {
+    console.error('Erro ao remover custo:', error);
+    res.render('error', { message: 'Erro ao remover custo', returnLink: '/projeto_extensao/' + req.params.id + '/plano' });
+  }
+}
+
+async function editCustoProjeto(req, res) {
+  try {
+    const id = req.params.id;
+    await projeto_custoModel.updateprojeto_custo(req.params.custoId, {
+      id_projeto: id,
+      descricao: req.body.descricao,
+      quantitativo: req.body.quantitativo,
+      valor_unitario: req.body.valor_unitario,
+      justificativa: req.body.justificativa,
+      realizado: req.body.realizado || null,
+      tipo: req.body.tipo || null,
+      fonte_recurso: req.body.fonte_recurso || null
+    });
+    res.redirect(getRedirectUrl(req, id));
+  } catch (error) {
+    console.error('Erro ao editar custo:', error);
+    res.render('error', { message: 'Erro ao editar custo', returnLink: '/projeto_extensao/' + req.params.id + '/plano' });
+  }
+}
+
+// ===== VINCULAR/DESVINCULAR: LOCAIS =====
+async function addLocalProjeto(req, res) {
+  try {
+    const id = req.params.id;
+    await projeto_extensaoModel.addLocalProjeto(id, {
+      endereco: req.body.endereco,
+      bairro: req.body.bairro,
+      cidade: req.body.cidade,
+      cep: req.body.cep
+    });
+    res.redirect(getRedirectUrl(req, id));
+  } catch (error) {
+    console.error('Erro ao adicionar local ao projeto:', error);
+    res.render('error', { message: 'Erro ao adicionar local', returnLink: '/projeto_extensao/' + req.params.id + '/plano' });
+  }
+}
+
+async function deleteLocalProjeto(req, res) {
+  try {
+    const id = req.params.id;
+    await projeto_extensaoModel.removeLocalProjeto(id, req.params.localId);
+    res.redirect(getRedirectUrl(req, id));
+  } catch (error) {
+    console.error('Erro ao desvincular local:', error);
+    res.render('error', { message: 'Erro ao remover local', returnLink: '/projeto_extensao/' + req.params.id + '/plano' });
+  }
+}
+
+// ===== VINCULAR/DESVINCULAR: INSTITUICOES =====
+async function addInstituicaoProjeto(req, res) {
+  try {
+    const id = req.params.id;
+    await projeto_extensaoModel.addInstituicaoProjeto(id, {
+      nome: req.body.nome,
+      sigla: req.body.sigla,
+      id_tipo_instituicao: req.body.id_tipo_instituicao
+    });
+    res.redirect(getRedirectUrl(req, id));
+  } catch (error) {
+    console.error('Erro ao adicionar instituicao ao projeto:', error);
+    res.render('error', { message: 'Erro ao adicionar instituicao', returnLink: '/projeto_extensao/' + req.params.id + '/plano' });
+  }
+}
+
+async function deleteInstituicaoProjeto(req, res) {
+  try {
+    const id = req.params.id;
+    await projeto_extensaoModel.removeInstituicaoProjeto(id, req.params.instId);
+    res.redirect(getRedirectUrl(req, id));
+  } catch (error) {
+    console.error('Erro ao desvincular instituicao:', error);
+    res.render('error', { message: 'Erro ao remover instituicao', returnLink: '/projeto_extensao/' + req.params.id + '/plano' });
+  }
+}
+
+// ===== MUDANÇA DE STATUS (WORKFLOW) =====
+const STATUS_TRANSITIONS = {
+  // perfil: { statusAtual: [statusPermitidos] }
+  professor: {
+    rascunho: ['em_avaliacao'],    // professor submete para análise
+  },
+  coordenador: {
+    em_avaliacao: ['aprovado', 'rejeitado'],  // coordenador aprova ou rejeita
+    aprovado: ['em_execucao'],                // coordenador inicia execução
+  },
+  admin: {
+    rascunho: ['em_avaliacao'],
+    em_avaliacao: ['aprovado', 'rejeitado'],
+    aprovado: ['em_execucao'],
+    rejeitado: ['rascunho'],
+    em_execucao: ['concluido'],
+    concluido: ['em_execucao'] // reabrir se necessário
+  }
+};
+
+async function changeStatus(req, res) {
+  try {
+    const { id } = req.params;
+    const { novo_status } = req.body;
+    const perfil = (req.session.tipo || 'professor').toLowerCase();
+
+    const projeto = await projeto_extensaoModel.getprojeto_extensaosById(id);
+    if (!projeto) {
+      return res.render('error', { message: 'Projeto não encontrado', returnLink: '/projeto_extensao' });
+    }
+
+    const statusAtual = projeto.status || 'rascunho';
+    const transicoes = STATUS_TRANSITIONS[perfil] || STATUS_TRANSITIONS.professor;
+    const permitidos = transicoes[statusAtual] || [];
+
+    if (!permitidos.includes(novo_status)) {
+      return res.render('error', {
+        message: `Transição de "${statusAtual}" para "${novo_status}" não permitida para o perfil "${perfil}".`,
+        returnLink: '/projeto_extensao'
+      });
+    }
+
+    await projeto_extensaoModel.updateStatus(id, novo_status);
+    const statusNomes = { em_avaliacao:'Em Avaliação', aprovado:'Aprovado', rejeitado:'Rejeitado', em_execucao:'Em Execução', concluido:'Concluído', rascunho:'Rascunho' };
+    req.session.flash = { type: 'success', message: 'Status alterado para "' + (statusNomes[novo_status] || novo_status) + '" com sucesso!' };
+    res.redirect('/projeto_extensao');
+  } catch (error) {
+    console.error('Erro ao alterar status:', error);
+    res.render('error', { message: 'Erro ao alterar status do projeto', returnLink: '/projeto_extensao' });
+  }
+}
+
+// ===== DASHBOARD COM KPIs =====
+async function showDashboard(req, res) {
+  try {
+    const stats = await projeto_extensaoModel.getDashboardStats();
+    res.render('dashboard', {
+      usuario: req.session.usuario,
+      tipo: req.session.tipo,
+      stats
+    });
+  } catch (error) {
+    console.error('Erro ao carregar dashboard:', error);
+    res.render('dashboard', {
+      usuario: req.session.usuario,
+      tipo: req.session.tipo,
+      stats: null
+    });
+  }
+}
+
+async function deleteAnexoProjeto(req, res) {
+  try {
+    const { id, anexoId } = req.params;
+
+    const anexo = await projeto_extensaoModel.getAnexoById(anexoId);
+
+    if (!anexo) {
+      return res.render('error', {
+        message: 'Anexo não encontrado',
+        returnLink: '/projeto_extensao/' + id + '/edit'
+      });
+    }
+
+    const caminhoFisico = path.join(
+      __dirname,
+      '..',
+      'public',
+      anexo.caminho_arquivo.replace(/^\/+/, '')
+    );
+
+    if (fs.existsSync(caminhoFisico)) {
+      fs.unlinkSync(caminhoFisico);
+    }
+
+    await projeto_extensaoModel.deleteAnexoById(anexoId);
+
+    req.session.flash = { type: 'success', message: 'Anexo removido com sucesso!' };
+
+    const destino = req.body.from === 'plano'
+      ? '/projeto_extensao/' + id + '/plano'
+      : '/projeto_extensao/' + id + '/edit';
+
+    res.redirect(destino);
+  } catch (error) {
+    console.error('Erro ao remover anexo:', error);
+    res.render('error', {
+      message: 'Erro ao remover anexo',
+      returnLink: '/projeto_extensao/' + req.params.id + '/edit'
+    });
+  }
+}
+
+module.exports = {
+  listprojeto_extensaos,
+  filterprojeto_extensao,
+  showCreateForm,
+  addprojeto_extensao,
+  showprojeto_extensao,
+  showEditForm,
+  editprojeto_extensao,
+  showConfirmDeleteForm,
+  deleteprojeto_extensao,
+  showPlano,
+  savePlano,
+  showRelatorio,
+  saveRelatorio,
+  gerarPdfPlano,
+  gerarPdfRelatorio,
+  addCronogramaProjeto,
+  deleteCronogramaProjeto,
+  editCronogramaProjeto,
+  addCustoProjeto,
+  deleteCustoProjeto,
+  editCustoProjeto,
+  addLocalProjeto,
+  deleteLocalProjeto,
+  addInstituicaoProjeto,
+  deleteInstituicaoProjeto,
+  changeStatus,
+  showDashboard,
+  deleteAnexoProjeto
+};

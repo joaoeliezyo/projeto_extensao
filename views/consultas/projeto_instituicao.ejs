@@ -1,0 +1,30 @@
+<%- include('../cabecalho', { titulo: 'Projeto - Instituicao' }) %>
+
+<main id="conteudo-principal-form" class="container my-5">
+  <section class="card shadow p-4 p-md-5">
+    <h1 class="fs-4 fw-bold mb-4 border-bottom pb-3">Projeto - Instituicao</h1>
+
+    <div class="d-flex justify-content-between align-items-center mb-3">
+      <span class="fw-semibold">Inserir novo registro</span>
+      <a href="/projeto_instituicao/forms/projeto_instituicao" class="btn btn-primary btn-sm">Nova Instituicao</a>
+    </div>
+
+    <div id="form-feedback-message" class="alert d-none" role="alert"></div>
+
+    <table class="table table-bordered table-hover">
+      <thead class="table-light">
+        <tr><th>id_projeto</th><th>id_instituicao</th></tr>
+      </thead>
+      <tbody>
+        <% dados.forEach(d => { %>
+        <tr>
+          <td><%= d.id_projeto %></td>
+          <td><%= d.id_instituicao %></td>
+        </tr>
+        <% }) %>
+      </tbody>
+    </table>
+  </section>
+</main>
+
+<%- include('../rodape') %>
