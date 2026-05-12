@@ -61,5 +61,39 @@ Sempre que uma nova funcionalidade exigir uma nova coluna no banco de dados, voc
 
 ---
 
+## 🔄 Fluxo de Aprovação (Workflow)
+
+O sistema implementa um controle de estados para os projetos, garantindo que passem pelas etapas corretas de avaliação e execução:
+
+1.  **Rascunho**: Estado inicial onde o professor edita as informações.
+2.  **Em Avaliação**: O projeto é enviado para a coordenação para análise técnica.
+3.  **Aprovado / Rejeitado**: O coordenador decide se o projeto segue para execução ou precisa de ajustes (retorno ao rascunho).
+4.  **Em Execução**: Projetos aprovados que estão com atividades em andamento.
+5.  **Concluído**: Finalização do ciclo de vida do projeto e entrega do relatório final.
+
+### Transições por Perfil:
+- **Professor**: Pode mover de `Rascunho` para `Em Avaliação`.
+- **Coordenador**: Pode mover de `Em Avaliação` para `Aprovado/Rejeitado` e de `Aprovado` para `Em Execução`.
+- **Admin**: Possui controle total sobre todas as transições de status.
+
+---
+
+## 📈 Dashboard e Relatórios Digitais
+
+### 📊 Painel de Controle (KPIs)
+O Dashboard (`/logo`) exibe estatísticas vitais para a gestão institucional:
+- Total de projetos ativos e concluídos.
+- Contagem de pessoas (professores, alunos e externos) vinculadas aos projetos.
+- Métricas de impacto e alcance por público-alvo.
+
+### 📄 Documentos com Assinatura Digital
+O sistema gera dois documentos fundamentais em formato PDF:
+- **Plano de Extensão**: Gerado durante a fase de planejamento.
+- **Relatório Final**: Consolidado após a conclusão das atividades.
+
+**Importante:** Ambos os documentos são renderizados com um layout que inclui blocos de assinatura padronizados, compatíveis com softwares de assinatura digital (como o Verificador do ITI), facilitando a tramitação digital sem necessidade de impressão.
+
+---
+
 **Última Atualização:** Maio de 2026
 **Status do Projeto:** ✅ Estável e Documentado
