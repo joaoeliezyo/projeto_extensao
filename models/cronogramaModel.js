@@ -121,5 +121,6 @@ module.exports = {
   insertCronograma,
   updateCronograma,
   filterCronograma,
+  deleteCronograma,
   getNextNumero,
 };

@@ -10,6 +10,7 @@ async function login(req, res) {
       req.session.usuario = user.usuario;
       req.session.tipo = user.tipo;
       req.session.id_usuario = user.id_usuario;
+      req.session.id_pessoa = user.id_pessoa;
       res.redirect('/logo');
     } else {
       res.redirect('/login?erro=Credenciais inválidas');

@@ -5,7 +5,9 @@ const projeto_extensaoModel = require('../models/projeto_extensaoModel');
 const parseNumber = (value, allowFloat = false) => {
  const isEmpty = value === undefined || value === null || value === '';
  if (isEmpty) return null;
- const normalized = String(value).replace(',', '.');
+ const normalized = allowFloat
+   ? String(value).replace(/\./g, '').replace(',', '.')
+   : String(value).replace(',', '.');
  const num = allowFloat ? parseFloat(normalized) : parseInt(normalized, 10);
  return Number.isFinite(num) ? num : null;
 };

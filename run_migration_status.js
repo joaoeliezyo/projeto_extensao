@@ -36,6 +36,16 @@ async function runMigration(poolOrConfig) {
     `ALTER TABLE projeto_extensao ADD COLUMN ods TEXT NULL`,
     `ALTER TABLE projeto_extensao ADD COLUMN observacao_final TEXT NULL`,
     `ALTER TABLE projeto_extensao ADD COLUMN anexos TEXT NULL`,
+    `CREATE TABLE IF NOT EXISTS \`projeto_assinatura\` (
+      \`id\` INT AUTO_INCREMENT PRIMARY KEY,
+      \`id_projeto\` INT NOT NULL,
+      \`id_pessoa\` INT NOT NULL,
+      \`Assinatura\` VARCHAR(500) NOT NULL,
+      \`data_hora\` DATETIME DEFAULT CURRENT_TIMESTAMP,
+      \`ordem\` INT NULL,
+      CONSTRAINT \`fk_pa_projeto\` FOREIGN KEY (\`id_projeto\`) REFERENCES \`projeto_extensao\` (\`id_projeto\`) ON DELETE CASCADE,
+      CONSTRAINT \`fk_pa_pessoa\` FOREIGN KEY (\`id_pessoa\`) REFERENCES \`pessoa\` (\`id_pessoa\`) ON DELETE CASCADE
+    ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;`
   ];
 
   for (const q of queries) {

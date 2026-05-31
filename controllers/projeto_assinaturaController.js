@@ -27,7 +27,7 @@ async function filterprojeto_assinatura(req, res) {
 }
 
 async function addprojeto_assinatura(req, res) {
-  const id_pessoa = req.id_pessoa ?? req.body.id_pessoa ?? null;
+  const id_pessoa = req.id_pessoa ?? req.session?.id_pessoa ?? req.body.id_pessoa ?? null;
   try {
     await projeto_assinaturaModel.insertProjeto_assinatura(
       req.body,
@@ -123,20 +123,48 @@ async function showAssinar(req, res) {
 
 async function assinarProjeto(req, res) {
   const id_projeto = req.params.id_projeto;
-  const id_pessoa = req.id_pessoa ?? null;
+  let id_pessoa = req.id_pessoa ?? req.session?.id_pessoa ?? null;
+
+  // Fallback: se estiver autenticado mas a session não tiver id_pessoa, buscar no banco
+  if (!id_pessoa && req.session?.usuario) {
+    try {
+      const pool = require('../db');
+      const [userRows] = await pool.query('SELECT id_pessoa FROM usuario WHERE usuario = ?', [req.session.usuario]);
+      if (userRows.length > 0 && userRows[0].id_pessoa) {
+        id_pessoa = userRows[0].id_pessoa;
+        req.session.id_pessoa = id_pessoa;
+      }
+    } catch (e) {
+      console.warn('Erro ao recuperar id_pessoa do banco:', e);
+    }
+  }
+
   try {
     if (!id_pessoa) {
-      return res.render('error', { message: 'Sessao invalida: id_pessoa nao encontrado. Faca login novamente.', returnLink: '/login' });
+      req.session.flash = {
+        type: 'error',
+        message: 'Acesso inválido: Seu usuário não está vinculado a nenhuma Pessoa cadastrada. Por favor, vincule seu usuário nas configurações.'
+      };
+      return res.redirect(`/projeto_assinatura/${id_projeto}/assinar`);
     }
 
     await projeto_assinaturaModel.insertProjeto_assinatura(
       { id_projeto, ordem: null },
       { id_pessoa }
     );
+
+    req.session.flash = {
+      type: 'success',
+      message: 'Projeto assinado com sucesso!'
+    };
     res.redirect(`/projeto_assinatura/${id_projeto}/assinar`);
   } catch (error) {
     console.error('Erro ao assinar projeto:', error);
-    res.render('error', { message: 'Erro ao assinar projeto', returnLink: '/projeto_extensao' });
+    req.session.flash = {
+      type: 'error',
+      message: 'Erro ao assinar projeto. Tente novamente.'
+    };
+    res.redirect(`/projeto_assinatura/${id_projeto}/assinar`);
   }
 }
 

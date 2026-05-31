@@ -423,3 +423,271 @@ function removerAnexoSalvo(idProjeto, idAnexo, from) {
   document.body.appendChild(form);
   form.submit();
 }
+
+function editarLocal(id, endereco, bairro, cidade, cep) {
+  const div = document.getElementById('form-add-local');
+  const form = div.querySelector('form');
+  div.style.display = 'block';
+  form.action = form.action.replace(/\/local(\/.*)?$/, '') + '/local/' + id + '/edit';
+  form.querySelector('[name="endereco"]').value = endereco;
+  form.querySelector('[name="bairro"]').value = bairro;
+  form.querySelector('[name="cidade"]').value = cidade;
+  form.querySelector('[name="cep"]').value = cep;
+  form.querySelector('button[type="submit"]').innerHTML = '<i class="bi bi-check-lg"></i> Salvar Alterações';
+  div.scrollIntoView({ behavior: 'smooth' });
+}
+
+function editarInstituicao(id, nome, sigla, id_tipo) {
+  const div = document.getElementById('form-add-inst');
+  const form = div.querySelector('form');
+  div.style.display = 'block';
+  form.action = form.action.replace(/\/instituicao(\/.*)?$/, '') + '/instituicao/' + id + '/edit';
+  form.querySelector('[name="nome"]').value = nome;
+  form.querySelector('[name="sigla"]').value = sigla;
+  form.querySelector('[name="id_tipo_instituicao"]').value = id_tipo;
+  form.querySelector('button[type="submit"]').innerHTML = '<i class="bi bi-check-lg"></i> Salvar Alterações';
+  div.scrollIntoView({ behavior: 'smooth' });
+}
+
+function editarCronograma(id, etapa, data, hora, local) {
+  const div = document.getElementById('form-add-cronograma');
+  const form = div.querySelector('form');
+  div.style.display = 'block';
+  form.action = form.action.replace(/\/cronograma(\/.*)?$/, '') + '/cronograma/' + id + '/edit';
+  form.querySelector('[name="etapa"]').value = etapa;
+  // Format date to yyyy-mm-dd
+  if (data) {
+    const d = new Date(data);
+    if (!isNaN(d.getTime())) {
+      form.querySelector('[name="data"]').value = d.toISOString().split('T')[0];
+    }
+  }
+  form.querySelector('[name="hora"]').value = hora;
+  form.querySelector('[name="local"]').value = local;
+  form.querySelector('button[type="submit"]').innerHTML = '<i class="bi bi-check-lg"></i> Salvar Alterações';
+  div.scrollIntoView({ behavior: 'smooth' });
+}
+
+function formatBR(valor) {
+  const num = Number(valor);
+  if (Number.isNaN(num)) return valor ?? '';
+  return num.toLocaleString('pt-BR', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+}
+
+function editarCusto(id, descricao, qtd, unit, just) {
+  const div = document.getElementById('form-add-custo');
+  const form = div.querySelector('form');
+  div.style.display = 'block';
+  form.action = form.action.replace(/\/custo(\/.*)?$/, '') + '/custo/' + id + '/edit';
+  form.querySelector('[name="descricao"]').value = descricao;
+  form.querySelector('[name="quantitativo"]').value = qtd;
+  form.querySelector('[name="valor_unitario"]').value = formatBR(unit);
+  form.querySelector('[name="justificativa"]').value = just;
+  form.querySelector('button[type="submit"]').innerHTML = '<i class="bi bi-check-lg"></i> Salvar Alterações';
+  div.scrollIntoView({ behavior: 'smooth' });
+}
+
+function aplicarMascaraValorUnitario(input) {
+  let value = input.value.replace(/\D/g, '');
+  if (!value) {
+    input.value = '';
+    return;
+  }
+  let numberValue = parseFloat(value) / 100;
+  input.value = numberValue.toLocaleString('pt-BR', {
+    minimumFractionDigits: 2,
+    maximumFractionDigits: 2
+  });
+}
+
+window.editarLocal = editarLocal;
+window.editarInstituicao = editarInstituicao;
+window.editarCronograma = editarCronograma;
+window.editarCusto = editarCusto;
+window.aplicarMascaraValorUnitario = aplicarMascaraValorUnitario;
+
+// --- AJAX Form Submission & Scroll Restoration ---
+// 1. Fallback Scroll Restoration (for manual reloads or fallback navigations)
+function salvarPosicaoScroll() {
+  if (window.location.pathname.endsWith('/plano')) {
+    sessionStorage.setItem('scroll_position_' + window.location.pathname, window.scrollY);
+  }
+}
+window.addEventListener('beforeunload', salvarPosicaoScroll);
+
+document.addEventListener('DOMContentLoaded', function () {
+  if (window.location.pathname.endsWith('/plano')) {
+    const key = 'scroll_position_' + window.location.pathname;
+    const savedScroll = sessionStorage.getItem(key);
+    if (savedScroll !== null) {
+      window.scrollTo(0, parseFloat(savedScroll));
+      setTimeout(() => {
+        window.scrollTo(0, parseFloat(savedScroll));
+        sessionStorage.removeItem(key);
+      }, 10);
+    }
+  }
+});
+
+// 2. Seamless AJAX Submissions (zeros full page reloads for dynamic updates)
+function showDynamicAlert(message, type = 'success') {
+  const oldAlert = document.getElementById('floating-alert-container');
+  if (oldAlert) {
+    oldAlert.remove();
+  }
+  
+  const wrapper = document.createElement('div');
+  wrapper.id = 'floating-alert-container';
+  wrapper.className = `alert alert-${type === 'error' ? 'danger' : type} alert-dismissible fade show d-flex align-items-center mb-0`;
+  
+  wrapper.style.position = 'fixed';
+  wrapper.style.top = '24px';
+  wrapper.style.right = '24px';
+  wrapper.style.zIndex = '99999';
+  wrapper.style.minWidth = '300px';
+  wrapper.style.maxWidth = '450px';
+  wrapper.style.boxShadow = '0 0.5rem 1rem rgba(0, 0, 0, 0.15)';
+  wrapper.style.borderRadius = '8px';
+  wrapper.style.fontSize = '0.85rem';
+  wrapper.style.padding = '12px 20px';
+  
+  const borderColor = (type === 'danger' || type === 'error') ? '#842029' : '#1c6e36';
+  wrapper.style.border = `1.5px solid ${borderColor}`;
+  
+  wrapper.style.transition = 'all 0.35s cubic-bezier(0.175, 0.885, 0.32, 1.275)';
+  
+  const icon = type === 'danger' ? 'bi-exclamation-triangle' : 'bi-check-circle';
+  
+  wrapper.innerHTML = `
+    <i class="bi ${icon} me-2" style="font-size: 1.1rem; flex-shrink: 0;"></i>
+    <span style="flex-grow: 1; padding-right: 12px;">${message}</span>
+    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close" style="font-size:0.65rem; margin-top: -2px;"></button>
+  `;
+  
+  document.body.appendChild(wrapper);
+  
+  // Slide in from right micro-animation
+  wrapper.style.transform = 'translateX(120%)';
+  wrapper.style.opacity = '0';
+  wrapper.offsetHeight; // force reflow
+  wrapper.style.transform = 'translateX(0)';
+  wrapper.style.opacity = '1';
+  
+  wrapper.addEventListener('closed.bs.alert', () => {
+    wrapper.remove();
+  });
+  
+  setTimeout(function() {
+    wrapper.style.transition = 'all 0.3s ease';
+    wrapper.style.transform = 'translateX(120%)';
+    wrapper.style.opacity = '0';
+    setTimeout(() => {
+      wrapper.remove();
+    }, 300);
+  }, 4000);
+}
+
+function getSuccessMessage(action, form) {
+  const url = action.toLowerCase();
+  
+  if (url.includes('/delete')) {
+    return 'Registro excluído com sucesso!';
+  }
+  
+  if (url.includes('/local')) {
+    return 'Local de execução salvo com sucesso!';
+  }
+  
+  if (url.includes('/instituicao')) {
+    return 'Instituição parceira salva com sucesso!';
+  }
+  
+  if (url.includes('/cronograma')) {
+    return 'Atividade do cronograma salva com sucesso!';
+  }
+  
+  if (url.includes('/custo')) {
+    return 'Custo do projeto salvo com sucesso!';
+  }
+  
+  if (url.includes('/plano')) {
+    return 'Alterações do plano de extensão salvas com sucesso!';
+  }
+  
+  return 'Alterações salvas com sucesso!';
+}
+
+document.addEventListener('submit', async function(e) {
+  const form = e.target;
+  
+  if (window.location.pathname.endsWith('/plano')) {
+    if (form.getAttribute('target') === '_blank') return;
+    
+    e.preventDefault();
+    
+    const submitBtn = form.querySelector('button[type="submit"]');
+    const originalBtnHTML = submitBtn ? submitBtn.innerHTML : '';
+    if (submitBtn) {
+      submitBtn.disabled = true;
+      submitBtn.innerHTML = '<span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span> Salvando...';
+    }
+    
+    try {
+      let body;
+      let headers = {};
+      
+      if (form.enctype === 'multipart/form-data') {
+        body = new FormData(form);
+      } else {
+        body = new URLSearchParams(new FormData(form));
+        headers['Content-Type'] = 'application/x-www-form-urlencoded';
+      }
+      
+      const response = await fetch(form.action || window.location.href, {
+        method: form.method || 'POST',
+        headers: headers,
+        body: body
+      });
+      
+      if (response.ok) {
+        const responseHTML = await response.text();
+        const parser = new DOMParser();
+        const newDoc = parser.parseFromString(responseHTML, 'text/html');
+        
+        const currentMain = document.querySelector('main');
+        const newMain = newDoc.querySelector('main');
+        if (currentMain && newMain) {
+          const scrollY = window.scrollY;
+          currentMain.innerHTML = newMain.innerHTML;
+          window.scrollTo(0, scrollY);
+          
+          // Check if there is a flash alert in the newly rendered HTML
+          let message = '';
+          const newAlert = newDoc.querySelector('.alert-dismissible');
+          if (newAlert) {
+            const textSpan = newAlert.querySelector('span');
+            message = textSpan ? textSpan.textContent.trim() : newAlert.textContent.replace('×', '').trim();
+          } else {
+            message = getSuccessMessage(form.action || window.location.href, form);
+          }
+          
+          showDynamicAlert(message, 'success');
+        }
+      } else {
+        console.error('Error on submit:', response.statusText);
+        showDynamicAlert('Ocorreu um erro ao salvar as alterações.', 'danger');
+        if (submitBtn) {
+          submitBtn.disabled = false;
+          submitBtn.innerHTML = originalBtnHTML;
+        }
+      }
+    } catch (err) {
+      console.error('Fetch error:', err);
+      showDynamicAlert('Erro de conexão com o servidor.', 'danger');
+      if (submitBtn) {
+        submitBtn.disabled = false;
+        submitBtn.innerHTML = originalBtnHTML;
+      }
+    }
+  }
+});

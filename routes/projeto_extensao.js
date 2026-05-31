@@ -33,10 +33,12 @@ router.post('/:id/custo/:custoId/edit', projeto_extensaoController.editCustoProj
 // Vincular/Desvincular: Locais
 router.post('/:id/local', projeto_extensaoController.addLocalProjeto);
 router.post('/:id/local/:localId/delete', projeto_extensaoController.deleteLocalProjeto);
+router.post('/:id/local/:localId/edit', projeto_extensaoController.editLocalProjeto);
 
 // Vincular/Desvincular: Instituicoes
 router.post('/:id/instituicao', projeto_extensaoController.addInstituicaoProjeto);
 router.post('/:id/instituicao/:instId/delete', projeto_extensaoController.deleteInstituicaoProjeto);
+router.post('/:id/instituicao/:instId/edit', projeto_extensaoController.editInstituicaoProjeto);
 
 // Mudança de status (workflow)
 router.post('/:id/status', projeto_extensaoController.changeStatus);
@@ -81,6 +83,7 @@ router.get('/:id/edit', projeto_extensaoController.showEditForm);
 // Excluir
 router.get('/:id/confirm-delete', projeto_extensaoController.showConfirmDeleteForm);
 router.get('/:id/delete', projeto_extensaoController.deleteprojeto_extensao);
+router.post('/:id/delete', projeto_extensaoController.deleteprojeto_extensao);
 
 router.post(
   '/cadastrar',

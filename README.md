@@ -111,3 +111,8 @@ Desenvolvido para **UNI•CET 2025** como projeto educacional de extensão.
 
 **Status:** ✅ Projeto 100% Funcional e Documentado
 **Última atualização:** Maio de 2026
+
+## As implementações
+
+Foram adicionadas as melhoras: adição da api do correios que busca o enderenços pelo cep, a padronizção dos botõe de editar e exclusão e a implemntação da assinatura digital no pdf.
+

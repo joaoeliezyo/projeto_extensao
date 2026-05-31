@@ -149,9 +149,22 @@
     
     if(!inputQtd || !inputUnitario || !inputTotal) return;
 
+    function aplicarMascaraValorUnitario(input) {
+      let value = input.value.replace(/\D/g, '');
+      if (!value) {
+        input.value = '';
+        return;
+      }
+      let numberValue = parseFloat(value) / 100;
+      input.value = numberValue.toLocaleString('pt-BR', {
+        minimumFractionDigits: 2,
+        maximumFractionDigits: 2
+      });
+    }
+
     function calcularTotal() {
       const qtdText = inputQtd.value.replace(',', '.');
-      const unitarioText = inputUnitario.value.replace(/\\./g, '').replace(',', '.');
+      const unitarioText = inputUnitario.value.replace(/\./g, '').replace(',', '.');
       
       const qtd = parseFloat(qtdText) || 0;
       const unitario = parseFloat(unitarioText) || 0;
@@ -162,7 +175,10 @@
     }
 
     inputQtd.addEventListener('input', calcularTotal);
-    inputUnitario.addEventListener('input', calcularTotal);
+    inputUnitario.addEventListener('input', function() {
+      aplicarMascaraValorUnitario(this);
+      calcularTotal();
+    });
     
     // Initial calculation on load
     calcularTotal();

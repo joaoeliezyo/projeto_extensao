@@ -72,12 +72,18 @@
 
             <td><%= mostrarSomentePrimeiraData ? (idx === 0 ? formatDataHora(primeiraDataAssinatura) : '') : formatDataHora(d.data_hora) %></td> -->
                                 <!--     <td><%= d.ordem %></td>  -->
-                                <td class="d-flex gap-2">
-                                  <!--     <a href="/projeto_assinatura/<%= d.id %>/edit" class="btn btn-primary btn-sm">Editar</a> -->
+                                <td class="d-flex gap-1">
                                   <% if (idPessoaSessao !==null && Number(d.id_pessoa)===idPessoaSessao) { %>
+                                    <a href="/projeto_assinatura/<%= d.id %>/edit"
+                                      class="btn btn-sm btn-outline-secondary"
+                                      style="font-size:0.75rem; padding:2px 5px" title="Editar"><i
+                                        class="bi bi-pencil"></i></a>
                                     <form method="POST" action="/projeto_assinatura/<%= d.id %>/delete"
+                                      style="display:inline"
                                       onsubmit="return confirm('Deseja realmente excluir esta assinatura?');">
-                                      <button type="submit" class="btn btn-danger btn-sm">Excluir</button>
+                                      <button type="submit" class="btn btn-sm btn-outline-danger"
+                                        style="font-size:0.75rem; padding:2px 5px" title="Excluir"><i
+                                          class="bi bi-trash"></i></button>
                                     </form>
                                     <% } else { %> - <% } %>
                                 </td>
@@ -86,9 +92,9 @@
                           </tbody>
                         </table>
                       </div>
-                      <div>
-                        <!-- <button type="button" class="btn btn-danger btn-sm">Sair</button> -->
-                        <a href="/projeto_extensao/" class="btn btn-danger">Voltar</a>
+                      <div class="mt-3">
+                        <a href="/projeto_extensao" class="btn btn-secondary btn-sm"><i class="bi bi-arrow-left"></i>
+                          Voltar</a>
                       </div>
                 </section>
               </main>

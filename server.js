@@ -34,6 +34,7 @@ app.use((req, res, next) => {
 app.use((req, res, next) => {
   res.locals.sessionUsuario = req.session ? req.session.usuario : null;
   res.locals.sessionTipo = req.session ? req.session.tipo : null;
+  res.locals.id_pessoa = req.session ? req.session.id_pessoa : null;
   res.locals.currentPath = req.path;
   next();
 });

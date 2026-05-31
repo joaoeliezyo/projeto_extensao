@@ -133,20 +133,34 @@
               <td><%= loc.endereco || '' %></td>
               <td><%= loc.bairro || '' %></td>
               <td><%= loc.cidade || '' %></td>
-              <td>
+              <td class="d-flex gap-1">
+                <button
+                  type="button"
+                  class="btn btn-sm btn-outline-secondary"
+                  style="font-size: 0.75rem; padding: 2px 5px"
+                  title="Editar"
+                  data-id="<%= loc.id_local %>"
+                  data-endereco="<%= loc.endereco || '' %>"
+                  data-bairro="<%= loc.bairro || '' %>"
+                  data-cidade="<%= loc.cidade || '' %>"
+                  data-cep="<%= loc.cep || '' %>"
+                  onclick="editarLocal(this.dataset.id, this.dataset.endereco, this.dataset.bairro, this.dataset.cidade, this.dataset.cep)"
+                >
+                  <i class="bi bi-pencil"></i>
+                </button>
                 <form
                   method="POST"
                   action="/projeto_extensao/<%= p.id_projeto %>/local/<%= loc.id_local %>/delete"
-                  onsubmit="return confirm('Desvincular este local do projeto?')"
+                  onsubmit="return confirm('Excluir este local?')"
                 >
                   <input type="hidden" name="from" value="plano" />
                   <button
                     type="submit"
                     class="btn btn-sm btn-outline-danger"
-                    style="font-size: 0.625rem; padding: 1px 4px"
-                    title="Desvincular"
+                    style="font-size: 0.75rem; padding: 2px 5px"
+                    title="Excluir"
                   >
-                    <i class="bi bi-x-lg"></i>
+                    <i class="bi bi-trash"></i>
                   </button>
                 </form>
               </td>
@@ -169,7 +183,15 @@
             class="row g-2 align-items-end"
           >
             <input type="hidden" name="from" value="plano" />
-            <div class="col-md-4">
+            <div class="col-md-2">
+              <input
+                name="cep"
+                class="form-control form-control-sm"
+                placeholder="CEP"
+                style="font-size: 0.75rem"
+              />
+            </div>
+            <div class="col-md-3">
               <input
                 name="endereco"
                 class="form-control form-control-sm"
@@ -195,21 +217,13 @@
               />
             </div>
             <div class="col-md-2">
-              <input
-                name="cep"
-                class="form-control form-control-sm"
-                placeholder="CEP"
-                style="font-size: 0.75rem"
-              />
-            </div>
-            <div class="col-md-1">
-              <button
-                type="submit"
-                class="btn btn-sm btn-primary"
-                style="font-size: 0.688rem"
-              >
-                <i class="bi bi-check-lg"></i>
-              </button>
+                <button
+                  type="submit"
+                  class="btn btn-sm btn-primary w-100"
+                  style="font-size: 0.688rem"
+                >
+                  <i class="bi bi-check-lg"></i> Salvar
+                </button>
             </div>
           </form>
         </div>
@@ -249,20 +263,29 @@
               <td><%= inst.nome || '' %></td>
               <td><%= inst.sigla || '' %></td>
               <td><%= inst.tipo || '' %></td>
-              <td>
+              <td class="d-flex gap-1">
+                <button
+                  type="button"
+                  class="btn btn-sm btn-outline-secondary"
+                  style="font-size: 0.75rem; padding: 2px 5px"
+                  title="Editar"
+                  onclick="editarInstituicao('<%= inst.id_instituicao %>', '<%= inst.nome %>', '<%= inst.sigla %>', '<%= inst.id_tipo_instituicao %>')"
+                >
+                  <i class="bi bi-pencil"></i>
+                </button>
                 <form
                   method="POST"
                   action="/projeto_extensao/<%= p.id_projeto %>/instituicao/<%= inst.id_instituicao %>/delete"
-                  onsubmit="return confirm('Desvincular esta instituição do projeto?')"
+                  onsubmit="return confirm('Excluir esta instituição?')"
                 >
                   <input type="hidden" name="from" value="plano" />
                   <button
                     type="submit"
                     class="btn btn-sm btn-outline-danger"
-                    style="font-size: 0.625rem; padding: 1px 4px"
-                    title="Desvincular"
+                    style="font-size: 0.75rem; padding: 2px 5px"
+                    title="Excluir"
                   >
-                    <i class="bi bi-x-lg"></i>
+                    <i class="bi bi-trash"></i>
                   </button>
                 </form>
               </td>
@@ -294,7 +317,7 @@
                 style="font-size: 0.75rem"
               />
             </div>
-            <div class="col-md-3">
+            <div class="col-md-2">
               <input
                 name="sigla"
                 class="form-control form-control-sm"
@@ -317,14 +340,14 @@
                 <% }) %>
               </select>
             </div>
-            <div class="col-md-1">
-              <button
-                type="submit"
-                class="btn btn-sm btn-primary"
-                style="font-size: 0.688rem"
-              >
-                <i class="bi bi-check-lg"></i>
-              </button>
+            <div class="col-md-2">
+                <button
+                  type="submit"
+                  class="btn btn-sm btn-primary w-100"
+                  style="font-size: 0.688rem"
+                >
+                  <i class="bi bi-check-lg"></i> Salvar
+                </button>
             </div>
           </form>
         </div>
@@ -418,7 +441,16 @@
             <td><%= formatDate(c.data) %></td>
             <td><%= c.hora || '' %></td>
             <td><%= c.local || '' %></td>
-            <td>
+            <td class="d-flex gap-1">
+              <button
+                type="button"
+                class="btn btn-sm btn-outline-secondary"
+                style="font-size: 0.75rem; padding: 2px 5px"
+                title="Editar"
+                onclick="editarCronograma('<%= c.id %>', '<%= c.etapa %>', '<%= c.data %>', '<%= c.hora %>', '<%= c.local %>')"
+              >
+                <i class="bi bi-pencil"></i>
+              </button>
               <form
                 method="POST"
                 action="/projeto_extensao/<%= p.id_projeto %>/cronograma/<%= c.id %>/delete"
@@ -428,7 +460,7 @@
                 <button
                   type="submit"
                   class="btn btn-sm btn-outline-danger"
-                  style="font-size: 0.625rem; padding: 1px 4px"
+                  style="font-size: 0.75rem; padding: 2px 5px"
                   title="Excluir"
                 >
                   <i class="bi bi-trash"></i>
@@ -491,7 +523,7 @@
               style="font-size: 0.75rem"
             />
           </div>
-          <div class="col-md-3">
+          <div class="col-md-2">
             <label class="form-label" style="font-size: 0.688rem">Local</label
             ><input
               name="local"
@@ -500,10 +532,10 @@
               style="font-size: 0.75rem"
             />
           </div>
-          <div class="col-md-1">
+          <div class="col-md-2">
             <button
               type="submit"
-              class="btn btn-sm btn-primary"
+              class="btn btn-sm btn-primary w-100"
               style="font-size: 0.688rem"
             >
               <i class="bi bi-check-lg"></i> Salvar
@@ -550,7 +582,16 @@
             <td>R$ <%= formatBR(cu.valor_unitario) %></td>
             <td>R$ <%= formatBR(vt) %></td>
             <td><%= cu.justificativa || '' %></td>
-            <td>
+            <td class="d-flex gap-1">
+              <button
+                type="button"
+                class="btn btn-sm btn-outline-secondary"
+                style="font-size: 0.75rem; padding: 2px 5px"
+                title="Editar"
+                onclick="editarCusto('<%= cu.Id %>', '<%= cu.descricao %>', '<%= cu.quantitativo %>', '<%= cu.valor_unitario %>', '<%= cu.justificativa %>')"
+              >
+                <i class="bi bi-pencil"></i>
+              </button>
               <form
                 method="POST"
                 action="/projeto_extensao/<%= p.id_projeto %>/custo/<%= cu.Id %>/delete"
@@ -560,7 +601,7 @@
                 <button
                   type="submit"
                   class="btn btn-sm btn-outline-danger"
-                  style="font-size: 0.625rem; padding: 1px 4px"
+                  style="font-size: 0.75rem; padding: 2px 5px"
                   title="Excluir"
                 >
                   <i class="bi bi-trash"></i>
@@ -629,12 +670,12 @@
               >Valor Unitário</label
             ><input
               name="valor_unitario"
-              type="number"
-              step="0.01"
+              type="text"
               class="form-control form-control-sm"
-              placeholder="0.00"
+              placeholder="0,00"
               required
               style="font-size: 0.75rem"
+              oninput="aplicarMascaraValorUnitario(this)"
             />
           </div>
           <div class="col-md-3">
@@ -650,7 +691,7 @@
           <div class="col-md-2">
             <button
               type="submit"
-              class="btn btn-sm btn-primary"
+              class="btn btn-sm btn-primary w-100"
               style="font-size: 0.688rem"
             >
               <i class="bi bi-check-lg"></i> Salvar

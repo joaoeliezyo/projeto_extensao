@@ -55,8 +55,10 @@
                 <td><span class="badge bg-info"><%= d.tipo || '-' %></span></td>
                 <td>
                   <div class="cfg-actions">
-                    <a href="/instituicao/<%= d.id_instituicao %>/edit" class="btn btn-sm btn-outline-secondary" title="Editar"><i class="bi bi-pencil"></i></a>
-                    <a href="/instituicao/<%= d.id_instituicao %>/delete" class="btn btn-sm btn-outline-danger" title="Excluir" onclick="return confirm('Excluir esta instituição?')"><i class="bi bi-trash"></i></a>
+                    <a href="/instituicao/<%= d.id_instituicao %>/edit" class="btn btn-sm btn-outline-secondary" style="font-size:0.75rem; padding:2px 5px" title="Editar"><i class="bi bi-pencil"></i></a>
+                    <form method="POST" action="/instituicao/<%= d.id_instituicao %>/delete" style="display:inline" onsubmit="return confirm('Excluir esta instituição?')">
+                      <button type="submit" class="btn btn-sm btn-outline-danger" style="font-size:0.75rem; padding:2px 5px" title="Excluir"><i class="bi bi-trash"></i></button>
+                    </form>
                   </div>
                 </td>
               </tr>

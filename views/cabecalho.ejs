@@ -98,12 +98,39 @@
 
       <!-- Flash Messages -->
       <% if (typeof flash !== 'undefined' && flash) { %>
-        <div style="padding:16px 24px 0">
-          <div class="alert alert-<%= flash.type === 'error' ? 'danger' : flash.type === 'warning' ? 'warning' : 'success' %> alert-dismissible fade show d-flex align-items-center" role="alert" style="font-size:0.85rem; border-radius:8px; margin:0;">
-            <i class="bi <%= flash.type === 'error' ? 'bi-exclamation-triangle' : flash.type === 'warning' ? 'bi-exclamation-circle' : 'bi-check-circle' %> me-2"></i>
-            <span><%= flash.message %></span>
-            <button type="button" class="btn-close" data-bs-dismiss="alert" style="font-size:0.65rem"></button>
-          </div>
+        <% const borderCol = flash.type === 'error' ? '#842029' : flash.type === 'warning' ? '#664d03' : '#1c6e36'; %>
+        <div class="alert alert-<%= flash.type === 'error' ? 'danger' : flash.type === 'warning' ? 'warning' : 'success' %> alert-dismissible fade show d-flex align-items-center mb-0" role="alert" style="position: fixed; top: 24px; right: 24px; z-index: 99999; min-width: 300px; max-width: 450px; box-shadow: 0 0.5rem 1rem rgba(0, 0, 0, 0.15); border-radius: 8px; font-size:0.85rem; padding: 12px 20px; border: 1.5px solid <%= borderCol %>; transform: translateX(120%); opacity: 0; transition: all 0.35s cubic-bezier(0.175, 0.885, 0.32, 1.275);" id="server-flash-container">
+          <i class="bi <%= flash.type === 'error' ? 'bi-exclamation-triangle' : flash.type === 'warning' ? 'bi-exclamation-circle' : 'bi-check-circle' %> me-2" style="font-size: 1.1rem; flex-shrink: 0;"></i>
+          <span style="flex-grow: 1; padding-right: 12px;"><%= flash.message %></span>
+          <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close" style="font-size:0.65rem; margin-top: -2px;"></button>
         </div>
-        <script>setTimeout(function(){var a=document.querySelector('.alert-dismissible');if(a){var b=bootstrap.Alert.getOrCreateInstance(a);b.close();}},4000);</script>
+        <script>
+          window.addEventListener('load', function() {
+            var container = document.getElementById('server-flash-container');
+            if (container) {
+              container.offsetHeight; // force reflow
+              container.style.transform = 'translateX(0)';
+              container.style.opacity = '1';
+            }
+          });
+
+          setTimeout(function() {
+            var container = document.getElementById('server-flash-container');
+            if (container) {
+              container.style.transition = 'all 0.3s ease';
+              container.style.transform = 'translateX(120%)';
+              container.style.opacity = '0';
+              setTimeout(function() {
+                container.remove();
+              }, 300);
+            }
+          }, 4000);
+
+          var alertEl = document.getElementById('server-flash-container');
+          if (alertEl) {
+            alertEl.addEventListener('closed.bs.alert', function() {
+              alertEl.remove();
+            });
+          }
+        </script>
       <% } %>

@@ -366,6 +366,15 @@ async function getProjetoCompletoById(id) {
   proj.instituicoes = instituicoes;
   proj.anexos = anexos;
 
+  const [assinaturas] = await pool.query(`
+    SELECT pa.id, pa.ordem, pa.data_hora, pa.Assinatura, pa.id_pessoa, p.nome, p.cpf
+    FROM projeto_assinatura pa
+    INNER JOIN pessoa p ON pa.id_pessoa = p.id_pessoa
+    WHERE pa.id_projeto = ?
+    ORDER BY pa.data_hora ASC
+  `, [id]);
+  proj.assinaturas = assinaturas;
+
   return proj;
 }
 
@@ -407,6 +416,20 @@ async function addInstituicaoProjeto(id_projeto, instData) {
 
 async function removeInstituicaoProjeto(id_projeto, id_instituicao) {
   await pool.query('DELETE FROM projeto_instituicao WHERE id_projeto = ? AND id_instituicao = ?', [id_projeto, id_instituicao]);
+}
+
+async function updateLocalProjeto(id_local, localData) {
+  await pool.query(
+    'UPDATE local_execucao SET endereco = ?, bairro = ?, cidade = ?, cep = ? WHERE id_local = ?',
+    [localData.endereco || null, localData.bairro || null, localData.cidade || null, localData.cep || null, id_local]
+  );
+}
+
+async function updateInstituicaoProjeto(id_instituicao, instData) {
+  await pool.query(
+    'UPDATE instituicao SET nome = ?, sigla = ?, id_tipo_instituicao = ? WHERE id_instituicao = ?',
+    [instData.nome || null, instData.sigla || null, instData.id_tipo_instituicao || null, id_instituicao]
+  );
 }
 
 async function insertAnexosProjeto(id_projeto, arquivos) {
@@ -473,8 +496,10 @@ module.exports = {
   updatePlano,
   updateRelatorio,
   addLocalProjeto,
+  updateLocalProjeto,
   removeLocalProjeto,
   addInstituicaoProjeto,
+  updateInstituicaoProjeto,
   removeInstituicaoProjeto,
   updateStatus,
   getDashboardStats,

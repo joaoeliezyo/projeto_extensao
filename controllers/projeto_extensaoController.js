@@ -451,11 +451,17 @@ async function editCronogramaProjeto(req, res) {
 async function addCustoProjeto(req, res) {
   try {
     const id = req.params.id;
+    const parseValor = (val) => {
+      if (val === undefined || val === null || val === '') return null;
+      const clean = String(val).replace(/\./g, '').replace(',', '.');
+      const parsed = parseFloat(clean);
+      return Number.isFinite(parsed) ? parsed : null;
+    };
     await projeto_custoModel.insertprojeto_custo({
       id_projeto: id,
       descricao: req.body.descricao,
       quantitativo: req.body.quantitativo,
-      valor_unitario: req.body.valor_unitario,
+      valor_unitario: parseValor(req.body.valor_unitario),
       justificativa: req.body.justificativa,
       realizado: req.body.realizado || null,
       tipo: req.body.tipo || null,
@@ -482,11 +488,17 @@ async function deleteCustoProjeto(req, res) {
 async function editCustoProjeto(req, res) {
   try {
     const id = req.params.id;
+    const parseValor = (val) => {
+      if (val === undefined || val === null || val === '') return null;
+      const clean = String(val).replace(/\./g, '').replace(',', '.');
+      const parsed = parseFloat(clean);
+      return Number.isFinite(parsed) ? parsed : null;
+    };
     await projeto_custoModel.updateprojeto_custo(req.params.custoId, {
       id_projeto: id,
       descricao: req.body.descricao,
       quantitativo: req.body.quantitativo,
-      valor_unitario: req.body.valor_unitario,
+      valor_unitario: parseValor(req.body.valor_unitario),
       justificativa: req.body.justificativa,
       realizado: req.body.realizado || null,
       tipo: req.body.tipo || null,
@@ -551,6 +563,37 @@ async function deleteInstituicaoProjeto(req, res) {
   } catch (error) {
     console.error('Erro ao desvincular instituicao:', error);
     res.render('error', { message: 'Erro ao remover instituicao', returnLink: '/projeto_extensao/' + req.params.id + '/plano' });
+  }
+}
+
+async function editLocalProjeto(req, res) {
+  try {
+    const id = req.params.id;
+    await projeto_extensaoModel.updateLocalProjeto(req.params.localId, {
+      endereco: req.body.endereco,
+      bairro: req.body.bairro,
+      cidade: req.body.cidade,
+      cep: req.body.cep
+    });
+    res.redirect(getRedirectUrl(req, id));
+  } catch (error) {
+    console.error('Erro ao editar local:', error);
+    res.render('error', { message: 'Erro ao editar local', returnLink: '/projeto_extensao/' + req.params.id + '/plano' });
+  }
+}
+
+async function editInstituicaoProjeto(req, res) {
+  try {
+    const id = req.params.id;
+    await projeto_extensaoModel.updateInstituicaoProjeto(req.params.instId, {
+      nome: req.body.nome,
+      sigla: req.body.sigla,
+      id_tipo_instituicao: req.body.id_tipo_instituicao
+    });
+    res.redirect(getRedirectUrl(req, id));
+  } catch (error) {
+    console.error('Erro ao editar instituicao:', error);
+    res.render('error', { message: 'Erro ao editar instituicao', returnLink: '/projeto_extensao/' + req.params.id + '/plano' });
   }
 }
 
@@ -690,8 +733,10 @@ module.exports = {
   deleteCustoProjeto,
   editCustoProjeto,
   addLocalProjeto,
+  editLocalProjeto,
   deleteLocalProjeto,
   addInstituicaoProjeto,
+  editInstituicaoProjeto,
   deleteInstituicaoProjeto,
   changeStatus,
   showDashboard,

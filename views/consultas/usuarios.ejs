@@ -20,7 +20,7 @@
             <th>Login</th>
             <th>Pessoa Vinculada</th>
             <th style="width:120px">Perfil</th>
-            <th style="width:100px"></th>
+            <th style="width:100px">Ações</th>
           </tr>
         </thead>
         <tbody>
@@ -44,8 +44,10 @@
                 </td>
                 <td>
                   <div class="d-flex gap-1">
-                    <a href="/usuarios/<%= u.id_usuario %>/edit" class="btn btn-sm btn-outline-secondary" style="font-size:0.75rem; padding:2px 6px" title="Editar"><i class="bi bi-pencil"></i></a>
-                    <form method="POST" action="/usuarios/<%= u.id_usuario %>/delete" style="display:inline" onsubmit="return confirm('Excluir o usuário &quot;<%= u.usuario %>&quot;? Esta ação não pode ser desfeita.')"><button type="submit" class="btn btn-sm btn-outline-danger" style="font-size:0.75rem; padding:2px 6px" title="Excluir"><i class="bi bi-trash"></i></button></form>
+                    <a href="/usuarios/<%= u.id_usuario %>/edit" class="btn btn-sm btn-outline-secondary" style="font-size:0.75rem; padding:2px 5px" title="Editar"><i class="bi bi-pencil"></i></a>
+                    <form method="POST" action="/usuarios/<%= u.id_usuario %>/delete" style="display:inline" onsubmit="return confirm('Excluir o usuário &quot;<%= u.usuario %>&quot;? Esta ação não pode ser desfeita.')">
+                      <button type="submit" class="btn btn-sm btn-outline-danger" style="font-size:0.75rem; padding:2px 5px" title="Excluir"><i class="bi bi-trash"></i></button>
+                    </form>
                   </div>
                 </td>
               </tr>

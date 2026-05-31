@@ -43,10 +43,13 @@
             <td><%= d.nome_curso %></td>
             <td>
               <div class="cfg-actions">
-                <a href="/curso/<%= d.id_curso %>/edit" class="btn btn-sm btn-outline-secondary" title="Editar"><i class="bi bi-pencil"></i></a>
-                <a href="/curso/<%= d.id_curso %>/delete" class="btn btn-sm btn-outline-danger" title="Excluir" onclick="return confirm('Excluir este curso?')"><i class="bi bi-trash"></i></a>
+                <a href="/curso/<%= d.id_curso %>/edit" class="btn btn-sm btn-outline-secondary" style="font-size:0.75rem; padding:2px 5px" title="Editar"><i class="bi bi-pencil"></i></a>
+                <form method="POST" action="/curso/<%= d.id_curso %>/delete" style="display:inline" onsubmit="return confirm('Excluir este curso?')">
+                  <button type="submit" class="btn btn-sm btn-outline-danger" style="font-size:0.75rem; padding:2px 5px" title="Excluir"><i class="bi bi-trash"></i></button>
+                </form>
               </div>
             </td>
+          </tr>
           <% }) %> <% } else { %>
           <tr>
             <td colspan="3" class="text-center py-4 text-muted">

@@ -63,8 +63,10 @@
                 <td><span class="badge bg-info"><%= d.tipo_nome || '-' %></span></td>
                 <td>
                   <div class="cfg-actions">
-                    <a href="/pessoa/<%= d.id_pessoa %>/edit" class="btn btn-sm btn-outline-secondary" title="Editar"><i class="bi bi-pencil"></i></a>
-                    <a href="/pessoa/<%= d.id_pessoa %>/delete" class="btn btn-sm btn-outline-danger" title="Excluir" onclick="return confirm('Excluir esta pessoa?')"><i class="bi bi-trash"></i></a>
+                    <a href="/pessoa/<%= d.id_pessoa %>/edit" class="btn btn-sm btn-outline-secondary" style="font-size:0.75rem; padding:2px 5px" title="Editar"><i class="bi bi-pencil"></i></a>
+                    <form method="POST" action="/pessoa/<%= d.id_pessoa %>/delete" style="display:inline" onsubmit="return confirm('Excluir esta pessoa?')">
+                      <button type="submit" class="btn btn-sm btn-outline-danger" style="font-size:0.75rem; padding:2px 5px" title="Excluir"><i class="bi bi-trash"></i></button>
+                    </form>
                   </div>
                 </td>
               </tr>
