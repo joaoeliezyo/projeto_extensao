@@ -1,4 +1,5 @@
 <%- include('cabecalho', { titulo: 'Configurações' }) %>
+<link rel="stylesheet" href="/css/configuracoes.css">
 
   <main id="conteudo-principal-form" class="container my-5">
     <section class="card shadow p-4 p-md-5">
@@ -153,7 +154,7 @@
                 <div class="d-flex gap-2 align-items-center">
                   <input type="text" class="form-control form-control-sm cfg-filter-input" data-table="tab-pessoas"
                     placeholder="Buscar por nome..." style="max-width:220px">
-                  <select class="form-select form-select-sm cfg-filter-select" data-table="tab-pessoas" data-col="5"
+                  <select class="form-select form-select-sm cfg-filter-select" data-table="tab-pessoas" data-col="<%= (locals.sessionTipo && locals.sessionTipo.toString().toLowerCase() === 'admin') ? 5 : 4 %>"
                     style="max-width:160px">
                     <option value="">Tipo: Todos</option>
                     <% tipoPessoa.forEach(function(tp) { %>
@@ -166,7 +167,7 @@
                 </div>
                 <button type="button" class="btn btn-primary btn-sm cfg-btn-add-modal" data-action="/pessoa/cadastrar"
                   data-label="Pessoa"
-                  data-fields='[{"name":"nome","label":"Nome Completo","type":"text","required":true},{"name":"cpf","label":"CPF","type":"text","placeholder":"000.000.000-00","required":true},{"name":"email","label":"Email","type":"text","placeholder":"email@ex.com","required":true},{"name":"telefone","label":"Telefone","type":"text","placeholder":"(00) 00000-0000","required":true},{"name":"id_tipo_pessoa","label":"Tipo de Pessoa","type":"select","required":true}]'>
+                  data-fields='[{"name":"nome","label":"Nome Completo","type":"text","required":true},<%- (locals.sessionTipo && locals.sessionTipo.toString().toLowerCase() === "admin") ? "{\"name\":\"cpf\",\"label\":\"CPF\",\"type\":\"text\",\"placeholder\":\"000.000.000-00\",\"required\":true}," : "" %>{"name":"email","label":"Email","type":"text","placeholder":"email@ex.com","required":true},{"name":"telefone","label":"Telefone","type":"text","placeholder":"(00) 00000-0000","required":true},{"name":"id_tipo_pessoa","label":"Tipo de Pessoa","type":"select","required":true}]'>
                   <i class="bi bi-plus"></i> Adicionar
                 </button>
               </div>
@@ -176,7 +177,9 @@
                     <tr>
                       <th style="width:50px">ID</th>
                       <th>Nome</th>
-                      <th>CPF</th>
+                      <% if (locals.sessionTipo && locals.sessionTipo.toString().toLowerCase() === 'admin') { %>
+                        <th>CPF</th>
+                      <% } %>
                       <th>Email</th>
                       <th>Telefone</th>
                       <th>Tipo</th>
@@ -192,9 +195,11 @@
                         <td><span class="cfg-text">
                             <%= p.nome %>
                           </span></td>
-                        <td>
-                          <%= p.cpf || '-' %>
-                        </td>
+                        <% if (locals.sessionTipo && locals.sessionTipo.toString().toLowerCase() === 'admin') { %>
+                          <td>
+                            <%= p.cpf || '-' %>
+                          </td>
+                        <% } %>
                         <td>
                           <%= p.email || '-' %>
                         </td>
@@ -206,9 +211,11 @@
                           </span></td>
                         <td>
                           <div class="cfg-actions">
-                            <a href="/pessoa/<%= p.id_pessoa %>/edit"
-                              class="btn btn-sm btn-outline-secondary cfg-btn-edit-page" data-nome="<%= p.nome %>"><i
-                                class="bi bi-pencil"></i></a>
+                            <% if (locals.sessionTipo && locals.sessionTipo.toString().toLowerCase() === 'admin') { %>
+                              <a href="/pessoa/<%= p.id_pessoa %>/edit"
+                                class="btn btn-sm btn-outline-secondary cfg-btn-edit-page" data-nome="<%= p.nome %>"><i
+                                  class="bi bi-pencil"></i></a>
+                            <% } %>
                             <form method="POST" action="/pessoa/<%= p.id_pessoa %>/delete" class="d-inline">
                               <button type="submit" class="btn btn-sm btn-outline-danger cfg-btn-delete"><i
                                   class="bi bi-trash"></i></button>
@@ -219,7 +226,7 @@
                       <% }); %>
                         <% if (!pessoas.length) { %>
                           <tr class="cfg-empty-row">
-                            <td colspan="7" class="text-center text-muted py-3">Nenhuma pessoa cadastrada.</td>
+                            <td colspan="<%= (locals.sessionTipo && locals.sessionTipo.toString().toLowerCase() === 'admin') ? 7 : 6 %>" class="text-center text-muted py-3">Nenhuma pessoa cadastrada.</td>
                           </tr>
                           <% } %>
                   </tbody>
@@ -432,216 +439,6 @@
   id_tipo_instituicao: tipoInstituicao.map(function(ti) { return { value: ti.id_tipo_instituicao, label: ti.descricao }; })
 }) %></script>
 
-  <style>
-    .config-tabs {
-      flex-wrap: wrap;
-      gap: 2px;
-      border-bottom: 2px solid var(--line);
-    }
-
-    .config-tabs .nav-link {
-      font-size: 0.7rem;
-      padding: 7px 10px;
-      color: var(--muted);
-      border: 1px solid transparent;
-      border-bottom: none;
-      border-radius: var(--radius-xs) var(--radius-xs) 0 0;
-      white-space: nowrap;
-    }
-
-    .config-tabs .nav-link.active {
-      color: var(--brand);
-      font-weight: 700;
-      background: #fff;
-      border-color: var(--line);
-      border-bottom-color: #fff;
-      margin-bottom: -2px;
-    }
-
-    .config-tabs .nav-link:hover:not(.active) {
-      color: var(--text);
-      background: var(--bg);
-    }
-
-    .cfg-table {
-      font-size: 0.813rem;
-      margin-bottom: 0;
-    }
-
-    .cfg-table th {
-      font-size: 0.7rem;
-      text-transform: uppercase;
-      letter-spacing: 0.04em;
-      color: var(--muted);
-      padding: 8px 12px;
-    }
-
-    .cfg-table td {
-      padding: 6px 12px;
-      vertical-align: middle;
-    }
-
-    .cfg-actions {
-      display: flex;
-      gap: 4px;
-      align-items: center;
-    }
-
-    .cfg-actions .btn {
-      padding: 3px 7px;
-      font-size: 0.7rem;
-    }
-
-    .cfg-text {
-      font-size: 0.813rem;
-    }
-
-    .cfg-edit-form input {
-      font-size: 0.813rem;
-      padding: 4px 8px;
-    }
-
-    tr.cfg-editing {
-      background: #fefce8 !important;
-    }
-
-    /* Modal */
-    .cfg-modal-overlay {
-      position: fixed;
-      top: 0;
-      left: 0;
-      right: 0;
-      bottom: 0;
-      background: rgba(0, 0, 0, 0.4);
-      z-index: 9999;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-    }
-
-    .cfg-modal {
-      background: #fff;
-      border-radius: var(--radius);
-      padding: 24px;
-      max-width: 480px;
-      width: 90%;
-      box-shadow: 0 8px 30px rgba(0, 0, 0, 0.15);
-    }
-
-    .cfg-modal h5 {
-      font-size: 0.938rem;
-      margin-bottom: 16px;
-      display: flex;
-      align-items: center;
-      gap: 8px;
-    }
-
-    .cfg-modal .cfg-modal-field {
-      margin-bottom: 12px;
-    }
-
-    .cfg-modal .cfg-modal-field label {
-      font-size: 0.75rem;
-      font-weight: 600;
-      margin-bottom: 4px;
-      display: block;
-      color: var(--text);
-    }
-
-    .cfg-modal .cfg-modal-field input,
-    .cfg-modal .cfg-modal-field select {
-      width: 100%;
-      padding: 8px 10px;
-      border: 1px solid var(--line);
-      border-radius: var(--radius-xs);
-      font-size: 0.813rem;
-    }
-
-    .cfg-modal .cfg-modal-field input:focus,
-    .cfg-modal .cfg-modal-field select:focus {
-      border-color: var(--brand);
-      outline: none;
-      box-shadow: 0 0 0 3px rgba(28, 110, 54, 0.1);
-    }
-
-    .cfg-modal .cfg-modal-actions {
-      display: flex;
-      gap: 8px;
-      justify-content: flex-end;
-      margin-top: 16px;
-    }
-
-    .cfg-modal .cfg-confirm-name {
-      font-weight: 700;
-      color: var(--text);
-      background: var(--bg);
-      padding: 2px 6px;
-      border-radius: 4px;
-    }
-
-    .cfg-modal p {
-      font-size: 0.813rem;
-      color: var(--muted);
-      margin-bottom: 12px;
-    }
-
-    .cfg-modal input.cfg-input-error {
-      border-color: var(--bs-danger) !important;
-    }
-
-    .cfg-modal .cfg-error-msg {
-      color: var(--bs-danger);
-      font-size: 0.75rem;
-      margin-top: -8px;
-      margin-bottom: 10px;
-      display: none;
-    }
-
-    /* Paginação */
-    .cfg-pagination {
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      padding: 8px 0;
-      font-size: 0.75rem;
-      color: var(--muted);
-    }
-
-    .cfg-pagination .cfg-pag-info {
-      font-size: 0.7rem;
-    }
-
-    .cfg-pagination .cfg-pag-btns {
-      display: flex;
-      gap: 2px;
-    }
-
-    .cfg-pagination .cfg-pag-btn {
-      padding: 4px 10px;
-      border: 1px solid var(--line);
-      border-radius: var(--radius-xs);
-      background: #fff;
-      color: var(--text);
-      cursor: pointer;
-      font-size: 0.7rem;
-      font-weight: 500;
-    }
-
-    .cfg-pagination .cfg-pag-btn:hover {
-      background: var(--bg);
-    }
-
-    .cfg-pagination .cfg-pag-btn.active {
-      background: var(--brand);
-      color: #fff;
-      border-color: var(--brand);
-    }
-
-    .cfg-pagination .cfg-pag-btn:disabled {
-      opacity: 0.4;
-      cursor: default;
-    }
-  </style>
 
   <script>
     var selectData = JSON.parse(document.getElementById('selectData').textContent);

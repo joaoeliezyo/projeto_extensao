@@ -11,6 +11,20 @@ async function login(req, res) {
       req.session.tipo = user.tipo;
       req.session.id_usuario = user.id_usuario;
       req.session.id_pessoa = user.id_pessoa;
+      
+      // Buscar CPF da pessoa e guardar na sessão para validação de acesso
+      if (user.id_pessoa) {
+        const pool = require('../db');
+        const [pessoaRows] = await pool.query('SELECT cpf FROM pessoa WHERE id_pessoa = ?', [user.id_pessoa]);
+        if (pessoaRows.length > 0) {
+          req.session.cpf = pessoaRows[0].cpf || '';
+        } else {
+          req.session.cpf = '';
+        }
+      } else {
+        req.session.cpf = '';
+      }
+
       res.redirect('/logo');
     } else {
       res.redirect('/login?erro=Credenciais inválidas');

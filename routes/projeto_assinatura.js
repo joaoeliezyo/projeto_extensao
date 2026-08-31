@@ -3,6 +3,7 @@ const express = require('express');
 const router = express.Router();
 const projeto_assinaturaController = require('../controllers/projeto_assinaturaController');
 const projeto_assinaturaModel = require('../models/projeto_assinaturaModel');
+const { checkProjectAccess } = require('../middleware/authMiddleware');
 
 // Listagem geral
 router.get('/', projeto_assinaturaController.listprojeto_assinatura);
@@ -40,8 +41,8 @@ router.get('/cadastrar', (req, res) => {
 router.post('/cadastrar', projeto_assinaturaController.addprojeto_assinatura);
 
 // Fluxo de assinatura por projeto
-router.get('/:id_projeto/assinar', projeto_assinaturaController.showAssinar);
-router.post('/:id_projeto/assinar', projeto_assinaturaController.assinarProjeto);
+router.get('/:id_projeto/assinar', checkProjectAccess, projeto_assinaturaController.showAssinar);
+router.post('/:id_projeto/assinar', checkProjectAccess, projeto_assinaturaController.assinarProjeto);
 
 // CRUD por id
 router.get('/:id', projeto_assinaturaController.showprojeto_assinatura);

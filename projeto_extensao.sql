@@ -819,3 +819,81 @@ UNLOCK TABLES;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
 -- Dump completed on 2026-04-22 15:08:00
+
+
+ALTER TABLE projeto_pessoa ADD cargahoraria int DEFAULT 0 NULL;
+
+DROP TABLE IF EXISTS `pla_coordenador_curso`;
+CREATE TABLE `pla_coordenador_curso` (
+  `username` varchar(255) NOT NULL DEFAULT '',
+  `codcurso` int NOT NULL,
+  UNIQUE KEY `pla_coordenador_curso_usernamecurso_IDX` (`username`,`codcurso`) USING BTREE,
+  KEY `pla_coordenador_curso_codcurso_IDX` (`codcurso`) USING BTREE,
+  KEY `pla_coordenador_curso_username_IDX` (`username`) USING BTREE
+) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+
+DROP TABLE IF EXISTS `pla_curso_disciplina`;
+CREATE TABLE `pla_curso_disciplina` (
+  `PERIODO_LETIVO` varchar(255) DEFAULT NULL,
+  `CODCURSO` varchar(3) DEFAULT NULL,
+  `NOME_CURSO` varchar(255) DEFAULT NULL,
+  `CODTURMA` varchar(255) DEFAULT NULL,
+  `IDTURMADISC` decimal(10,0) DEFAULT NULL,
+  `NOMEDISCIPLINA` varchar(255) DEFAULT NULL,
+  `CH` double DEFAULT NULL,
+  `CODPROF` varchar(255) DEFAULT NULL,
+  `NOMEPROFESSOR` varchar(255) DEFAULT NULL,
+  `CPF` varchar(255) DEFAULT NULL,
+  `TITULACAO` varchar(255) DEFAULT NULL,
+  `EMAIL` varchar(255) DEFAULT NULL,
+  `ID` int NOT NULL AUTO_INCREMENT,
+  PRIMARY KEY (`ID`),
+  KEY `pla_curso_disciplina_CODCURSO_IDX` (`CODCURSO`) USING BTREE,
+  KEY `pla_curso_disciplina_CPF_IDX` (`CPF`) USING BTREE,
+  KEY `pla_curso_disciplina_NOMEPROFESSOR_IDX` (`NOMEPROFESSOR`) USING BTREE
+) ENGINE=InnoDB AUTO_INCREMENT=504 DEFAULT CHARSET=latin1;
+
+ALTER TABLE projeto_pessoa ADD Disciplina varchar(255) NULL;
+ALTER TABLE projeto_pessoa DROP FOREIGN KEY projeto_pessoa_ibfk_2;
+ALTER TABLE projeto_pessoa ADD CONSTRAINT projeto_pessoa_pla_curso_disciplina_FK FOREIGN KEY (id_pessoa) REFERENCES projeto_extensao2.pla_curso_disciplina(ID);
+
+
+
+-- projetos_extensao2.pla_curso_ies definição
+
+DROP TABLE IF EXISTS `pla_curso_ies`;
+CREATE TABLE `pla_curso_ies` (
+  `codcurso` int NOT NULL,
+  `nome_curso` varchar(255) DEFAULT NULL,
+  PRIMARY KEY (`codcurso`),
+  KEY `pla_curso_IES_nome_curso_IDX` (`nome_curso`) USING BTREE
+) ENGINE=InnoDB DEFAULT CHARSET=latin1; 
+
+-- projetos_extensao2.pla_professor_curso definição
+
+DROP TABLE IF EXISTS `pla_professor_curso`;
+CREATE TABLE `pla_professor_curso` (
+  `cpf` varchar(255) DEFAULT NULL,
+  `codcurso` varchar(3) DEFAULT NULL,
+  KEY `pla_professor_curso_cpf_IDX` (`cpf`,`codcurso`) USING BTREE
+) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+
+-- projetos_extensao2.pla_usuarios definição
+
+DROP TABLE IF EXISTS `pla_usuarios`;
+CREATE TABLE `pla_usuarios` (
+  `id` int NOT NULL AUTO_INCREMENT,
+  `username` varchar(255) DEFAULT '',
+  `email` varchar(255) DEFAULT '',
+  `firstname` varchar(255) DEFAULT '',
+  `lastname` varchar(255) DEFAULT '',
+  `department` int DEFAULT '0',
+  `Nome_completo` varchar(255) DEFAULT NULL,
+  `senha` varchar(255) DEFAULT NULL,
+  `Tipo` int DEFAULT NULL,
+  `minicurrriculu` varchar(150) DEFAULT NULL,
+  `foto` varchar(255) DEFAULT NULL,
+  `funcao` int DEFAULT NULL,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB AUTO_INCREMENT=386 DEFAULT CHARSET=latin1 ROW_FORMAT=COMPACT;
+

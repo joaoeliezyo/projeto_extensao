@@ -1,7 +1,7 @@
 // projeto_assinaturaModel.js gerado automaticamente para a tabela projeto_assinatura.
 const pool = require('../db');  
 
-const baseSelect = 'SELECT 	pa.id ,	pa.ordem,	pa.id_pessoa ,	pa.id_projeto ,	pa.data_hora ,	pa.Assinatura ,	pe.titulo,	p.nome ,	p.cpf from projeto_assinatura pa inner join projeto_extensao pe  on pe.id_projeto  = pa.id_projeto inner join pessoa p on p.id_pessoa  =  pa.id_pessoa ';
+const baseSelect = 'SELECT 	pa.id ,	pa.ordem,	pa.id_pessoa ,	pa.id_projeto ,	pa.data_hora ,	pa.Assinatura ,	pa.tipo_assinatura, \tpe.titulo,	p.nome ,	p.cpf from projeto_assinatura pa inner join projeto_extensao pe  on pe.id_projeto  = pa.id_projeto inner join pessoa p on p.id_pessoa  =  pa.id_pessoa ';
 
 function criar_assinatura(id_projeto, id_pessoa, dia, mes, horas, minutos, segundos, ano) {
   const chave1 = id_projeto % 2 === 0 ? 'A1' : 'A9';
@@ -88,8 +88,8 @@ async function insertProjeto_assinatura(registro, sessionUsuario = {}) {
     );
 
     await pool.query(
-      'INSERT INTO projeto_assinatura (id_projeto, id_pessoa, Assinatura, data_hora, ordem) VALUES (?, ?, ?, ?, ?)',
-      [registro['id_projeto'] ?? null, id_pessoa, assinatura, agora, registro['ordem'] ?? null]
+      'INSERT INTO projeto_assinatura (id_projeto, id_pessoa, Assinatura, data_hora, ordem, tipo_assinatura) VALUES (?, ?, ?, ?, ?, ?)',
+      [registro['id_projeto'] ?? null, id_pessoa, assinatura, agora, registro['ordem'] ?? null, registro['tipo_assinatura'] ?? 1]
     );
     const termoBusca = assinatura;
     return await getProjeto_assinaturaByNome(termoBusca);
@@ -159,10 +159,27 @@ async function deleteProjeto_assinatura(id) {
 async function updateProjeto_assinatura(id, registro) {
   try {
     await pool.query(
-      'UPDATE projeto_assinatura SET id_projeto = ?, id_pessoa = ?, Assinatura = ?, data_hora = ?, ordem = ? WHERE id = ?',
-      [registro['id_projeto'] ?? null, registro['id_pessoa'] ?? null, registro['Assinatura'] ?? null, registro['data_hora'] ?? null, registro['ordem'] ?? null, id]
+      'UPDATE projeto_assinatura SET id_projeto = ?, id_pessoa = ?, Assinatura = ?, data_hora = ?, ordem = ?, tipo_assinatura = ? WHERE id = ?',
+      [registro['id_projeto'] ?? null, registro['id_pessoa'] ?? null, registro['Assinatura'] ?? null, registro['data_hora'] ?? null, registro['ordem'] ?? null, registro['tipo_assinatura'] ?? null, id]
     );
     return await getProjeto_assinaturaById(id);
+  } catch (error) {
+    throw error;
+  }
+}
+
+async function getProjeto_assinaturaByCodigo(codigo) {
+  try {
+    const [rows] = await pool.query(
+      `SELECT pa.id, pa.ordem, pa.data_hora, pa.Assinatura, pa.id_pessoa, pa.id_projeto,
+              pe.titulo AS projeto_titulo, p.nome AS pessoa_nome, p.cpf AS pessoa_cpf
+       FROM projeto_assinatura pa
+       INNER JOIN projeto_extensao pe ON pa.id_projeto = pe.id_projeto
+       INNER JOIN pessoa p ON pa.id_pessoa = p.id_pessoa
+       WHERE pa.Assinatura = ?`,
+      [codigo]
+    );
+    return rows[0];
   } catch (error) {
     throw error;
   }
@@ -178,5 +195,6 @@ module.exports = {
   getResumoAssinaturasByProjeto,
   getResumoAssinaturasTodosProjetos,
   deleteProjeto_assinatura,
-  updateProjeto_assinatura
+  updateProjeto_assinatura,
+  getProjeto_assinaturaByCodigo
 };

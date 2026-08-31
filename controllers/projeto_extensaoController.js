@@ -10,6 +10,7 @@ const tipo_planoModel = require('../models/tipo_planoModel');
 const publico_alvoModel = require('../models/publico_alvoModel');
 const cursoModel = require('../models/cursoModel');
 const tipo_instituicaoModel = require('../models/tipo_instituicaoModel');
+const instituicaoModel = require('../models/instituicaoModel');
 
 // ajuste esse valor conforme o id real em Papel_Projeto
 const ID_PAPEL_PROFESSOR = 1;
@@ -69,13 +70,24 @@ async function listprojeto_extensaos(req, res) {
     const page = parseInt(req.query.page) || 1;
     const filters = {
       titulo: req.query.titulo || '',
+      curso: req.query.curso || '',
       id_tipo_plano: req.query.id_tipo_plano || '',
       status: req.query.status || '',
       periodo_inicio_de: req.query.periodo_inicio_de || '',
       periodo_inicio_ate: req.query.periodo_inicio_ate || ''
     };
+    
+    const sessionUser = {
+      tipo: req.session.tipo,
+      id_pessoa: req.session.id_pessoa,
+      cpf: req.session.cpf || ''
+    };
+
     const hasFilter = Object.values(filters).some(v => v);
-    const result = hasFilter ? await projeto_extensaoModel.filterprojeto_extensao(filters, page) : await projeto_extensaoModel.getAllprojeto_extensaos(page);
+    const result = hasFilter 
+      ? await projeto_extensaoModel.filterprojeto_extensao(sessionUser, filters, page) 
+      : await projeto_extensaoModel.getAllprojeto_extensaos(sessionUser, page);
+
     const tipoPlanos = await tipo_planoModel.getAlltipo_plano();
     res.render('consultas/projeto_extensao', {
       dados: result.rows,
@@ -95,7 +107,12 @@ async function listprojeto_extensaos(req, res) {
 async function filterprojeto_extensao(req, res) {
   const { nome } = req.body;
   try {
-    const projeto_extensaos = await projeto_extensaoModel.getprojeto_extensaosByNome(nome || '');
+    const sessionUser = {
+      tipo: req.session.tipo,
+      id_pessoa: req.session.id_pessoa,
+      cpf: req.session.cpf || ''
+    };
+    const projeto_extensaos = await projeto_extensaoModel.getprojeto_extensaosByNome(sessionUser, nome || '');
     res.render('consultas/projeto_extensao', { dados: projeto_extensaos || [] });
   } catch (error) {
     console.error('Erro ao filtrar projeto_extensao:', error);
@@ -210,8 +227,11 @@ async function showEditForm(req, res) {
 
     const relCursos = await projeto_extensaoModel.getCursosByProjeto(id);
     const relPessoas = await projeto_extensaoModel.getPessoasByProjeto(id);
-    const ID_PAPEL_PROFESSOR = 1;
-    const relProfs = relPessoas.filter(p => p.id_papel == ID_PAPEL_PROFESSOR).map(p => String(p.id_pessoa));
+    const relProfs = relPessoas.filter(p => p.id_papel == ID_PAPEL_PROFESSOR).map(p => ({
+      id_pessoa: String(p.id_pessoa),
+      disciplina: p.Disciplina || '',
+      cargahoraria: p.cargahoraria || 0
+    }));
     
     const cursosPreSelecionados = relCursos.map((c) => {
       return {
@@ -319,7 +339,8 @@ async function showPlano(req, res) {
     const projeto = await projeto_extensaoModel.getProjetoCompletoById(req.params.id);
     if (!projeto) return res.render('error', { message: 'Projeto não encontrado', returnLink: '/projeto_extensao' });
     const tiposInstituicao = await tipo_instituicaoModel.getAlltipo_instituicao();
-    res.render('forms/plano_extensao', { projeto, tiposInstituicao });
+    const instituicoes = await instituicaoModel.getAllInstituicao();
+    res.render('forms/plano_extensao', { projeto, tiposInstituicao, instituicoes });
   } catch (error) {
     console.error('Erro ao carregar plano:', error);
     res.render('error', { message: 'Erro ao carregar plano', returnLink: '/projeto_extensao' });
@@ -349,13 +370,19 @@ async function showRelatorio(req, res) {
 }
 
 async function saveRelatorio(req, res) {
+  const id = req.params.id;
   try {
-    await projeto_extensaoModel.updateRelatorio(req.params.id, req.body);
+    await projeto_extensaoModel.updateRelatorio(id, req.body);
+
+    if (req.files && req.files.length > 0) {
+      await projeto_extensaoModel.insertAnexosProjeto(id, req.files);
+    }
+
     req.session.flash = { type: 'success', message: 'Relatório salvo com sucesso!' };
-    res.redirect('/projeto_extensao/' + req.params.id + '/relatorio');
+    res.redirect('/projeto_extensao/' + id + '/relatorio');
   } catch (error) {
     console.error('Erro ao salvar relatório:', error);
-    res.render('error', { message: 'Erro ao salvar relatório', returnLink: '/projeto_extensao' });
+    res.render('error', { message: 'Erro ao salvar relatório', returnLink: '/projeto_extensao/' + id + '/relatorio' });
   }
 }
 
@@ -368,7 +395,8 @@ async function gerarPdfPlano(req, res) {
     const logoPath = path.join(__dirname, '..', 'views', 'imagens', 'logo-unicet.png');
     const logoBase64 = fs.readFileSync(logoPath).toString('base64');
     const logoSrc = 'data:image/png;base64,' + logoBase64;
-    res.render('pdf/plano_pdf', { projeto, logoSrc });
+    const baseUrl = req.protocol + '://' + req.get('host');
+    res.render('pdf/plano_pdf', { projeto, logoSrc, baseUrl });
   } catch (error) {
     console.error('Erro ao gerar PDF do plano:', error);
     res.render('error', { message: 'Erro ao gerar PDF', returnLink: '/projeto_extensao/' + req.params.id + '/plano' });
@@ -384,7 +412,8 @@ async function gerarPdfRelatorio(req, res) {
     const logoPath = path.join(__dirname, '..', 'views', 'imagens', 'logo-unicet.png');
     const logoBase64 = fs.readFileSync(logoPath).toString('base64');
     const logoSrc = 'data:image/png;base64,' + logoBase64;
-    res.render('pdf/relatorio_pdf', { projeto, logoSrc });
+    const baseUrl = req.protocol + '://' + req.get('host');
+    res.render('pdf/relatorio_pdf', { projeto, logoSrc, baseUrl });
   } catch (error) {
     console.error('Erro ao gerar PDF do relatório:', error);
     res.render('error', { message: 'Erro ao gerar PDF', returnLink: '/projeto_extensao/' + req.params.id + '/relatorio' });
@@ -543,11 +572,7 @@ async function deleteLocalProjeto(req, res) {
 async function addInstituicaoProjeto(req, res) {
   try {
     const id = req.params.id;
-    await projeto_extensaoModel.addInstituicaoProjeto(id, {
-      nome: req.body.nome,
-      sigla: req.body.sigla,
-      id_tipo_instituicao: req.body.id_tipo_instituicao
-    });
+    await projeto_extensaoModel.addInstituicaoProjeto(id, req.body.id_instituicao);
     res.redirect(getRedirectUrl(req, id));
   } catch (error) {
     console.error('Erro ao adicionar instituicao ao projeto:', error);
@@ -585,11 +610,7 @@ async function editLocalProjeto(req, res) {
 async function editInstituicaoProjeto(req, res) {
   try {
     const id = req.params.id;
-    await projeto_extensaoModel.updateInstituicaoProjeto(req.params.instId, {
-      nome: req.body.nome,
-      sigla: req.body.sigla,
-      id_tipo_instituicao: req.body.id_tipo_instituicao
-    });
+    await projeto_extensaoModel.updateInstituicaoProjeto(req.params.instId, id, req.body.id_instituicao);
     res.redirect(getRedirectUrl(req, id));
   } catch (error) {
     console.error('Erro ao editar instituicao:', error);
@@ -606,6 +627,7 @@ const STATUS_TRANSITIONS = {
   coordenador: {
     em_avaliacao: ['aprovado', 'rejeitado'],  // coordenador aprova ou rejeita
     aprovado: ['em_execucao'],                // coordenador inicia execução
+    em_execucao: ['concluido'],                // coordenador conclui a execução
   },
   admin: {
     rascunho: ['em_avaliacao'],
@@ -614,6 +636,14 @@ const STATUS_TRANSITIONS = {
     rejeitado: ['rascunho'],
     em_execucao: ['concluido'],
     concluido: ['em_execucao'] // reabrir se necessário
+  },
+  propec: {
+    rascunho: ['em_avaliacao'],
+    em_avaliacao: ['aprovado', 'rejeitado'],
+    aprovado: ['em_execucao'],
+    rejeitado: ['rascunho'],
+    em_execucao: ['concluido'],
+    concluido: ['em_execucao']
   }
 };
 
@@ -696,9 +726,12 @@ async function deleteAnexoProjeto(req, res) {
 
     req.session.flash = { type: 'success', message: 'Anexo removido com sucesso!' };
 
-    const destino = req.body.from === 'plano'
-      ? '/projeto_extensao/' + id + '/plano'
-      : '/projeto_extensao/' + id + '/edit';
+    let destino = '/projeto_extensao/' + id + '/edit';
+    if (req.body.from === 'plano') {
+      destino = '/projeto_extensao/' + id + '/plano';
+    } else if (req.body.from === 'relatorio') {
+      destino = '/projeto_extensao/' + id + '/relatorio';
+    }
 
     res.redirect(destino);
   } catch (error) {

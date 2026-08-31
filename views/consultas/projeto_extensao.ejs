@@ -1,12 +1,17 @@
 <%- include('../cabecalho', { titulo: 'Projetos de Extensão' }) %>
 
-  <% const perfil=(typeof sessionTipo !=='undefined' ) ? (sessionTipo || '' ).toLowerCase() : 'professor' ; const
-    isAdmin=perfil==='admin' ; const isCoord=perfil==='coordenador' ; const statusLabels={ rascunho: { text: 'Rascunho'
-    , bg: 'bg-secondary' , icon: 'bi-pencil' }, em_avaliacao: { text: 'Em Avaliação' , bg: 'bg-warning' ,
-    icon: 'bi-hourglass-split' }, aprovado: { text: 'Aprovado' , bg: 'bg-success' , icon: 'bi-check-circle' },
-    rejeitado: { text: 'Rejeitado' , bg: 'bg-danger' , icon: 'bi-x-circle' }, em_execucao: { text: 'Em Execução' ,
-    bg: 'bg-info' , icon: 'bi-play-circle' }, concluido: { text: 'Concluído' , bg: 'bg-primary' , icon: 'bi-trophy' } };
-    %>
+  <% const perfil=(typeof sessionTipo !=='undefined' ) ? (sessionTipo || '' ).toLowerCase() : 'professor' ; 
+     const isAdmin=perfil==='admin' || perfil==='propec'; 
+     const isCoord=perfil==='coordenador' ; 
+     const isProfessor=perfil==='professor' || perfil==='docente' ; 
+     const isOutros=!isAdmin && !isCoord && !isProfessor; 
+     const statusLabels={ rascunho: { text: 'Rascunho', bg: 'bg-secondary', icon: 'bi-pencil' }, 
+                          em_avaliacao: { text: 'Em Avaliação', bg: 'bg-warning', icon: 'bi-hourglass-split' }, 
+                          aprovado: { text: 'Aprovado', bg: 'bg-success', icon: 'bi-check-circle' }, 
+                          rejeitado: { text: 'Rejeitado', bg: 'bg-danger', icon: 'bi-x-circle' }, 
+                          em_execucao: { text: 'Em Execução', bg: 'bg-info', icon: 'bi-play-circle' }, 
+                          concluido: { text: 'Concluído', bg: 'bg-primary', icon: 'bi-trophy' } };
+     %>
 
     <main id="conteudo-principal-form" class="container my-5">
       <section class="card shadow p-4 p-md-5">
@@ -28,6 +33,11 @@
               <label class="form-label">Título</label>
               <input type="text" name="titulo" class="form-control form-control-sm" placeholder="Buscar por título..."
                 value="<%= f.titulo || '' %>">
+            </div>
+            <div class="col-md-2">
+              <label class="form-label">Curso</label>
+              <input type="text" name="curso" class="form-control form-control-sm" placeholder="Buscar por curso..."
+                value="<%= f.curso || '' %>">
             </div>
             <div class="col-md-2">
               <label class="form-label">Tipo</label>
@@ -67,6 +77,7 @@
                 <tr>
                   <th style="width:40px">ID</th>
                   <th>Projeto</th>
+                  <th>Curso(s)</th>
                   <th style="width:100px">Status</th>
                   <th style="width:120px">Período</th>
                   <th style="width:50px">CH</th>
@@ -93,6 +104,11 @@
                             <% } %>
                         </td>
                         <td>
+                          <span class="text-muted" style="font-size:0.813rem">
+                            <%= d.cursos || '---' %>
+                          </span>
+                        </td>
+                        <td>
                           <span class="badge <%= stInfo.bg %>" style="font-size:0.75rem">
                             <i class="bi <%= stInfo.icon %>"></i>
                             <%= stInfo.text %>
@@ -116,13 +132,15 @@
                               style="font-size:0.75rem; padding:2px 6px">
                               <i class="bi bi-file-text"></i> Plano
                             </a>
-                            <% if (st==='aprovado' || st==='em_execucao' || st==='concluido' || isAdmin) { %>
+                            <% if (st==='aprovado' || st==='em_execucao' || st==='concluido' || isAdmin ||isCoord
+                              ||isProfessor ||isOutros) { %>
                               <a href="/projeto_extensao/<%= d.id_projeto %>/relatorio"
                                 class="btn btn-sm btn-outline-success" style="font-size:0.75rem; padding:2px 6px">
                                 <i class="bi bi-journal-text"></i> Relatório
                               </a>
                               <% } %>
-                                <% if (st==='aprovado' || st==='em_execucao' || st==='concluido' || isAdmin) { %>
+                                <% if (st==='aprovado' || st==='em_execucao' || st==='concluido' || isAdmin ||isCoord
+                                  ||isProfessor ||isOutros) { %>
                                   <a href="/projeto_extensao/<%= d.id_projeto %>/questionarios"
                                     class="btn btn-sm btn-outline-success" style="font-size:0.75rem; padding:2px 6px">
                                     <i class="bi bi-clipboard-check"></i> Quest.
@@ -173,7 +191,7 @@
                                       </form>
                                       <% } %>
 
-                                        <% if (st==='em_execucao' && isAdmin) { %>
+                                        <% if (st==='em_execucao' && (isAdmin || isCoord)) { %>
                                           <form method="POST" action="/projeto_extensao/<%= d.id_projeto %>/status"
                                             style="display:inline"
                                             onsubmit="return confirm('Concluir este projeto? Esta ação finaliza o ciclo.')">
@@ -240,19 +258,19 @@
                 <ul class="pagination pagination-sm mb-0">
                   <li class="page-item <%= pagination.page <= 1 ? 'disabled' : '' %>">
                     <a class="page-link"
-                      href="?page=<%= pagination.page - 1 %><%= f.titulo ? '&titulo='+f.titulo : '' %><%= f.id_tipo_plano ? '&id_tipo_plano='+f.id_tipo_plano : '' %><%= f.status ? '&status='+f.status : '' %>">Anterior</a>
+                      href="?page=<%= pagination.page - 1 %><%= f.titulo ? '&titulo='+f.titulo : '' %><%= f.curso ? '&curso='+f.curso : '' %><%= f.id_tipo_plano ? '&id_tipo_plano='+f.id_tipo_plano : '' %><%= f.status ? '&status='+f.status : '' %>">Anterior</a>
                   </li>
                   <% for (let i=1; i <=pagination.totalPages; i++) { %>
                     <li class="page-item <%= i === pagination.page ? 'active' : '' %>">
                       <a class="page-link"
-                        href="?page=<%= i %><%= f.titulo ? '&titulo='+f.titulo : '' %><%= f.id_tipo_plano ? '&id_tipo_plano='+f.id_tipo_plano : '' %><%= f.status ? '&status='+f.status : '' %>">
+                        href="?page=<%= i %><%= f.titulo ? '&titulo='+f.titulo : '' %><%= f.curso ? '&curso='+f.curso : '' %><%= f.id_tipo_plano ? '&id_tipo_plano='+f.id_tipo_plano : '' %><%= f.status ? '&status='+f.status : '' %>">
                         <%= i %>
                       </a>
                     </li>
                     <% } %>
                       <li class="page-item <%= pagination.page >= pagination.totalPages ? 'disabled' : '' %>">
                         <a class="page-link"
-                          href="?page=<%= pagination.page + 1 %><%= f.titulo ? '&titulo='+f.titulo : '' %><%= f.id_tipo_plano ? '&id_tipo_plano='+f.id_tipo_plano : '' %><%= f.status ? '&status='+f.status : '' %>">Próximo</a>
+                          href="?page=<%= pagination.page + 1 %><%= f.titulo ? '&titulo='+f.titulo : '' %><%= f.curso ? '&curso='+f.curso : '' %><%= f.id_tipo_plano ? '&id_tipo_plano='+f.id_tipo_plano : '' %><%= f.status ? '&status='+f.status : '' %>">Próximo</a>
                       </li>
                 </ul>
               </div>

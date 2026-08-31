@@ -23,6 +23,7 @@ const local_execucaoRouter = require('./local_execucao');
 const cronogramaRouter = require('./cronograma');
 const projeto_assinaturaRouter = require('./projeto_assinatura');
 const projeto_custoRouter = require('./projeto_custo');
+const projeto_assinaturaController = require('../controllers/projeto_assinaturaController');
 
 // ===== ROTAS PÚBLICAS (sem auth) =====
 router.get('/login', (req, res) => {
@@ -31,6 +32,9 @@ router.get('/login', (req, res) => {
 });
 router.post('/login', usuarioController.login);
 router.get('/logout', usuarioController.logout);
+
+// Rota pública de validação de assinaturas por QR Code / Código
+router.get('/validar', projeto_assinaturaController.validarAssinatura);
 
 // ===== TODAS AS ROTAS ABAIXO REQUEREM AUTENTICAÇÃO =====
 router.use(authMiddleware);

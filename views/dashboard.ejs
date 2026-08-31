@@ -4,7 +4,7 @@
   const s = (typeof stats !== 'undefined' && stats) ? stats : {};
   const sc = s.statusCounts || {};
   const perfil = (typeof sessionTipo !== 'undefined') ? sessionTipo : '';
-  const isAdmin = perfil === 'admin';
+  const isAdmin = perfil === 'admin' || perfil === 'propec';
   const isCoord = perfil === 'coordenador';
 %>
 

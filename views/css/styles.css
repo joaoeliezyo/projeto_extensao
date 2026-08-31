@@ -125,7 +125,7 @@ h6 {
 
 /* Tabelas */
 .table {
-  font-size: 0.875rem;
+  font-size: 0.7rem;
   margin-bottom: 0;
 }
 
@@ -173,12 +173,19 @@ h6 {
 }
 
 /* Formularios */
+.form-control {
+
+  font-size: 0.7rem !important;
+}
+
 .form-control:focus,
 .form-select:focus,
 .form-control[type='date']:focus {
   border-color: var(--brand) !important;
   box-shadow: 0 0 0 3px rgba(28, 110, 54, 0.12) !important;
+  font-size: 0.7rem !important;
 }
+
 
 label,
 .form-label {
@@ -1657,4 +1664,14 @@ a:focus-visible {
     opacity: 0;
     transform: translateY(4px);
   }
+}
+
+/* ===== Bloco de visualização de informações (somente leitura) ===== */
+.info-preview-block {
+  font-size: 0.7rem;
+  white-space: pre-wrap;
+  background: #f9fafb;
+  padding: 8px;
+  border-radius: 4px;
+  min-height: 40px;
 }

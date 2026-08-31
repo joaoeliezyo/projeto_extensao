@@ -1,0 +1,14 @@
+CREATE TABLE projeto_assinatura (
+  id int NOT NULL AUTO_INCREMENT,
+  id_projeto int NOT NULL,
+  id_pessoa int NOT NULL,
+  Assinatura varchar(500) NOT NULL,
+  data_hora datetime DEFAULT CURRENT_TIMESTAMP,
+  ordem int DEFAULT NULL,
+  tipo_assinatura int DEFAULT NULL,
+  PRIMARY KEY (id),
+  KEY fk_pa_projeto (id_projeto),
+  KEY fk_pa_pessoa (id_pessoa),
+  CONSTRAINT fk_pa_pessoa FOREIGN KEY (id_pessoa) REFERENCES pessoa (id_pessoa) ON DELETE CASCADE,
+  CONSTRAINT fk_pa_projeto FOREIGN KEY (id_projeto) REFERENCES projeto_extensao (id_projeto) ON DELETE CASCADE
+) ENGINE=InnoDB AUTO_INCREMENT=19 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;

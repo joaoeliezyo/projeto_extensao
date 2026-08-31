@@ -82,7 +82,7 @@ async function updateCurso(id, nome_curso, coordenador_id = null) {
 }
 
 /* ===== NOVAS FUNÇÕES ===== */
-
+/*
 async function getProfessoresByCurso(id_curso) {
   try {
     const [rows] = await pool.query(`
@@ -91,6 +91,23 @@ async function getProfessoresByCurso(id_curso) {
       INNER JOIN pessoa p ON p.id_pessoa = cp.id_pessoa
       WHERE cp.id_curso = ?
       ORDER BY p.nome
+    `, [id_curso]);
+
+    return rows;
+  } catch (error) {
+    throw error;
+  }
+}*/
+
+async function getProfessoresByCurso(id_curso) {
+  try {
+    const [rows] = await pool.query(`
+      select pcd.ID as id_pessoa,
+             concat(pcd.NOMEPROFESSOR , ' - ', pcd.NOMEDISCIPLINA , ' - ',  pcd.CODTURMA) as nome,
+             pcd.PERIODO_LETIVO as periodo_letivo
+      from pla_curso_disciplina pcd 
+      where  pcd.CODCURSO  = ?
+      ORDER BY concat(pcd.NOMEPROFESSOR , ' - ', pcd.NOMEDISCIPLINA , ' - ',  pcd.CODTURMA)
     `, [id_curso]);
 
     return rows;
@@ -122,9 +139,9 @@ async function getCursoComEquipeById(id_curso) {
       nome: curso.nome_curso,
       coordenador: curso.coordenador_id
         ? {
-            id: curso.coordenador_id,
-            nome: curso.coordenador_nome
-          }
+          id: curso.coordenador_id,
+          nome: curso.coordenador_nome
+        }
         : null,
       professores
     };
@@ -156,9 +173,9 @@ async function getAllCursosComEquipe() {
         nome: curso.nome_curso,
         coordenador: curso.coordenador_id
           ? {
-              id: curso.coordenador_id,
-              nome: curso.coordenador_nome
-            }
+            id: curso.coordenador_id,
+            nome: curso.coordenador_nome
+          }
           : null,
         professores
       });

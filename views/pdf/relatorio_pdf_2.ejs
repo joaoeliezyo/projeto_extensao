@@ -5,7 +5,280 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Relatório da Atividade de Extensão – UNI-CET</title>
-  <link rel="stylesheet" href="/css/pdf.css">
+  <style>
+    /* --- RESET & BASICS --- */
+    *,
+    *::before,
+    *::after {
+      box-sizing: border-box;
+      margin: 0px;
+      padding: 0px;
+    }
+
+    body {
+      font-family: Arial, sans-serif;
+      font-size: 11px;
+      background-color: #d0d0d0;
+      color: #000;
+      line-height: 1.4;
+      padding: 20px;
+    }
+
+    /* --- CONFIGURAÇÃO RÍGIDA A4 --- */
+    .page {
+      background: #fff;
+      width: 210mm;
+      height: 297mm;
+      min-height: 297mm;
+      max-height: 297mm;
+      margin: 0 auto 20px auto;
+      padding: 1.2cm 1.5cm 1.5cm;
+      box-shadow: 0 0 14px rgba(0, 0, 0, 0.35);
+      position: relative;
+      page-break-after: always;
+      overflow: hidden;
+    }
+
+    @media print {
+      body {
+        -webkit-print-color-adjust: exact;
+        print-color-adjust: exact;
+        background: #c5e0b4;
+        color: #000;
+        padding: 0;
+        margin: 0;
+      }
+
+      .page {
+
+        box-shadow: none;
+        width: 100%;
+        padding: 1.2cm 1.5cm 1.5cm;
+        margin: 0;
+        border: none;
+      }
+
+      @page {
+        size: A4;
+        margin: 0;
+      }
+    }
+
+    /* --- CABEÇALHO INSTITUCIONAL --- */
+    .header-container {
+      display: flex;
+      align-items: flex-start;
+      gap: 14px;
+      padding-bottom: 10px;
+      border-bottom: 2px solid #000;
+      margin-bottom: 10px;
+    }
+
+    .logo-img {
+      flex-shrink: 0;
+      width: 130px;
+      max-height: 70px;
+      object-fit: contain;
+    }
+
+    .header-text {
+      font-size: 9.5px;
+      line-height: 1.5;
+      color: #000;
+    }
+
+    .header-text h1,
+    .header-text h2 {
+      font-size: 9.5px;
+      font-weight: bold;
+      text-transform: uppercase;
+      margin: 0;
+    }
+
+    /* --- TÍTULOS PRINCIPAIS E DE SEÇÃO --- */
+    .doc-title-container {
+      margin: 10px 0 15px;
+    }
+
+    .doc-title {
+      text-align: center;
+      font-size: 13px;
+      font-weight: bold;
+      letter-spacing: 1px;
+      padding: 6px 0 8px;
+      background-color: #c5e0b4;
+      border: 1px solid #b0b0b0;
+      border-radius: 6px;
+      text-transform: uppercase;
+      display: block;
+      width: 100%;
+    }
+
+    .section-title {
+      background-color: #c5e0b4;
+      color: #000;
+      font-weight: bold;
+      font-size: 11px;
+      padding: 4px 8px;
+      letter-spacing: 0.3px;
+      text-transform: uppercase;
+      border: 1px solid #b0b0b0;
+      border-radius: 4px;
+      margin: 16px 0 10px;
+    }
+
+    /* --- CAMPOS DE ENTRADA / LINHAS DE FORMULÁRIO --- */
+    .form-row {
+      display: flex;
+      margin: 8px 0;
+      align-items: flex-end;
+    }
+
+    .form-label {
+      font-weight: bold;
+      font-size: 11px;
+      margin-right: 6px;
+      white-space: nowrap;
+    }
+
+    .form-line {
+      flex-grow: 1;
+      border-bottom: 1px solid #b0b0b0;
+      min-height: 18px;
+      font-size: 11px;
+      padding-left: 4px;
+    }
+
+    .form-block-container {
+      margin: 12px 0;
+    }
+
+    .form-value-block {
+      width: 100%;
+      border: 1px solid #b0b0b0;
+      border-radius: 4px;
+      padding: 8px;
+      font-size: 11px;
+      margin-top: 4px;
+      background-color: #fff;
+      overflow: hidden;
+      white-space: pre-wrap;
+      /* Preserve line breaks */
+    }
+
+    /* --- TABELAS --- */
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      margin: 10px 0;
+      border: 1px solid #b0b0b0;
+    }
+
+    table th,
+    table td {
+      border: 1px solid #b0b0b0;
+      padding: 5px 6px;
+      font-size: 11px;
+      vertical-align: top;
+    }
+
+    table th {
+      background-color: #c5e0b4;
+      font-weight: bold;
+      text-align: center;
+      text-transform: uppercase;
+    }
+
+    .text-center {
+      text-align: center;
+    }
+
+    .text-right {
+      text-align: right;
+    }
+
+    /* --- AUTENTICAÇÃO & DATA --- */
+    .date-row {
+      margin: 25px 0;
+      font-size: 11px;
+    }
+
+    .sig-wrapper {
+      margin-top: 40px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 35px;
+    }
+
+    .sig-container {
+      width: 100%;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+    }
+
+    .sig-line {
+      width: 65%;
+      border-bottom: 1px solid #000;
+      margin-bottom: 4px;
+    }
+
+    .sig-label {
+      font-size: 11px;
+      font-weight: bold;
+      text-align: center;
+    }
+
+    /* Estilo Premium para Assinatura Digital */
+    .digital-signature-badge {
+      /*position: relative;*/
+      right: 20px;
+      display: inline-block;
+      padding: 8pt 10pt;
+      margin: 10pt auto;
+      text-align: left;
+      font-family: Arial, sans-serif;
+      font-size: 8.5pt;
+      line-height: 1.4;
+      color: #333;
+      background-color: #f9fbfd;
+      page-break-inside: avoid;
+    }
+
+
+
+
+
+    .digital-signature-header {
+      display: inline-block;
+      align-items: center;
+      font-weight: bold;
+      padding-bottom: 4pt;
+      margin-bottom: 6pt;
+      text-transform: uppercase;
+      font-size: 9pt;
+      letter-spacing: 0.5px;
+    }
+
+    .digital-signature-field {
+      margin: 3px 0;
+    }
+
+    .digital-signature-field strong {
+      color: #111;
+    }
+
+    .digital-signature-hash {
+      font-family: monospace;
+      font-size: 8pt;
+      color: #555;
+      word-break: break-all;
+      background: #f1f3f5;
+      padding: 1px 3px;
+      border-radius: 2px;
+    }
+  </style>
 </head>
 
 <body>
@@ -33,11 +306,6 @@
     const dObj = new Date(data);
     if (Number.isNaN(dObj.getTime())) return data;
     return dObj.toLocaleString('pt-BR', { timeZone: 'America/Sao_Paulo' });
-    };
-    const getPessoasStr = () => {
-    if (!p.pessoas || p.pessoas.length === 0) return '';
-    return p.pessoas.map(pe => pe.nome + ' (' + pe.papel + (pe.disciplina ? ' - ' + pe.disciplina : '') +
-    (pe.cargahoraria ? ' - ' + pe.cargahoraria + 'h' : '') + ')').join(', ');
     };
 
     // Helpers para data de autenticação
@@ -129,17 +397,20 @@
       </div>
       <div class="form-block-container">
         <div class="form-label">EQUIPE DOCENTE E/OU TÉCNICA:</div>
-        <div class="form-value-block" style="min-height: 60px;">
-          <%= getPessoasStr() %>
+        <div class="form-value-block" style="height: 60px;">
+          <% if (p.pessoas && p.pessoas.length> 0) { %>
+            <%= p.pessoas.map(pe=> pe.nome + ' (' + pe.papel + (pe.disciplina ? ' - ' + pe.disciplina : '') +
+              (pe.cargahoraria ? ' - ' + pe.cargahoraria + 'h' : '') + ')').join(', ') %>
+              <% } %>
         </div>
       </div>
       <div class="form-block-container">
         <div class="form-label">ESTUDANTES ENVOLVIDOS:</div>
-        <div class="form-value-block" style="min-height: 60px;"></div>
+        <div class="form-value-block" style="height: 60px;"></div>
       </div>
       <div class="form-block-container">
         <div class="form-label">OUTROS PARTICIPANTES:</div>
-        <div class="form-value-block" style="min-height: 40px;"></div>
+        <div class="form-value-block" style="height: 40px;"></div>
       </div>
 
       <div class="section-title">III - PÚBLICO-ALVO E ABRANGÊNCIA</div>
@@ -182,25 +453,25 @@
       <div class="section-title">IV - OBJETIVOS DA AÇÃO</div>
       <div class="form-block-container">
         <div class="form-label">OBJETIVO GERAL:</div>
-        <div class="form-value-block" style="min-height: 60px; white-space: normal;">
+        <div class="form-value-block" style="min-height: 60px; height: auto; white-space: normal;">
           <%- safe(p.objetivo) %>
         </div>
       </div>
       <div class="form-block-container">
         <div class="form-label">OBJETIVOS ESPECÍFICOS:</div>
-        <div class="form-value-block" style="min-height: 100px;"></div>
+        <div class="form-value-block" style="height: 100px;"></div>
       </div>
 
       <div class="section-title">V - JUSTIFICATIVA</div>
       <div class="form-block-container">
-        <div class="form-value-block" style="min-height: 160px;">
+        <div class="form-value-block" style="height: 160px;">
           <%- safe(p.justificativa) %>
         </div>
       </div>
 
       <div class="section-title">VI - METODOLOGIA</div>
       <div class="form-block-container">
-        <div class="form-value-block" style="min-height: 180px; white-space: normal;">
+        <div class="form-value-block" style="min-height: 180px; height: auto; white-space: normal;">
           <%- safe(p.metodologia) %>
         </div>
       </div>
@@ -256,7 +527,7 @@
 
       <div class="section-title">VIII - RESULTADOS ALCANÇADOS</div>
       <div class="form-block-container">
-        <div class="form-value-block" style="min-height: 250px;">
+        <div class="form-value-block" style="height: 250px;">
           <%- safe(p.resultados_alcancados) %>
         </div>
       </div>
@@ -264,20 +535,20 @@
       <div class="section-title">IX - AVALIAÇÃO DA AÇÃO</div>
       <div class="form-block-container">
         <div class="form-label">Avaliação da comunidade/público participante:</div>
-        <div class="form-value-block" style="min-height: 140px;">
+        <div class="form-value-block" style="height: 140px;">
           <%- safe(p.avaliacao_comunidade) %>
         </div>
       </div>
       <div class="form-block-container">
         <div class="form-label">Avaliação interna da equipe executora:</div>
-        <div class="form-value-block" style="min-height: 140px;">
+        <div class="form-value-block" style="height: 140px;">
           <%- safe(p.avaliacao_equipe) %>
         </div>
       </div>
 
       <div class="section-title">X - PRODUTOS GERADOS (SE HOUVER)</div>
       <div class="form-block-container">
-        <div class="form-value-block" style="min-height: 110px;">
+        <div class="form-value-block" style="height: 110px;">
           <%- safe(p.produtos_gerados) %>
         </div>
       </div>
@@ -299,7 +570,7 @@
 
       <div class="section-title">XI - VINCULAÇÃO COM OS ODS (Agenda 2030)</div>
       <div class="form-block-container">
-        <div class="form-value-block" style="min-height: 90px;">
+        <div class="form-value-block" style="height: 90px;">
           <%- safe(p.ods) %>
         </div>
       </div>
@@ -353,15 +624,13 @@
 
       <div style="margin-top: 25px;">
         <!-- 1. Área dos Professores -->
-        <div
-          style="font-weight: bold; font-size: 11pt; border-bottom: 2px solid #0056b3; padding-bottom: 5px; margin-bottom: 15px; text-transform: uppercase; color: #0056b3;">
+        <div style="font-weight: bold; font-size: 11pt; border-bottom: 2px solid #0056b3; padding-bottom: 5px; margin-bottom: 15px; text-transform: uppercase; color: #0056b3;">
           Professor(es)
         </div>
-        <% if (p.assinaturasProfessoresRelatorio && p.assinaturasProfessoresRelatorio.length> 0) { %>
+        <% if (p.assinaturasProfessores && p.assinaturasProfessores.length > 0) { %>
           <div style="display: flex; flex-direction: column; gap: 12px; margin-bottom: 20px;">
-            <% p.assinaturasProfessoresRelatorio.forEach(ass=> { %>
-              <div class="assinatura-box"
-                style="display: flex; justify-content: center; align-items: center; gap: 20px; border: 1px solid #d0e1fd; padding: 10px 15px; border-radius: 8px; background-color: #f8fbff; max-width: 550px; margin: 0 auto; page-break-inside: avoid;">
+            <% p.assinaturasProfessores.forEach(ass => { %>
+              <div class="assinatura-box" style="display: flex; justify-content: center; align-items: center; gap: 20px; border: 1px solid #d0e1fd; padding: 10px 15px; border-radius: 8px; background-color: #f8fbff; max-width: 550px; margin: 0 auto; page-break-inside: avoid;">
                 <!-- Imagem Unicet -->
                 <div>
                   <img src="<%= logoSrc %>" alt="Unicet" style="width: 75px; height: 75px; object-fit: contain;">
@@ -373,92 +642,82 @@
                   </p>
                   <p style="margin: 5px 0 0 0; font-size: 9pt; color: #555; line-height: 1.2;">
                     Código de validação:<br>
-                    <strong style="font-family: monospace; font-size: 10pt; color: #111;">
-                      <%= ass.Assinatura %>
-                    </strong>
+                    <strong style="font-family: monospace; font-size: 10pt; color: #111;"><%= ass.Assinatura %></strong>
                   </p>
                 </div>
                 <!-- QR Code -->
                 <div>
-                  <% const url_validacao=baseUrl + '/validar?codigo=' + ass.Assinatura; %>
-                    <img
-                      src="https://api.qrserver.com/v1/create-qr-code/?size=70x70&data=<%= encodeURIComponent(url_validacao) %>"
-                      alt="QR Code de Validação" style="width: 70px; height: 70px;">
+                  <% const url_validacao = baseUrl + '/validar?codigo=' + ass.Assinatura; %>
+                  <img src="https://api.qrserver.com/v1/create-qr-code/?size=70x70&data=<%= encodeURIComponent(url_validacao) %>"
+                       alt="QR Code de Validação" style="width: 70px; height: 70px;">
                 </div>
               </div>
-              <% }) %>
+            <% }) %>
           </div>
-          <% } else { %>
-            <div class="sig-wrapper" style="margin-bottom: 25px;">
-              <div class="sig-container">
-                <div class="sig-line"></div>
-                <div class="sig-label">Docente responsável</div>
-                <div style="font-size:10px; margin-top:2px">
-                  <%= safe(p.coordenador_nome) %>
-                </div>
+        <% } else { %>
+          <div class="sig-wrapper" style="margin-bottom: 25px;">
+            <div class="sig-container">
+              <div class="sig-line"></div>
+              <div class="sig-label">Docente responsável</div>
+              <div style="font-size:10px; margin-top:2px">
+                <%= safe(p.coordenador_nome) %>
               </div>
             </div>
-            <% } %>
+          </div>
+        <% } %>
 
-              <!-- 2. Área dos Coordenadores -->
-              <div
-                style="font-weight: bold; font-size: 11pt; border-bottom: 2px solid #0056b3; padding-bottom: 5px; margin-top: 25px; margin-bottom: 15px; text-transform: uppercase; color: #0056b3;">
-                Coordenação(ões)
-              </div>
-              <% if (p.assinaturasCoordenadoresRelatorio && p.assinaturasCoordenadoresRelatorio.length> 0) { %>
-                <div style="display: flex; flex-direction: column; gap: 12px; margin-bottom: 20px;">
-                  <% p.assinaturasCoordenadoresRelatorio.forEach(ass=> { %>
-                    <div class="assinatura-box"
-                      style="display: flex; justify-content: center; align-items: center; gap: 20px; border: 1px solid #d0e1fd; padding: 10px 15px; border-radius: 8px; background-color: #f8fbff; max-width: 550px; margin: 0 auto; page-break-inside: avoid;">
-                      <!-- Imagem Unicet -->
-                      <div>
-                        <img src="<%= logoSrc %>" alt="Unicet" style="width: 75px; height: 75px; object-fit: contain;">
-                      </div>
-                      <!-- Nome e Código de Validação -->
-                      <div style="text-align: center; margin: 0 15px; flex: 1;">
-                        <p
-                          style="margin: 0; font-weight: bold; font-size: 10.5pt; text-transform: uppercase; color: #333;">
-                          <%= ass.nome %>
-                        </p>
-                        <p style="margin: 5px 0 0 0; font-size: 9pt; color: #555; line-height: 1.2;">
-                          Código de validação:<br>
-                          <strong style="font-family: monospace; font-size: 10pt; color: #111;">
-                            <%= ass.Assinatura %>
-                          </strong>
-                        </p>
-                      </div>
-                      <!-- QR Code -->
-                      <div>
-                        <% const url_validacao=baseUrl + '/validar?codigo=' + ass.Assinatura; %>
-                          <img
-                            src="https://api.qrserver.com/v1/create-qr-code/?size=70x70&data=<%= encodeURIComponent(url_validacao) %>"
-                            alt="QR Code de Validação" style="width: 70px; height: 70px;">
-                      </div>
-                    </div>
-                    <% }) %>
-                </div>
-                <% } else { %>
-                  <div class="sig-wrapper">
-                    <div class="sig-container">
-                      <div class="sig-line"></div>
-                      <div class="sig-label">Coordenador(a) de Curso responsável</div>
-                    </div>
-                  </div>
-                  <% } %>
-      </div>
-
-      <div class="section-title" style="margin-top: 35px;">XV - ANEXOS</div>
-      <div class="form-block-container">
-        <div class="form-value-block" style="min-height: 100px;">
-          <%= safe(p.anexos) %>
+        <!-- 2. Área dos Coordenadores -->
+        <div style="font-weight: bold; font-size: 11pt; border-bottom: 2px solid #0056b3; padding-bottom: 5px; margin-top: 25px; margin-bottom: 15px; text-transform: uppercase; color: #0056b3;">
+          Coordenação(ões)
         </div>
+        <% if (p.assinaturasCoordenadores && p.assinaturasCoordenadores.length > 0) { %>
+          <div style="display: flex; flex-direction: column; gap: 12px; margin-bottom: 20px;">
+            <% p.assinaturasCoordenadores.forEach(ass => { %>
+              <div class="assinatura-box" style="display: flex; justify-content: center; align-items: center; gap: 20px; border: 1px solid #d0e1fd; padding: 10px 15px; border-radius: 8px; background-color: #f8fbff; max-width: 550px; margin: 0 auto; page-break-inside: avoid;">
+                <!-- Imagem Unicet -->
+                <div>
+                  <img src="<%= logoSrc %>" alt="Unicet" style="width: 75px; height: 75px; object-fit: contain;">
+                </div>
+                <!-- Nome e Código de Validação -->
+                <div style="text-align: center; margin: 0 15px; flex: 1;">
+                  <p style="margin: 0; font-weight: bold; font-size: 10.5pt; text-transform: uppercase; color: #333;">
+                    <%= ass.nome %>
+                  </p>
+                  <p style="margin: 5px 0 0 0; font-size: 9pt; color: #555; line-height: 1.2;">
+                    Código de validação:<br>
+                    <strong style="font-family: monospace; font-size: 10pt; color: #111;"><%= ass.Assinatura %></strong>
+                  </p>
+                </div>
+                <!-- QR Code -->
+                <div>
+                  <% const url_validacao = baseUrl + '/validar?codigo=' + ass.Assinatura; %>
+                  <img src="https://api.qrserver.com/v1/create-qr-code/?size=70x70&data=<%= encodeURIComponent(url_validacao) %>"
+                       alt="QR Code de Validação" style="width: 70px; height: 70px;">
+                </div>
+              </div>
+            <% }) %>
+          </div>
+        <% } else { %>
+          <div class="sig-wrapper">
+            <div class="sig-container">
+              <div class="sig-line"></div>
+              <div class="sig-label">Coordenador(a) de Curso responsável</div>
+            </div>
+          </div>
+        <% } %>
       </div>
+
+            <div class="section-title" style="margin-top: 35px;">XV - ANEXOS</div>
+            <div class="form-block-container">
+              <div class="form-value-block" style="height: 100px;">
+                <%= safe(p.anexos) %>
+              </div>
+            </div>
     </div>
-    <!--
+
     <script>
       window.onload = function () { window.print(); };
     </script>
--->
 </body>
 
 </html>

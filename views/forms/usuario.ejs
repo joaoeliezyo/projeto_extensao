@@ -26,10 +26,11 @@
         <select name="tipo" id="campo-tipo" class="form-select" required>
           <option value="professor" <%= u.tipo === 'professor' ? 'selected' : '' %>>Professor (Docente)</option>
           <option value="coordenador" <%= u.tipo === 'coordenador' ? 'selected' : '' %>>Coordenador de Curso</option>
-          <option value="admin" <%= u.tipo === 'admin' ? 'selected' : '' %>>Administrador (Pró-Reitoria)</option>
+          <option value="propec" <%= u.tipo === 'propec' ? 'selected' : '' %>>PROPEC (Pró-Reitoria de Extensão)</option>
+          <option value="admin" <%= u.tipo === 'admin' ? 'selected' : '' %>>Administrador (TI)</option>
         </select>
         <small class="text-muted" style="font-size:0.688rem">
-          Professor: cria projetos e relatórios. Coordenador: aprova/rejeita planos. Admin: acesso total.
+          Professor: cria projetos/relatórios. Coordenador: avalia planos do curso. PROPEC: avalia todos os projetos. Admin: gerencia o sistema.
         </small>
       </div>
 

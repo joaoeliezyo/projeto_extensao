@@ -45,7 +45,8 @@ async function runMigration(poolOrConfig) {
       \`ordem\` INT NULL,
       CONSTRAINT \`fk_pa_projeto\` FOREIGN KEY (\`id_projeto\`) REFERENCES \`projeto_extensao\` (\`id_projeto\`) ON DELETE CASCADE,
       CONSTRAINT \`fk_pa_pessoa\` FOREIGN KEY (\`id_pessoa\`) REFERENCES \`pessoa\` (\`id_pessoa\`) ON DELETE CASCADE
-    ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;`
+    ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;`,
+    `ALTER TABLE projeto_assinatura ADD COLUMN tipo_assinatura INT NULL`
   ];
 
   for (const q of queries) {

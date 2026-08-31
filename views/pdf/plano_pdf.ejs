@@ -1,787 +1,671 @@
 <!DOCTYPE html>
 <html lang="pt-BR">
+
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Plano de Atividade de Extensão – UNI-CET</title>
-  <style>
-    /* --- RESET & BASICS --- */
-    *, *::before, *::after { 
-      box-sizing: border-box; 
-      margin: 0; 
-      padding: 0; 
-    }
-    body {
-      font-family: Arial, sans-serif;
-      font-size: 11px;
-      background-color: #d0d0d0;
-      color: #000;
-      line-height: 1.4;
-      padding: 20px;
-    }
-
-    /* --- CONFIGURAÇÃO RÍGIDA A4 (Design 2) --- */
-    .page {
-      background: #fff;
-      width: 210mm;
-      height: 297mm;
-      min-height: 297mm;
-      max-height: 297mm;
-      margin: 0 auto 20px auto;
-      padding: 1.2cm 1.5cm 1.5cm;
-      box-shadow: 0 0 14px rgba(0,0,0,0.35);
-      position: relative;
-      page-break-after: always;
-      overflow: hidden;
-    }
-
-    @media print {
-      body {
-        background: transparent;
-        padding: 0;
-        margin: 0;
-      }
-      .page {
-        box-shadow: none;
-        width: 100%;
-        padding: 1.2cm 1.5cm 1.5cm;
-        margin: 0;
-        border: none;
-      }
-      @page {
-        size: A4;
-        margin: 0;
-      }
-    }
-
-    /* --- CABEÇALHO INSTITUCIONAL --- */
-    .header-container {
-      display: flex;
-      align-items: flex-start;
-      gap: 14px;
-      padding-bottom: 10px;
-      border-bottom: 2px solid #000;
-      margin-bottom: 10px;
-    }
-    .logo-img {
-      flex-shrink: 0;
-      width: 130px;
-      max-height: 70px;
-      object-fit: contain;
-    }
-    .header-text {
-      font-size: 9.5px;
-      line-height: 1.5;
-      color: #000;
-    }
-    .header-text h1, .header-text h2 {
-      font-size: 9.5px;
-      font-weight: bold;
-      text-transform: uppercase;
-      margin: 0;
-    }
-
-    /* --- TÍTULOS PRINCIPAIS E DE SEÇÃO (Estilo Verde/Arredondado) --- */
-    .doc-title-container {
-      margin: 10px 0 15px;
-    }
-    .doc-title {
-      text-align: center;
-      font-size: 13px;
-      font-weight: bold;
-      letter-spacing: 1px;
-      padding: 6px 0 8px;
-      background-color: #c5e0b4;
-      border: 1px solid #b0b0b0;
-      border-radius: 6px;
-      text-transform: uppercase;
-      display: block;
-      width: 100%;
-    }
-    .section-title {
-      background-color: #c5e0b4;
-      color: #000;
-      font-weight: bold;
-      font-size: 11px;
-      padding: 4px 8px;
-      letter-spacing: 0.3px;
-      text-transform: uppercase;
-      border: 1px solid #b0b0b0;
-      border-radius: 4px;
-      margin: 16px 0 10px;
-    }
-    .subsection-title {
-      font-size: 11px;
-      font-weight: bold;
-      margin: 12px 0 6px 0;
-      text-transform: uppercase;
-      color: #111;
-      border-left: 3px solid #c5e0b4;
-      padding-left: 6px;
-    }
-
-    /* --- CAMPOS DE ENTRADA / LINHAS DE FORMULÁRIO --- */
-    .form-row {
-      display: flex;
-      margin: 8px 0;
-      align-items: flex-end;
-    }
-    .form-label {
-      font-weight: bold;
-      font-size: 11px;
-      margin-right: 6px;
-      white-space: nowrap;
-    }
-    .form-line {
-      flex-grow: 1;
-      border-bottom: 1px solid #b0b0b0;
-      min-height: 18px;
-      font-size: 11px;
-      padding-left: 4px;
-    }
-    .form-block-container {
-      margin: 8px 0;
-    }
-    .form-value-block {
-      width: 100%;
-      border: 1px solid #b0b0b0;
-      border-radius: 4px;
-      height: 200px;
-      padding: 8px;
-      font-size: 11px;
-      margin-top: 4px;
-      background-color: #fff;
-      overflow: hidden;
-      white-space: pre-wrap;
-    }
-
-    /* --- TABELAS --- */
-    table {
-      width: 100%;
-      border-collapse: collapse;
-      margin: 10px 0;
-      border: 1px solid #b0b0b0;
-    }
-    table th, table td {
-      border: 1px solid #b0b0b0;
-      padding: 5px 6px;
-      font-size: 11px;
-      vertical-align: top;
-    }
-    table th {
-      background-color: #c5e0b4; /* Cor verde do design padrão */
-      font-weight: bold;
-      text-align: center;
-      text-transform: uppercase;
-    }
-    .text-center { text-align: center; }
-    .text-right { text-align: right; }
-
-    /* --- AUTENTICAÇÃO & DATA --- */
-    .date-row {
-      margin: 25px 0;
-      font-size: 11px;
-    }
-    .sig-wrapper {
-      margin-top: 45px;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      gap: 40px;
-    }
-    .sig-container {
-      width: 100%;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-    }
-    .sig-line {
-      width: 65%;
-      border-bottom: 1px solid #000;
-      margin-bottom: 4px;
-    }
-    .sig-label {
-      font-size: 11px;
-      font-weight: bold;
-      text-align: center;
-    }
-
-    /* --- BLOCOS DE PARECER TÉCNICO --- */
-    .parecer-card {
-      border: 1px solid #b0b0b0;
-      border-radius: 6px;
-      margin-bottom: 12px;
-      overflow: hidden;
-      page-break-inside: avoid;
-    }
-    .parecer-title {
-      background-color: #c5e0b4;
-      border-bottom: 1px solid #b0b0b0;
-      padding: 4px 8px;
-      font-weight: bold;
-      font-size: 11px;
-      text-align: center;
-      text-transform: uppercase;
-    }
-    .parecer-inner {
-      padding: 8px 12px;
-      background-color: #fff;
-    }
-    .parecer-field {
-      font-weight: bold;
-      font-size: 11px;
-      margin-bottom: 3px;
-    }
-    .parecer-lines {
-      min-height: 45px;
-      border: 1px dashed #b0b0b0;
-      border-radius: 4px;
-      padding: 4px;
-      font-size: 11px;
-      margin-bottom: 6px;
-    }
-    .parecer-meta {
-      display: flex;
-      justify-content: space-between;
-      align-items: flex-end;
-      font-size: 10px;
-      margin-top: 6px;
-    }
-    .parecer-sig {
-      width: 180px;
-      border-top: 1px solid #000;
-      text-align: center;
-      padding-top: 2px;
-    }
-
-    .nde-grid {
-      display: grid;
-      grid-template-columns: repeat(2, 1fr);
-      gap: 12px 25px;
-      margin-top: 10px;
-    }
-    .nde-line-item {
-      display: flex;
-      align-items: flex-end;
-      font-size: 11px;
-    }
-    .nde-border {
-      flex-grow: 1;
-      border-bottom: 1px solid #b0b0b0;
-      margin-left: 5px;
-      min-height: 16px;
-    }
-
-    /* Estilo Premium para Assinatura Digital */
-    .digital-signature-badge {
-      display: inline-block;
-      width: 250pt;
-      border: 1.5pt solid #0056b3;
-      border-radius: 4px;
-      padding: 8pt 10pt;
-      margin: 10pt auto;
-      text-align: left;
-      font-family: Arial, sans-serif;
-      font-size: 8.5pt;
-      line-height: 1.4;
-      color: #333;
-      background-color: #f9fbfd;
-      box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
-      page-break-inside: avoid;
-    }
-    .digital-signature-header {
-      display: flex;
-      align-items: center;
-      font-weight: bold;
-      color: #0056b3;
-      border-bottom: 1px solid #d0e1fd;
-      padding-bottom: 4pt;
-      margin-bottom: 6pt;
-      text-transform: uppercase;
-      font-size: 9pt;
-      letter-spacing: 0.5px;
-    }
-    .digital-signature-field {
-      margin: 3px 0;
-    }
-    .digital-signature-field strong {
-      color: #111;
-    }
-    .digital-signature-hash {
-      font-family: monospace;
-      font-size: 8pt;
-      color: #555;
-      word-break: break-all;
-      background: #f1f3f5;
-      padding: 1px 3px;
-      border-radius: 2px;
-    }
-  </style>
+  <link rel="stylesheet" href="/css/pdf.css">
 </head>
+
 <body>
 
-<%
-  const p = projeto || {};
-  const formatDate = (d) => {
+  <% const p=projeto || {}; const formatDate=(d)=> {
     if (!d) return '___/___/______';
     try {
-      const dt = new Date(d);
-      const dd = String(dt.getDate()).padStart(2, '0');
-      const mm = String(dt.getMonth() + 1).padStart(2, '0');
-      const yyyy = dt.getFullYear();
-      return dd + '/' + mm + '/' + yyyy;
+    const dt = new Date(d);
+    const dd = String(dt.getDate()).padStart(2, '0');
+    const mm = String(dt.getMonth() + 1).padStart(2, '0');
+    const yyyy = dt.getFullYear();
+    return dd + '/' + mm + '/' + yyyy;
     } catch(e) { return '___/___/______'; }
-  };
-  const formatBR = (valor) => {
+    };
+    const formatBR = (valor) => {
     const num = Number(valor);
     if (Number.isNaN(num)) return valor ?? '0,00';
     return num.toLocaleString('pt-BR', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
-  };
-  const safe = (val) => val || '';
-  const maskCpf = (cpf) => {
+    };
+    const safe = (val) => val || '';
+    const maskCpf = (cpf) => {
     if (!cpf) return '***.***.***-**';
     const clean = cpf.replace(/\D/g, '');
     if (clean.length !== 11) return cpf;
     return `***.${clean.substring(3, 6)}.${clean.substring(6, 9)}-**`;
-  };
-  const formatDataHora = (data) => {
+    };
+    const formatDataHora = (data) => {
     if (!data) return '';
     const dObj = new Date(data);
     if (Number.isNaN(dObj.getTime())) return data;
     return dObj.toLocaleString('pt-BR', { timeZone: 'America/Sao_Paulo' });
-  };
-  
-  // Helpers para data de autenticação
-  const dataRef = p.created_at ? new Date(p.created_at) : new Date();
-  const authDia = String(dataRef.getDate()).padStart(2, '0');
-  const meses = ['janeiro','fevereiro','março','abril','maio','junho','julho','agosto','setembro','outubro','novembro','dezembro'];
-  const authMes = meses[dataRef.getMonth()];
-  const authAnoStr = String(dataRef.getFullYear()).slice(-2);
-%>
+    };
+    const getPessoasStr = () => {
+    if (!p.pessoas || p.pessoas.length === 0) return '';
+    return p.pessoas.map(pe => pe.nome + ' (' + pe.papel + (pe.disciplina ? ' - ' + pe.disciplina : '') +
+    (pe.cargahoraria ? ' - ' + pe.cargahoraria + 'h' : '') + ')').join(', ');
+    };
+    const getCursosStr = () => {
+    if (!p.cursos || p.cursos.length === 0) return '___';
+    return p.cursos.map(c => c.nome_curso).join(', ');
+    };
 
-  <div class="page">
-    <div class="header-container">
-      <% if (typeof logoSrc !== 'undefined' && logoSrc) { %>
-        <img src="<%= logoSrc %>" alt="UNI-CET Centro Universitário" class="logo-img">
-      <% } else { %>
-        <img src="/imagens/logo-unicet.png" alt="UNI-CET Centro Universitário" class="logo-img">
-      <% } %>
-      <div class="header-text">
-        <h1>CENTRO DE EDUCAÇÃO TECNOLÓGICA DE TERESINA – CET</h1>
-        <h2>CENTRO UNIVERSITÁRIO TECNOLÓGICO DE TERESINA – UNI-CET</h2>
+    // Helpers para data de autenticação
+    const dataRef = p.created_at ? new Date(p.created_at) : new Date();
+    const authDia = String(dataRef.getDate()).padStart(2, '0');
+    const meses =
+    ['janeiro','fevereiro','março','abril','maio','junho','julho','agosto','setembro','outubro','novembro','dezembro'];
+    const authMes = meses[dataRef.getMonth()];
+    const authAnoStr = String(dataRef.getFullYear()).slice(-2);
+    %>
+
+    <div class="page">
+      <div class="header-container">
+        <% if (typeof logoSrc !=='undefined' && logoSrc) { %>
+          <img src="<%= logoSrc %>" alt="UNI-CET Centro Universitário" class="logo-img">
+          <% } else { %>
+            <img src="/imagens/logo-unicet.png" alt="UNI-CET Centro Universitário" class="logo-img">
+            <% } %>
+              <div class="header-text">
+                <h1>CENTRO DE EDUCAÇÃO TECNOLÓGICA DE TERESINA – CET</h1>
+                <h2>CENTRO UNIVERSITÁRIO TECNOLÓGICO DE TERESINA – UNI-CET</h2>
+              </div>
       </div>
-    </div>
 
-    <div class="doc-title-container">
-      <div class="doc-title">PLANO DE ATIVIDADE DE EXTENSÃO</div>
-    </div>
-
-    <div class="form-row" style="margin-bottom: 15px;">
-      <div class="form-label">TIPO DE EXTENSÃO:</div>
-      <div class="form-line" style="font-weight: bold; font-size: 12px;"><%= safe(p.tipo_plano_nome) %></div>
-    </div>
-
-    <div class="section-title">I- IDENTIFICAÇÃO</div>
-
-    <div class="form-row">
-      <div class="form-label">TÍTULO:</div>
-      <div class="form-line"><%= safe(p.titulo) %></div>
-    </div>
-
-    <div class="form-row">
-      <div class="form-label">LINHA PROGRAMÁTICA / PROGRAMA:</div>
-      <div class="form-line"><%= (p.linhas && p.linhas.length > 0) ? p.linhas.map(l => l.nome).join(', ') : '___' %></div>
-    </div>
-
-    <div class="form-row">
-      <div class="form-label">TIPO DE AÇÃO:</div>
-      <div class="form-line"><%= (p.tiposAcao && p.tiposAcao.length > 0) ? p.tiposAcao.map(t => t.nome).join(', ') : '___' %></div>
-    </div>
-
-    <div class="section-title" style="margin-top: 20px;">INSTITUIÇÃO(ÕES) ENVOLVIDA(AS)</div>
-    <% if (p.instituicoes && p.instituicoes.length > 0) { %>
-      <% p.instituicoes.forEach((inst) => { %>
-      <div class="form-row">
-        <div class="form-label"><%= inst.tipo.toUpperCase() %>:</div>
-        <div class="form-line"><%= inst.nome %> (<%= inst.sigla %>)</div>
+      <div class="doc-title-container">
+        <div class="doc-title">PLANO DE ATIVIDADE DE EXTENSÃO</div>
       </div>
-      <% }) %>
-    <% } %>
 
-    <div style="margin-top: 25px;">
-      <div class="form-row"><div class="form-label">COORDENADOR RESPONSÁVEL:</div><div class="form-line"><%= safe(p.coordenador_nome) %></div></div>
-      <div class="form-row"><div class="form-label">PROFESSORES E TÉCNICOS ENVOLVIDOS:</div><div class="form-line"><%= p.pessoas && p.pessoas.length > 0 ? p.pessoas.map(pe => pe.nome + ' (' + pe.papel + ')').join(', ') : '' %></div></div>
-      <div class="form-row"><div class="form-label">CURSOS ENVOLVIDOS:</div><div class="form-line"><%= (p.cursos && p.cursos.length > 0) ? p.cursos.map(c => c.nome_curso).join(', ') : '___' %></div></div>
-      <div class="form-row"><div class="form-label">PERÍODO DE REALIZAÇÃO:</div><div class="form-line"><%= formatDate(p.periodo_inicio) %> à <%= formatDate(p.periodo_fim) %></div></div>
-      <div class="form-row">
-        <div class="form-label">LOCAL DE EXECUÇÃO:</div>
-        <div class="form-line">
-          <% if (p.locais && p.locais.length > 0) { %>
-            <% p.locais.forEach((loc, i) => { %><%= loc.endereco %> - <%= loc.bairro %>, <%= loc.cidade %><%= i < p.locais.length - 1 ? '; ' : '' %><% }) %>
-          <% } %>
+      <div class="form-row" style="margin-bottom: 15px;">
+        <div class="form-label">TIPO DE EXTENSÃO:</div>
+        <div class="form-line" style="font-weight: bold; font-size: 12px;">
+          <%= safe(p.tipo_plano_nome) %>
         </div>
       </div>
-      <div class="form-row"><div class="form-label">CARGA HORÁRIA TOTAL:</div><div class="form-line"><%= p.carga_horaria_total ? p.carga_horaria_total + ' horas' : '___' %></div></div>
-    </div>
-  </div>
 
-  <div class="page">
-    <div class="header-container">
-      <% if (typeof logoSrc !== 'undefined' && logoSrc) { %>
-        <img src="<%= logoSrc %>" alt="UNI-CET Centro Universitário" class="logo-img">
-      <% } else { %>
-        <img src="/imagens/logo-unicet.png" alt="UNI-CET Centro Universitário" class="logo-img">
-      <% } %>
-      <div class="header-text">
-        <h1>CENTRO DE EDUCAÇÃO TECNOLÓGICA DE TERESINA – CET</h1>
-        <h2>CENTRO UNIVERSITÁRIO TECNOLÓGICO DE TERESINA – UNI-CET</h2>
+      <div class="section-title">I- IDENTIFICAÇÃO</div>
+      <div class="form-row">
+        <div class="form-label">TÍTULO:</div>
+        <div class="form-line">
+          <%= safe(p.titulo) %>
+        </div>
       </div>
-    </div>
 
-    <div class="form-row" style="margin-bottom: 15px;">
-      <div class="form-label">PÚBLICO-ALVO:</div>
-      <div class="form-line" style="font-weight: bold;"><%= safe(p.publico_alvo_nome) %></div>
-    </div>
-
-    <div class="section-title">II- OBJETIVO(S)</div>
-    <div class="form-block-container">
-      <div class="form-value-block"><%= safe(p.objetivo) %></div>
-    </div>
-
-    <div class="section-title">III- METODOLOGIA</div>
-    <div class="form-block-container">
-      <div class="form-value-block" style="height: 220px;"><%= safe(p.metodologia) %></div>
-    </div>
-
-    <div class="section-title">IV- CRONOGRAMA DE ATIVIDADES E AÇÕES</div>
-    <table>
-      <thead>
-        <tr>
-          <th style="width: 6%;">Nº</th>
-          <th style="width: 54%;">Etapa</th>
-          <th style="width: 14%;">Data</th>
-          <th style="width: 11%;">Hora</th>
-          <th style="width: 15%;">Local</th>
-        </tr>
-      </thead>
-      <tbody>
-        <% if (p.cronograma && p.cronograma.length > 0) { %>
-          <% p.cronograma.forEach((c, i) => { %>
-          <tr>
-            <td class="text-center"><%= c.numero || (i + 1) %></td>
-            <td><%= c.etapa || '' %></td>
-            <td class="text-center"><%= formatDate(c.data) %></td>
-            <td class="text-center"><%= c.hora || '' %></td>
-            <td><%= c.local || '' %></td>
-          </tr>
-          <% }) %>
-        <% } else { %>
-          <tr>
-            <td colspan="5" class="text-center">Nenhum cronograma cadastrado.</td>
-          </tr>
-        <% } %>
-      </tbody>
-    </table>
-  </div>
-
-  <div class="page">
-    <div class="header-container">
-      <% if (typeof logoSrc !== 'undefined' && logoSrc) { %>
-        <img src="<%= logoSrc %>" alt="UNI-CET Centro Universitário" class="logo-img">
-      <% } else { %>
-        <img src="/imagens/logo-unicet.png" alt="UNI-CET Centro Universitário" class="logo-img">
-      <% } %>
-      <div class="header-text">
-        <h1>CENTRO DE EDUCAÇÃO TECNOLÓGICA DE TERESINA – CET</h1>
-        <h2>CENTRO UNIVERSITÁRIO TECNOLÓGICO DE TERESINA – UNI-CET</h2>
+      <div class="form-row">
+        <div class="form-label">LINHA PROGRAMÁTICA / PROGRAMA:</div>
+        <div class="form-line">
+          <%= (p.linhas && p.linhas.length> 0) ? p.linhas.map(l => l.nome).join(', ') : '___' %>
+        </div>
       </div>
-    </div>
 
-    <div class="section-title">V- CUSTOS DO PROJETO</div>
-    <table>
-      <thead>
-        <tr>
-          <th style="width: 8%;">Nº</th>
-          <th style="width: 35%;">Descrição da Despesa</th>
-          <th style="width: 10%;">Quantidade</th>
-          <th style="width: 15%;">Valor Unitário (R$)</th>
-          <th style="width: 15%;">Valor Total (R$)</th>
-          <th style="width: 17%;">Justificativa</th>
-        </tr>
-      </thead>
-      <tbody>
-        <% let totalGeral=0; %>
-        <% if (p.custos && p.custos.length > 0) { %>
-          <% p.custos.forEach((cu, idx) => { %>
-            <% const qtd = Number(cu.quantitativo || 0); const unit = Number(cu.valor_unitario || 0); const vt = qtd * unit; totalGeral += vt; %>
+      <div class="form-row">
+        <div class="form-label">TIPO DE AÇÃO:</div>
+        <div class="form-line">
+          <%= (p.tiposAcao && p.tiposAcao.length> 0) ? p.tiposAcao.map(t => t.nome).join(', ') : '___' %>
+        </div>
+      </div>
+
+      <div class="form-row">
+        <div class="form-label">INSTITUIÇÃO(ÕES) ENVOLVIDA(AS)</div>
+      </div>
+      <div class="form-line">
+        <% if (p.instituicoes && p.instituicoes.length> 0) { %>
+          <% p.instituicoes.forEach((inst)=> { %>
+
+            <%= inst.tipo.toUpperCase() %>:
+              <%= inst.nome %> (<%= inst.sigla %>)
+                  <% }) %>
+                    <% } %>
+      </div>
+      <!-- fim das instituições envolvidas-->
+
+      <div class="form-row">
+        <div class="form-label">COORDENADOR RESPONSÁVEL:</div>
+      </div>
+      <div class="form-line">
+        <%= safe(p.coordenador_nome) %>
+      </div>
+      <!-- Coordenador Responsável-->
+
+      <div class="form-row">
+        <div class="form-label">PROFESSORES E TÉCNICOS ENVOLVIDOS:</div>
+      </div>
+      <div class="form-line">
+        <%= getPessoasStr() %>
+      </div>
+
+      <!-- Professores e Técnicos Envolvidos-->
+      <div class="form-row">
+        <div class="form-label">CURSOS ENVOLVIDOS:</div>
+      </div>
+      <div class="form-line">
+        <%= getCursosStr() %>
+      </div>
+
+      <!-- Cursos Envolvidos-->
+      <div class="form-row">
+        <div class="form-label" ">PERÍODO DE REALIZAÇÃO:</div>
+      </div>
+      <div class=" form-line">
+          <%= formatDate(p.periodo_inicio) %> à <%= formatDate(p.periodo_fim) %>
+        </div>
+
+        <!-- Período de Realização-->
+        <div class="form-row">
+          <div class="form-label">LOCAL DE EXECUÇÃO:</div>
+        </div>
+        <div class="form-line">
+          <% if (p.locais && p.locais.length> 0) { %>
+            <% p.locais.forEach((loc, i)=> { %><%= loc.endereco %> - <%= loc.bairro %>, <%= loc.cidade %>
+                    <%= i < p.locais.length - 1 ? '; ' : '' %>
+                      <% }) %>
+                        <% } %>
+        </div>
+
+        <!-- Local de Execução-->
+
+        <div class="form-row">
+          <div class="form-label">CARGA HORÁRIA TOTAL:</div>
+        </div>
+        <div class="form-line">
+          <%= p.carga_horaria_total ? p.carga_horaria_total + ' horas' : '___' %>
+        </div>
+        <!-- Carga horária total-->
+
+        <div class="form-row">
+          <div class="form-label">PÚBLICO-ALVO:</div>
+        </div>
+        <div class="form-line">
+          <%= safe(p.publico_alvo_nome) %>
+        </div>
+
+        <!-- Público-alvo-->
+        <div class="section-title">II- OBJETIVO(S)</div>
+        <div class="form-block-container">
+          <div class="form-value-block" style="white-space: normal;">
+            <%- safe(p.objetivo) %>
+          </div>
+        </div>
+
+        <div class="section-title">III- METODOLOGIA</div>
+        <div class="form-block-container">
+          <div class="form-value-block" style="white-space: normal;">
+            <%- safe(p.metodologia) %>
+          </div>
+        </div>
+
+        <div class="section-title">IV- CRONOGRAMA DE ATIVIDADES E AÇÕES</div>
+        <table>
+          <thead>
             <tr>
-              <td class="text-center"><%= idx + 1 %></td>
-              <td><%= cu.descricao || '' %></td>
-              <td class="text-center"><%= cu.quantitativo || '' %></td>
-              <td class="text-right"><%= formatBR(unit) %></td>
-              <td class="text-right"><%= formatBR(vt) %></td>
-              <td><%= cu.justificativa || '' %></td>
+              <th style="width: 6%;">Nº</th>
+              <th style="width: 54%;">Etapa</th>
+              <th style="width: 14%;">Data</th>
+              <th style="width: 11%;">Hora</th>
+              <th style="width: 15%;">Local</th>
             </tr>
-          <% }) %>
-        <% } %>
-        <tr>
-          <td colspan="4" class="text-right" style="font-weight: bold; padding-right: 8px;">Total Geral</td>
-          <td class="text-right" style="font-weight: bold;"><%= formatBR(totalGeral) %></td>
-          <td></td>
-        </tr>
-      </tbody>
-    </table>
+          </thead>
+          <tbody>
+            <% if (p.cronograma && p.cronograma.length> 0) { %>
+              <% p.cronograma.forEach((c, i)=> { %>
+                <tr>
+                  <td class="text-center">
+                    <%= c.numero || (i + 1) %>
+                  </td>
+                  <td>
+                    <%= c.etapa || '' %>
+                  </td>
+                  <td class="text-center">
+                    <%= formatDate(c.data) %>
+                  </td>
+                  <td class="text-center">
+                    <%= c.hora || '' %>
+                  </td>
+                  <td>
+                    <%= c.local || '' %>
+                  </td>
+                </tr>
+                <% }) %>
+                  <% } else { %>
+                    <tr>
+                      <td colspan="5" class="text-center">Nenhum cronograma cadastrado.</td>
+                    </tr>
+                    <% } %>
+          </tbody>
+        </table>
+        <!-- fim das custas-->
+        <div class="section-title">V- CUSTOS DO PROJETO</div>
+        <table>
+          <thead>
+            <tr>
+              <th style="width: 8%;">Nº</th>
+              <th style="width: 35%;">Descrição da Despesa</th>
+              <th style="width: 10%;">Quantidade</th>
+              <th style="width: 15%;">Valor Unitário (R$)</th>
+              <th style="width: 15%;">Valor Total (R$)</th>
+              <th style="width: 17%;">Justificativa</th>
+            </tr>
+          </thead>
+          <tbody>
+            <% let totalGeral=0; %>
+              <% if (p.custos && p.custos.length> 0) { %>
+                <% p.custos.forEach((cu, idx)=> { %>
+                  <% const qtd=Number(cu.quantitativo || 0); const unit=Number(cu.valor_unitario || 0); const vt=qtd *
+                    unit; totalGeral +=vt; %>
+                    <tr>
+                      <td class="text-center">
+                        <%= idx + 1 %>
+                      </td>
+                      <td>
+                        <%= cu.descricao || '' %>
+                      </td>
+                      <td class="text-center">
+                        <%= cu.quantitativo || '' %>
+                      </td>
+                      <td class="text-right">
+                        <%= formatBR(unit) %>
+                      </td>
+                      <td class="text-right">
+                        <%= formatBR(vt) %>
+                      </td>
+                      <td>
+                        <%= cu.justificativa || '' %>
+                      </td>
+                    </tr>
+                    <% }) %>
+                      <% } %>
+                        <tr>
+                          <td colspan="4" class="text-right" style="font-weight: bold; padding-right: 8px;">Total
+                            Geral
+                          </td>
+                          <td class="text-right" style="font-weight: bold;">
+                            <%= formatBR(totalGeral) %>
+                          </td>
+                          <td></td>
+                        </tr>
+          </tbody>
+        </table>
 
-    <div class="subsection-title" style="margin-top: 15px;">Fonte de Recursos:</div>
-    <div class="form-line" style="min-height: 24px; margin-bottom: 20px;"></div>
+        <!--
+      <div class="subsection-title" style="margin-top: 15px;">Fonte de Recursos:</div>
+      <div class="form-line" style="min-height: 24px; margin-bottom: 20px;"></div>
+      -->
+        <div class="section-title">VI- RESULTADOS ESPERADOS</div>
+        <div class="form-block-container">
+          <div class="form-value-block" style="white-space: normal;">
+            <%- safe(p.resultados_esperados) %>
+          </div>
+        </div>
+        <div class=" section-title">VII- AVALIAÇÃO</div>
+          <div class="form-block-container">
+            <div class="form-value-block" style="white-space: normal;">
+            <%- safe(p.avaliacao_descricao) %>
+          </div>
+        </div>
+      </div> <!-- fim do bloco do formulario-->
+    </div> <!-- fim da pagina-->
 
-    <div class="section-title">VI- RESULTADOS ESPERADOS</div>
-    <div class="form-block-container">
-      <div class="form-value-block" style="height: 180px;"><%= safe(p.resultados_esperados) %></div>
-    </div>
+    <div class=" page">
+              <div class="header-container">
+                <% if (typeof logoSrc !=='undefined' && logoSrc) { %>
+                  <img src="<%= logoSrc %>" alt="UNI-CET Centro Universitário" class="logo-img">
+                  <% } else { %>
+                    <img src="/imagens/logo-unicet.png" alt="UNI-CET Centro Universitário" class="logo-img">
+                    <% } %>
+                      <div class="header-text">
+                        <h1>CENTRO DE EDUCAÇÃO TECNOLÓGICA DE TERESINA – CET</h1>
+                        <h2>CENTRO UNIVERSITÁRIO TECNOLÓGICO DE TERESINA – UNI-CET</h2>
+                      </div>
+              </div>
+              <div class="section-title" style="text-align: center;">
+                VIII- RESULTADOS ALCANÇADOS (INDICADORES QUALITATIVOS E QUANTITATIVOS)
+              </div>
+              <div class="doc-title-container" style="margin: 5px 0 15px 0;">
+                <div class="doc-title" style="font-size: 11px;">QUESTIONÁRIO DE AVALIAÇÃO DE IMPACTO DA AÇÃO
+                  EXTENSIONISTA
+                </div>
+              </div>
 
-    <div class="section-title">VII- AVALIAÇÃO</div>
-    <div class="form-block-container">
-      <div class="form-value-block" style="height: 180px;"><%= safe(p.avaliacao_descricao) %></div>
-    </div>
-  </div>
+              <div style="margin: 10px 0;">
+                <div class="form-row">
+                  <div class="form-label">Nome da Ação Extensionista:</div>
+                  <div class="form-line"></div>
+                </div>
+                <div class="form-row">
+                  <div class="form-label">Instituição:</div>
+                  <div class="form-line"></div>
+                </div>
+                <div class="form-row">
+                  <div class="form-label">Data da realização:</div>
+                  <div class="form-line"></div>
+                </div>
+                <div class="form-row">
+                  <div class="form-label">Tipo de ação selecionada:</div>
+                  <div class="form-line" style="font-weight: bold;"></div>
+                </div>
+                <div class="form-row">
+                  <div class="form-label">Local de realização:</div>
+                  <div class="form-line"></div>
+                </div>
+              </div>
 
-  <div class="page">
-    <div class="header-container">
-      <% if (typeof logoSrc !== 'undefined' && logoSrc) { %>
-        <img src="<%= logoSrc %>" alt="UNI-CET Centro Universitário" class="logo-img">
-      <% } else { %>
-        <img src="/imagens/logo-unicet.png" alt="UNI-CET Centro Universitário" class="logo-img">
-      <% } %>
-      <div class="header-text">
-        <h1>CENTRO DE EDUCAÇÃO TECNOLÓGICA DE TERESINA – CET</h1>
-        <h2>CENTRO UNIVERSITÁRIO TECNOLÓGICO DE TERESINA – UNI-CET</h2>
-      </div>
-    </div>
+              <div class="section-title" style="margin-top: 20px;">1. Perfil dos participantes</div>
+              <div class="form-row">
+                <div class="form-label">1.1. Faixa etária selecionada:</div>
+                <div class="form-line"></div>
+              </div>
+              <div class="form-row">
+                <div class="form-label">1.2. Escolaridade selecionada:</div>
+                <div class="form-line"></div>
+              </div>
+              <div class="form-row">
+                <div class="form-label">1.3. Reside na comunidade/localidade atendida?</div>
+                <div class="form-line"></div>
+              </div>
 
-    <div class="section-title" style="text-align: center;">
-      VIII- RESULTADOS ALCANÇADOS (INDICADORES QUALITATIVOS E QUANTITATIVOS)
-    </div>
-    <div class="doc-title-container" style="margin: 5px 0 15px 0;">
-      <div class="doc-title" style="font-size: 11px;">QUESTIONÁRIO DE AVALIAÇÃO DE IMPACTO DA AÇÃO EXTENSIONISTA</div>
-    </div>
+              <div class="section-title" style="margin-top: 20px;">2. Avaliação da Ação Extensionista</div>
+              <div class="form-row">
+                <div class="form-label">2.1. Avaliação dos conteúdos/aprendizados oferecidos:</div>
+                <div class="form-line"></div>
+              </div>
+              <div class="form-row">
+                <div class="form-label">2.2. A ação atendeu às suas expectativas?</div>
+                <div class="form-line"></div>
+              </div>
+              <div class="form-row">
+                <div class="form-label">2.3. Os facilitadores/professores/orientadores foram claros e acessíveis?
+                </div>
+                <div class="form-line"></div>
+              </div>
+              <div class="form-row">
+                <div class="form-label">2.4. Houve espaço para escuta e participação da comunidade?</div>
+                <div class="form-line"></div>
+              </div>
+              <div class="form-row">
+                <div class="form-label">2.5. A estrutura e organização da ação foram adequadas?</div>
+                <div class="form-line"></div>
+              </div>
 
-    <div style="margin: 10px 0;">
-      <div class="form-row"><div class="form-label">Nome da Ação Extensionista:</div><div class="form-line"></div></div>
-      <div class="form-row"><div class="form-label">Instituição:</div><div class="form-line"></div></div>
-      <div class="form-row"><div class="form-label">Data da realização:</div><div class="form-line"></div></div>
-      <div class="form-row"><div class="form-label">Tipo de ação selecionada:</div><div class="form-line" style="font-weight: bold;"></div></div>
-      <div class="form-row"><div class="form-label">Local de realização:</div><div class="form-line"></div></div>
-    </div>
+              <div class="section-title">3. Percepção de Impacto na Sua Vida / Comunidade</div>
+              <div class="form-row">
+                <div class="form-label">3.1. Após participar da ação, sente-se mais capacitado(a) ou informado(a)?
+                </div>
+                <div class="form-line"></div>
+              </div>
+              <div class="form-row">
+                <div class="form-label">3.2. A ação contribuiu para melhorar algum aspectoda sua vida?</div>
+                <div class="form-line"></div>
+              </div>
+              <div class="form-row">
+                <div class="form-label" style="padding-left: 15px;">Descrição do aspecto melhorado:</div>
+                <div class="form-line"></div>
+              </div>
+              <div class="form-row">
+                <div class="form-label">3.3. Pretende aplicar os conhecimentos adquiridos na sua rotina?</div>
+                <div class="form-line"></div>
+              </div>
+              <div class="form-row">
+                <div class="form-label" style="padding-left: 15px;">Justificativa / Motivo:</div>
+                <div class="form-line"></div>
+              </div>
+              <div class="form-row">
+                <div class="form-label">3.4. Você recomendaria essa ação para outras pessoas?</div>
+                <div class="form-line"></div>
+              </div>
 
-    <div class="section-title" style="margin-top: 20px;">1. Perfil dos participantes</div>
-    <div class="form-row"><div class="form-label">1.1. Faixa etária selecionada:</div><div class="form-line"></div></div>
-    <div class="form-row"><div class="form-label">1.2. Escolaridade selecionada:</div><div class="form-line"></div></div>
-    <div class="form-row"><div class="form-label">1.3. Reside na comunidade/localidade atendida?</div><div class="form-line"></div></div>
+              <div class="section-title">4. Sugestões e Comentários (Avaliação Qualitativa)</div>
+              <div class="form-row">
+                <div class="form-label">4.1. O que você mais gostou na ação?</div>
+                <div class="form-line"></div>
+              </div>
+              <div class="form-row">
+                <div class="form-label">4.2. O que poderia ser melhorado?</div>
+                <div class="form-line"></div>
+              </div>
+              <div class="form-row">
+                <div class="form-label">4.3. Deseja sugerir outras ações ou temas para futuras atividades?</div>
+                <div class="form-line"></div>
+              </div>
 
-    <div class="section-title" style="margin-top: 20px;">2. Avaliação da Ação Extensionista</div>
-    <div class="form-row"><div class="form-label">2.1. Avaliação dos conteúdos/aprendizados oferecidos:</div><div class="form-line"></div></div>
-    <div class="form-row"><div class="form-label">2.2. A ação atendeu às suas expectativas?</div><div class="form-line"></div></div>
-    <div class="form-row"><div class="form-label">2.3. Os facilitadores/professores/orientadores foram claros e acessíveis?</div><div class="form-line"></div></div>
-    <div class="form-row"><div class="form-label">2.4. Houve espaço para escuta e participação da comunidade?</div><div class="form-line"></div></div>
-    <div class="form-row"><div class="form-label">2.5. A estrutura e organização da ação foram adequadas?</div><div class="form-line"></div></div>
-  </div>
-
-  <div class="page">
-    <div class="header-container">
-      <% if (typeof logoSrc !== 'undefined' && logoSrc) { %>
-        <img src="<%= logoSrc %>" alt="UNI-CET Centro Universitário" class="logo-img">
-      <% } else { %>
-        <img src="/imagens/logo-unicet.png" alt="UNI-CET Centro Universitário" class="logo-img">
-      <% } %>
-      <div class="header-text">
-        <h1>CENTRO DE EDUCAÇÃO TECNOLÓGICA DE TERESINA – CET</h1>
-        <h2>CENTRO UNIVERSITÁRIO TECNOLÓGICO DE TERESINA – UNI-CET</h2>
-      </div>
-    </div>
-
-    <div class="section-title">3. Percepção de Impacto na Sua Vida / Comunidade</div>
-    <div class="form-row"><div class="form-label">3.1. Após participar da ação, sente-se mais capacitado(a) ou informado(a)?</div><div class="form-line"></div></div>
-    <div class="form-row"><div class="form-label">3.2. A ação contribuiu para melhorar algum aspectoda sua vida?</div><div class="form-line"></div></div>
-    <div class="form-row"><div class="form-label" style="padding-left: 15px;">Descrição do aspecto melhorado:</div><div class="form-line"></div></div>
-    <div class="form-row"><div class="form-label">3.3. Pretende aplicar os conhecimentos adquiridos na sua rotina?</div><div class="form-line"></div></div>
-    <div class="form-row"><div class="form-label" style="padding-left: 15px;">Justificativa / Motivo:</div><div class="form-line"></div></div>
-    <div class="form-row"><div class="form-label">3.4. Você recomendaria essa ação para outras pessoas?</div><div class="form-line"></div></div>
-
-    <div class="subsection-title">4. Sugestões e Comentários (Avaliação Qualitativa)</div>
-    <div style="margin: 6px 0;">
-      <p style="font-weight: bold;">4.1. O que você mais gostou na ação?</p>
-      <div class="form-line" style="min-height: 28px; margin-top: 2px;"></div>
-    </div>
-    <div style="margin: 6px 0;">
-      <p style="font-weight: bold;">4.2. O que poderia ser melhorado?</p>
-      <div class="form-line" style="min-height: 28px; margin-top: 2px;"></div>
-    </div>
-    <div style="margin: 6px 0;">
-      <p style="font-weight: bold;">4.3. Deseja sugerir outras ações ou temas para futuras atividades?</p>
-      <div class="form-line" style="min-height: 28px; margin-top: 2px;"></div>
-    </div>
-
-    <div class="subsection-title">5. Consentimento</div>
-    <div class="form-row">
-      <div class="form-label" style="font-weight: normal;">Autoriza o uso das informações garantindo o anonimato?</div>
-      <div class="form-line" style="font-weight: bold;"></div>
-    </div>
-
-    <div class="section-title">IX - REFERÊNCIAS</div>
-    <div class="form-line" style="min-height: 35px; margin-bottom: 15px;"><%= safe(p.referencias) %></div>
-
-    <div class="section-title">X- AUTENTICAÇÃO</div>
-    <div class="date-row">
-      Teresina, <span style="border-bottom: 1px solid #000; min-width: 35px; display: inline-block; text-align: center;"><%= authDia %></span> de <span style="border-bottom: 1px solid #000; min-width: 90px; display: inline-block; text-align: center;"><%= authMes %></span> de 20<span style="border-bottom: 1px solid #000; min-width: 30px; display: inline-block; text-align: center;"><%= authAnoStr %></span>.
-    </div>
-
-    <% if (p.assinaturas && p.assinaturas.length > 0) { %>
-      <div style="display: flex; flex-wrap: wrap; justify-content: center; gap: 15px; margin-top: 20px;">
-        <% p.assinaturas.forEach(ass => { %>
-          <div class="digital-signature-badge">
-            <div class="digital-signature-header">
-              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" style="vertical-align: middle; margin-right: 4px; color: #0056b3;"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"></path><path d="m9 12 2 2 4-4"></path></svg>
-              Assinado Digitalmente
+              <div class="section-title">5. Consentimento</div>
+              <div class="form-row">
+                <div class="form-label" style="font-weight: normal;">Autoriza o uso das informações garantindo o
+                  anonimato?
+                </div>
+                <div class="form-line"></div>
+              </div>
             </div>
-            <div class="digital-signature-field"><strong>Nome:</strong> <%= ass.nome %></div>
-            <div class="digital-signature-field"><strong>CPF:</strong> <%= maskCpf(ass.cpf) %></div>
-            <div class="digital-signature-field"><strong>Data/Hora:</strong> <%= formatDataHora(ass.data_hora) %></div>
-            <div class="digital-signature-field" style="font-size: 7.5pt; margin-top: 4px; border-top: 1px dashed #d0e1fd; padding-top: 3px;">
-              <strong>Chave Validação:</strong> <span class="digital-signature-hash"><%= ass.Assinatura %></span>
+
+            <div class="page">
+              <div class="header-container">
+                <% if (typeof logoSrc !=='undefined' && logoSrc) { %>
+                  <img src="<%= logoSrc %>" alt="UNI-CET Centro Universitário" class="logo-img">
+                  <% } else { %>
+                    <img src="/imagens/logo-unicet.png" alt="UNI-CET Centro Universitário" class="logo-img">
+                    <% } %>
+                      <div class="header-text">
+                        <h1>CENTRO DE EDUCAÇÃO TECNOLÓGICA DE TERESINA – CET</h1>
+                        <h2>CENTRO UNIVERSITÁRIO TECNOLÓGICO DE TERESINA – UNI-CET</h2>
+                      </div>
+              </div>
+
+              <div class="section-title">IX - REFERÊNCIAS</div>
+              <div class="form-line" style="min-height: 35px; margin-bottom: 15px; white-space: normal; height: auto;">
+                <%- safe(p.referencias) %>
+              </div>
+
+              <div class="section-title">X- AUTENTICAÇÃO</div>
+              <div class="date-row">
+                Teresina, <span
+                  style="border-bottom: 1px solid #000; min-width: 35px; display: inline-block; text-align: center;">
+                  <%= authDia %>
+                </span> de <span
+                  style="border-bottom: 1px solid #000; min-width: 90px; display: inline-block; text-align: center;">
+                  <%= authMes %>
+                </span> de 20<span
+                  style="border-bottom: 1px solid #000; min-width: 30px; display: inline-block; text-align: center;">
+                  <%= authAnoStr %>
+                </span>.
+              </div>
+
+              <div style="margin-top: 25px;">
+                <!-- 1. Área dos Professores -->
+                <div style="font-weight: bold; font-size: 11pt; border-bottom: 2px solid #0056b3; padding-bottom: 5px; margin-bottom: 15px; text-transform: uppercase; color: #0056b3;">
+                  Professor(es)
+                </div>
+                <% if (p.assinaturasProfessoresPlano && p.assinaturasProfessoresPlano.length > 0) { %>
+                  <div style="display: flex; flex-direction: column; gap: 12px; margin-bottom: 20px;">
+                    <% p.assinaturasProfessoresPlano.forEach(ass => { %>
+                      <div class="assinatura-box" style="display: flex; justify-content: center; align-items: center; gap: 20px; border: 1px solid #d0e1fd; padding: 10px 15px; border-radius: 8px; background-color: #f8fbff; max-width: 550px; margin: 0 auto; page-break-inside: avoid;">
+                        <!-- Imagem Unicet -->
+                        <div>
+                          <img src="<%= logoSrc %>" alt="Unicet" style="width: 75px; height: 75px; object-fit: contain;">
+                        </div>
+                        <!-- Nome e Código de Validação -->
+                        <div style="text-align: center; margin: 0 15px; flex: 1;">
+                          <p style="margin: 0; font-weight: bold; font-size: 10.5pt; text-transform: uppercase; color: #333;">
+                            <%= ass.nome %>
+                          </p>
+                          <p style="margin: 5px 0 0 0; font-size: 9pt; color: #555; line-height: 1.2;">
+                            Código de validação:<br>
+                            <strong style="font-family: monospace; font-size: 10pt; color: #111;"><%= ass.Assinatura %></strong>
+                          </p>
+                        </div>
+                        <!-- QR Code -->
+                        <div>
+                          <% const url_validacao = baseUrl + '/validar?codigo=' + ass.Assinatura; %>
+                          <img src="https://api.qrserver.com/v1/create-qr-code/?size=70x70&data=<%= encodeURIComponent(url_validacao) %>"
+                               alt="QR Code de Validação" style="width: 70px; height: 70px;">
+                        </div>
+                      </div>
+                    <% }) %>
+                  </div>
+                <% } else { %>
+                  <div class="sig-wrapper" style="margin-bottom: 25px;">
+                    <div class="sig-container">
+                      <div class="sig-line"></div>
+                      <div class="sig-label">Docente responsável</div>
+                    </div>
+                  </div>
+                <% } %>
+
+                <!-- 2. Área dos Coordenadores -->
+                <div style="font-weight: bold; font-size: 11pt; border-bottom: 2px solid #0056b3; padding-bottom: 5px; margin-top: 25px; margin-bottom: 15px; text-transform: uppercase; color: #0056b3;">
+                  Coordenação(ões)
+                </div>
+                <% if (p.assinaturasCoordenadoresPlano && p.assinaturasCoordenadoresPlano.length > 0) { %>
+                  <div style="display: flex; flex-direction: column; gap: 12px; margin-bottom: 20px;">
+                    <% p.assinaturasCoordenadoresPlano.forEach(ass => { %>
+                      <div class="assinatura-box" style="display: flex; justify-content: center; align-items: center; gap: 20px; border: 1px solid #d0e1fd; padding: 10px 15px; border-radius: 8px; background-color: #f8fbff; max-width: 550px; margin: 0 auto; page-break-inside: avoid;">
+                        <!-- Imagem Unicet -->
+                        <div>
+                          <img src="<%= logoSrc %>" alt="Unicet" style="width: 75px; height: 75px; object-fit: contain;">
+                        </div>
+                        <!-- Nome e Código de Validação -->
+                        <div style="text-align: center; margin: 0 15px; flex: 1;">
+                          <p style="margin: 0; font-weight: bold; font-size: 10.5pt; text-transform: uppercase; color: #333;">
+                            <%= ass.nome %>
+                          </p>
+                          <p style="margin: 5px 0 0 0; font-size: 9pt; color: #555; line-height: 1.2;">
+                            Código de validação:<br>
+                            <strong style="font-family: monospace; font-size: 10pt; color: #111;"><%= ass.Assinatura %></strong>
+                          </p>
+                        </div>
+                        <!-- QR Code -->
+                        <div>
+                          <% const url_validacao = baseUrl + '/validar?codigo=' + ass.Assinatura; %>
+                          <img src="https://api.qrserver.com/v1/create-qr-code/?size=70x70&data=<%= encodeURIComponent(url_validacao) %>"
+                               alt="QR Code de Validação" style="width: 70px; height: 70px;">
+                        </div>
+                      </div>
+                    <% }) %>
+                  </div>
+                <% } else { %>
+                  <div class="sig-wrapper">
+                    <div class="sig-container">
+                      <div class="sig-line"></div>
+                      <div class="sig-label">Coordenador(a) de Curso responsável</div>
+                    </div>
+                  </div>
+                <% } %>
+              </div>
             </div>
           </div>
-        <% }) %>
-      </div>
-    <% } else { %>
-      <div class="sig-wrapper">
-        <div class="sig-container">
-          <div class="sig-line"></div>
-          <div class="sig-label">Docente responsável</div>
-        </div>
-        <div class="sig-container">
-          <div class="sig-line"></div>
-          <div class="sig-label">Coordenador(a) de Curso responsável</div>
-        </div>
-      </div>
-    <% } %>
-  </div>
+          <!--
+          <div class="page">
+            <div class="header-container">
+              <% if (typeof logoSrc !=='undefined' && logoSrc) { %>
+                <img src="<%= logoSrc %>" alt="UNI-CET Centro Universitário" class="logo-img">
+                <% } else { %>
+                  <img src="/imagens/logo-unicet.png" alt="UNI-CET Centro Universitário" class="logo-img">
+                  <% } %>
+                    <div class="header-text">
+                      <h1>CENTRO DE EDUCAÇÃO TECNOLÓGICA DE TERESINA – CET</h1>
+                      <h2>CENTRO UNIVERSITÁRIO TECNOLÓGICO DE TERESINA – UNI-CET</h2>
+                    </div>
+            </div>
 
-  <div class="page">
-    <div class="header-container">
-      <% if (typeof logoSrc !== 'undefined' && logoSrc) { %>
-        <img src="<%= logoSrc %>" alt="UNI-CET Centro Universitário" class="logo-img">
-      <% } else { %>
-        <img src="/imagens/logo-unicet.png" alt="UNI-CET Centro Universitário" class="logo-img">
-      <% } %>
-      <div class="header-text">
-        <h1>CENTRO DE EDUCAÇÃO TECNOLÓGICA DE TERESINA – CET</h1>
-        <h2>CENTRO UNIVERSITÁRIO TECNOLÓGICO DE TERESINA – UNI-CET</h2>
-      </div>
-    </div>
+            <div class="doc-title-container" style="margin-bottom: 15px;">
+              <div class="doc-title" style="font-size: 11px;">PARECER TÉCNICO</div>
+            </div>
 
-    <div class="doc-title-container" style="margin-bottom: 15px;">
-      <div class="doc-title" style="font-size: 11px;">PARECER TÉCNICO</div>
-    </div>
+            <div class="parecer-card">
+              <div class="parecer-title">PRÓ-REITORIA DE PÓS-GRADUAÇÃO, PESQUISA, EXTENSÃO E CURSOS LIVRES</div>
+              <div class="parecer-inner">
+                <div class="parecer-field">PARECER:</div>
+                <div class="parecer-lines"></div>
+                <div class="parecer-meta">
+                  <div>Teresina, ___ de ______________ de 20____.</div>
+                  <div class="parecer-sig">Assinatura</div>
+                </div>
+              </div>
+            </div>
 
-    <div class="parecer-card">
-      <div class="parecer-title">PRÓ-REITORIA DE PÓS-GRADUAÇÃO, PESQUISA, EXTENSÃO E CURSOS LIVRES</div>
-      <div class="parecer-inner">
-        <div class="parecer-field">PARECER:</div>
-        <div class="parecer-lines"></div>
-        <div class="parecer-meta">
-          <div>Teresina, ___ de ______________ de 20____.</div>
-          <div class="parecer-sig">Assinatura</div>
-        </div>
-      </div>
-    </div>
+            <div class="parecer-card">
+              <div class="parecer-title">PRÓ-REITORIA EXECUTIVA DE ADMINISTRAÇÃO, INOVAÇÃO E TECNOLOGIA</div>
+              <div class="parecer-inner">
+                <div class="parecer-field">PARECER:</div>
+                <div class="parecer-lines"></div>
+                <div class="parecer-meta">
+                  <div>Teresina, ___ de ______________ de 20____.</div>
+                  <div class="parecer-sig">Assinatura</div>
+                </div>
+              </div>
+            </div>
 
-    <div class="parecer-card">
-      <div class="parecer-title">PRÓ-REITORIA EXECUTIVA DE ADMINISTRAÇÃO, INOVAÇÃO E TECNOLOGIA</div>
-      <div class="parecer-inner">
-        <div class="parecer-field">PARECER:</div>
-        <div class="parecer-lines"></div>
-        <div class="parecer-meta">
-          <div>Teresina, ___ de ______________ de 20____.</div>
-          <div class="parecer-sig">Assinatura</div>
-        </div>
-      </div>
-    </div>
+            <div class="parecer-card">
+              <div class="parecer-title">PRÓ-REITORIA DE ENSINO DE GRADUAÇÃO E APRENDIZAGEM, CULTURA, RELAÇÃO
+                COMUNITÁRIA E
+                RESPONSABILIDADE SOCIAL</div>
+              <div class="parecer-inner">
+                <div class="parecer-field">PARECER:</div>
+                <div class="parecer-lines"></div>
+                <div class="parecer-meta">
+                  <div>Teresina, ___ de ______________ de 20____.</div>
+                  <div class="parecer-sig">Assinatura</div>
+                </div>
+              </div>
+            </div>
 
-    <div class="parecer-card">
-      <div class="parecer-title">PRÓ-REITORIA DE ENSINO DE GRADUAÇÃO E APRENDIZAGEM, CULTURA, RELAÇÃO COMUNITÁRIA E RESPONSABILIDADE SOCIAL</div>
-      <div class="parecer-inner">
-        <div class="parecer-field">PARECER:</div>
-        <div class="parecer-lines"></div>
-        <div class="parecer-meta">
-          <div>Teresina, ___ de ______________ de 20____.</div>
-          <div class="parecer-sig">Assinatura</div>
-        </div>
-      </div>
-    </div>
+            <div class="parecer-card" style="margin-bottom: 0;">
+              <div class="parecer-title">GERÊNCIA DE PESQUISA, EXTENSÃO E CURSOS LIVRES</div>
+              <div class="parecer-inner">
+                <div class="parecer-field">PARECER:</div>
+                <div class="parecer-lines"></div>
+                <div class="parecer-meta">
+                  <div>Teresina, ___ de ______________ de 20____.</div>
+                  <div class="parecer-sig">Assinatura</div>
+                </div>
+              </div>
+            </div>
+            <div class="parecer-card">
+              <div class="parecer-title">COORDENADORIA DO NÚCLEO DE APOIO PEDAGÓGICO - NAP</div>
+              <div class="parecer-inner">
+                <div class="parecer-field">PARECER:</div>
+                <div class="parecer-lines" style="min-height: 70px;"></div>
+                <div class="parecer-meta">
+                  <div>Teresina, ___ de ______________ de 20____.</div>
+                  <div class="parecer-sig">Assinatura</div>
+                </div>
+              </div>
+            </div>
 
-    <div class="parecer-card" style="margin-bottom: 0;">
-      <div class="parecer-title">GERÊNCIA DE PESQUISA, EXTENSÃO E CURSOS LIVRES</div>
-      <div class="parecer-inner">
-        <div class="parecer-field">PARECER:</div>
-        <div class="parecer-lines"></div>
-        <div class="parecer-meta">
-          <div>Teresina, ___ de ______________ de 20____.</div>
-          <div class="parecer-sig">Assinatura</div>
-        </div>
-      </div>
-    </div>
-  </div>
+            <div class="parecer-card" style="margin-bottom: 0;">
+              <div class="parecer-title">NÚCLEO DOCENTE ESTRUTURANTE - NDE</div>
+              <div class="parecer-inner">
+                <div class="parecer-field">PARECER:</div>
+                <div class="parecer-lines" style="min-height: 80px;"></div>
 
-  <div class="page">
-    <div class="header-container">
-      <% if (typeof logoSrc !== 'undefined' && logoSrc) { %>
-        <img src="<%= logoSrc %>" alt="UNI-CET Centro Universitário" class="logo-img">
-      <% } else { %>
-        <img src="/imagens/logo-unicet.png" alt="UNI-CET Centro Universitário" class="logo-img">
-      <% } %>
-      <div class="header-text">
-        <h1>CENTRO DE EDUCAÇÃO TECNOLÓGICA DE TERESINA – CET</h1>
-        <h2>CENTRO UNIVERSITÁRIO TECNOLÓGICO DE TERESINA – UNI-CET</h2>
-      </div>
-    </div>
+                <div style="font-size: 11px; margin: 12px 0 5px 0;">
+                  Teresina, ___ de ______________ de 20____.
+                </div>
 
-    <div class="parecer-card">
-      <div class="parecer-title">COORDENADORIA DO NÚCLEO DE APOIO PEDAGÓGICO - NAP</div>
-      <div class="parecer-inner">
-        <div class="parecer-field">PARECER:</div>
-        <div class="parecer-lines" style="min-height: 70px;"></div>
-        <div class="parecer-meta">
-          <div>Teresina, ___ de ______________ de 20____.</div>
-          <div class="parecer-sig">Assinatura</div>
-        </div>
-      </div>
-    </div>
-
-    <div class="parecer-card" style="margin-bottom: 0;">
-      <div class="parecer-title">NÚCLEO DOCENTE ESTRUTURANTE - NDE</div>
-      <div class="parecer-inner">
-        <div class="parecer-field">PARECER:</div>
-        <div class="parecer-lines" style="min-height: 80px;"></div>
-        
-        <div style="font-size: 11px; margin: 12px 0 5px 0;">
-          Teresina, ___ de ______________ de 20____.
-        </div>
-        
-        <div class="parecer-field" style="margin-top: 20px; margin-bottom: 5px;">Assinaturas:</div>
-        <div class="nde-grid">
-          <div class="nde-line-item"><span>1.</span><div class="nde-border"></div></div>
-          <div class="nde-line-item"><span>2.</span><div class="nde-border"></div></div>
-          <div class="nde-line-item"><span>3.</span><div class="nde-border"></div></div>
-          <div class="nde-line-item"><span>4.</span><div class="nde-border"></div></div>
-          <div class="nde-line-item" style="grid-column: span 2; width: 50%; margin: 8px auto 0 auto;"><span>5.</span><div class="nde-border"></div></div>
-        </div>
-      </div>
-    </div>
-  </div>
-
-  <script>
-    window.onload = function() { window.print(); };
-  </script>
+                <div class="parecer-field" style="margin-top: 20px; margin-bottom: 5px;">Assinaturas:</div>
+                <div class="nde-grid">
+                  <div class="nde-line-item"><span>1.</span>
+                    <div class="nde-border"></div>
+                  </div>
+                  <div class="nde-line-item"><span>2.</span>
+                    <div class="nde-border"></div>
+                  </div>
+                  <div class="nde-line-item"><span>3.</span>
+                    <div class="nde-border"></div>
+                  </div>
+                  <div class="nde-line-item"><span>4.</span>
+                    <div class="nde-border"></div>
+                  </div>
+                  <div class="nde-line-item" style="grid-column: span 2; width: 50%; margin: 8px auto 0 auto;">
+                    <span>5.</span>
+                    <div class="nde-border"></div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        -->
+          <!--
+          <script>
+            window.onload = function () { window.print(); };
+          </script>          
+-->
 </body>
+
 </html>

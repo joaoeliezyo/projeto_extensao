@@ -3,6 +3,10 @@ const router = express.Router();
 const projeto_extensaoController = require('../controllers/projeto_extensaoController');
 const questionarioController = require('../controllers/questionarioController');
 const uploadAnexosProjeto = require('../middleware/uploadAnexosProjeto');
+const { checkProjectAccess } = require('../middleware/authMiddleware');
+
+// Validar acesso a qualquer rota baseada em id de projeto específico
+router.use('/:id', checkProjectAccess);
 
 // Listagem
 router.get('/', projeto_extensaoController.listprojeto_extensaos);
@@ -50,7 +54,21 @@ router.get('/:id/plano/pdf', projeto_extensaoController.gerarPdfPlano);
 
 // Relatório de Extensão
 router.get('/:id/relatorio', projeto_extensaoController.showRelatorio);
-router.post('/:id/relatorio', projeto_extensaoController.saveRelatorio);
+
+const uploadArrayRelatorio = uploadAnexosProjeto.array('anexos_files', 20);
+router.post(
+  '/:id/relatorio',
+  (req, res, next) => {
+    uploadArrayRelatorio(req, res, (err) => {
+      if (err) {
+        req.session.flash = { type: 'error', message: 'Erro no upload: ' + err.message };
+        return res.redirect(`/projeto_extensao/${req.params.id}/relatorio`);
+      }
+      next();
+    });
+  },
+  projeto_extensaoController.saveRelatorio
+);
 router.get('/:id/relatorio/pdf', projeto_extensaoController.gerarPdfRelatorio);
 
 // Questionários de impacto vinculados ao projeto
@@ -85,21 +103,33 @@ router.get('/:id/confirm-delete', projeto_extensaoController.showConfirmDeleteFo
 router.get('/:id/delete', projeto_extensaoController.deleteprojeto_extensao);
 router.post('/:id/delete', projeto_extensaoController.deleteprojeto_extensao);
 
+const uploadArrayCadastrar = uploadAnexosProjeto.array('anexos', 20);
 router.post(
   '/cadastrar',
   (req, res, next) => {
-    next();
-  },
-  uploadAnexosProjeto.array('anexos', 20),
-  (req, res, next) => {
-    next();
+    uploadArrayCadastrar(req, res, (err) => {
+      if (err) {
+        req.session.flash = { type: 'error', message: 'Erro no upload: ' + err.message };
+        return res.redirect('/projeto_extensao/forms/projeto_extensao');
+      }
+      next();
+    });
   },
   projeto_extensaoController.addprojeto_extensao
 );
 
+const uploadArrayEdit = uploadAnexosProjeto.array('anexos', 20);
 router.post(
   '/:id/edit',
-  uploadAnexosProjeto.array('anexos', 20),
+  (req, res, next) => {
+    uploadArrayEdit(req, res, (err) => {
+      if (err) {
+        req.session.flash = { type: 'error', message: 'Erro no upload: ' + err.message };
+        return res.redirect(`/projeto_extensao/${req.params.id}/edit`);
+      }
+      next();
+    });
+  },
   projeto_extensaoController.editprojeto_extensao
 );
 

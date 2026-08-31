@@ -4,6 +4,7 @@ const router = express.Router();
 const pessoaController = require('../controllers/pessoaController');
 const pessoaModel = require('../models/pessoaModel');
 const pool = require('../db');
+const { authorize } = require('../middleware/authMiddleware');
 
 async function carregarOpcoespessoa() {
   const [tiposPessoa] = await pool.query('SELECT id_tipo_pessoa, descricao FROM tipo_pessoa');
@@ -45,8 +46,8 @@ router.post('/filtro', pessoaController.filterpessoas);
 router.post('/cadastrar', pessoaController.addpessoas);
 
 // ⚠️ Rotas com :id sempre por último
-router.get('/:id/edit', pessoaController.showEditForm);
-router.post('/:id/edit', pessoaController.editpessoas);
+router.get('/:id/edit', authorize('admin'), pessoaController.showEditForm);
+router.post('/:id/edit', authorize('admin'), pessoaController.editpessoas);
 router.post('/:id/delete', pessoaController.deletepessoas);
 router.get('/:id/confirm-delete', pessoaController.showConfirmDeleteForm);
 router.get('/:id', pessoaController.showpessoas);

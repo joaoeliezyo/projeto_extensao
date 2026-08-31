@@ -59,7 +59,41 @@ const options = cursosDisponiveis.map(curso => `
 
 function removerBlocoCurso(id) {
   const bloco = document.getElementById(`bloco-${id}`);
-  if (bloco) bloco.remove();
+  if (bloco) {
+    bloco.remove();
+    recalcularSomaCargaHoraria();
+  }
+}
+
+function filtrarProfessoresPorPeriodo(blocoId, periodo) {
+  const containerContador = document.querySelector(`#bloco-${blocoId} .container-contador-${blocoId}`);
+  const containerConfirmar = document.querySelector(`#bloco-${blocoId} .container-confirmar-${blocoId}`);
+  const chipsContainer = document.getElementById(`chips-container-${blocoId}`);
+  
+  if (!chipsContainer) return;
+
+  const chips = chipsContainer.querySelectorAll('.prof-chip');
+  
+  if (!periodo) {
+    if (containerContador) containerContador.setAttribute('style', 'display: none !important');
+    if (containerConfirmar) containerConfirmar.setAttribute('style', 'display: none !important');
+    chips.forEach(chip => {
+      chip.style.display = 'none';
+    });
+    return;
+  }
+
+  if (containerContador) containerContador.setAttribute('style', 'display: flex !important');
+  if (containerConfirmar) containerConfirmar.setAttribute('style', 'display: block !important');
+
+  chips.forEach(chip => {
+    const chipPeriodo = chip.getAttribute('data-periodo');
+    if (chipPeriodo === periodo) {
+      chip.style.display = 'inline-flex';
+    } else {
+      chip.style.display = 'none';
+    }
+  });
 }
 
 function selecionarCurso(id, cursoId) {
@@ -90,19 +124,38 @@ function selecionarCurso(id, cursoId) {
     return;
   }
 
-  // Render the selectable list (starts visible)
+  // Extrai períodos letivos únicos dos professores deste curso
+  const periods = [...new Set(curso.professores.map(p => p.periodo_letivo).filter(Boolean))]
+    .sort((a, b) => b.localeCompare(a));
+
+  const periodOptions = periods.map(p => `<option value="${p}">${p}</option>`).join('');
+
+  // Render the selectable list with a Periodo Letivo select dropdown (starts visible)
   listaProfs.innerHTML = `
     <div style="border:1px solid #e5e7eb; border-radius:8px; padding:12px; background:#fafbfc">
-      <div class="d-flex justify-content-between align-items-center" style="margin-bottom:10px">
+      <!-- Select do Período Letivo -->
+      <div class="mb-3">
+        <label class="form-label fw-semibold" style="font-size:0.75rem; color:#374151" for="periodo_${id}">
+          <i class="bi bi-calendar-event"></i> Período Letivo da Disciplina
+        </label>
+        <select class="form-select form-select-sm" id="periodo_${id}" onchange="filtrarProfessoresPorPeriodo('${id}', this.value)" style="font-size:0.813rem">
+          <option value="">-- Selecione o Período Letivo --</option>
+          ${periodOptions}
+        </select>
+      </div>
+
+      <div class="d-flex justify-content-between align-items-center mb-2 container-contador-${id}" style="display:none !important">
         <span style="font-size:0.75rem; font-weight:600; color:#374151">
           <i class="bi bi-people"></i> Selecione os professores
         </span>
         <span class="text-muted" style="font-size:0.688rem" id="contador-${id}">0 selecionado(s)</span>
       </div>
-      <div style="display:flex; flex-wrap:wrap; gap:6px;">
+      
+      <!-- Container dos Chips -->
+      <div style="display:flex; flex-wrap:wrap; gap:6px;" id="chips-container-${id}">
         ${curso.professores.map(prof => `
-          <label class="prof-chip" for="prof_${id}_${prof.id_pessoa}" style="
-            display:inline-flex; align-items:center; gap:6px;
+          <label class="prof-chip" for="prof_${id}_${prof.id_pessoa}" data-periodo="${prof.periodo_letivo}" style="
+            display:none; align-items:center; gap:6px;
             padding:6px 12px; border-radius:20px;
             border:1.5px solid #d1d5db; background:#fff;
             font-size:0.813rem; cursor:pointer;
@@ -115,7 +168,8 @@ function selecionarCurso(id, cursoId) {
           </label>
         `).join('')}
       </div>
-      <div style="margin-top:10px; text-align:right">
+
+      <div style="margin-top:10px; text-align:right; display:none !important" class="container-confirmar-${id}">
         <button type="button" class="btn btn-sm btn-primary" style="font-size:0.688rem; padding:4px 14px; border-radius:6px" onclick="confirmarProfessores('${id}')">
           <i class="bi bi-check-lg"></i> Confirmar
         </button>
@@ -154,16 +208,56 @@ function toggleProfChip(checkbox, blocoId) {
   }
 }
 
+function escapeHtml(str) {
+  if (!str) return '';
+  return String(str)
+    .replace(/&/g, "&amp;")
+    .replace(/</g, "&lt;")
+    .replace(/>/g, "&gt;")
+    .replace(/"/g, "&quot;")
+    .replace(/'/g, "&#039;");
+}
+
+function updateProfDados(blocoId, profId, campo, valor) {
+  const input = document.getElementById(`prof_${blocoId}_${profId}`);
+  if (input) {
+    input.setAttribute(`data-${campo}`, valor);
+    if (campo === 'cargahoraria') {
+      recalcularSomaCargaHoraria();
+    }
+  }
+}
+
 function confirmarProfessores(id) {
   const listaProfs = document.getElementById(`lista-profs-${id}`);
   const resumoProfs = document.getElementById(`resumo-profs-${id}`);
   if (!listaProfs || !resumoProfs) return;
 
   const checks = listaProfs.querySelectorAll('input.form-check-input:checked');
-  const selecionados = Array.from(checks).map(cb => ({
-    id: cb.value,
-    nome: cb.getAttribute('data-nome')
-  }));
+  const selecionados = Array.from(checks).map(cb => {
+    const nomeCompleto = cb.getAttribute('data-nome') || '';
+    const idx = nomeCompleto.indexOf(' - ');
+    const profNome = idx !== -1 ? nomeCompleto.substring(0, idx).trim() : nomeCompleto;
+    
+    let disciplinaPadrao = '';
+    if (idx !== -1) {
+      disciplinaPadrao = nomeCompleto.substring(idx + 3).trim();
+    }
+    
+    const disciplina = cb.getAttribute('data-disciplina') || disciplinaPadrao;
+    
+    // Salva de volta no checkbox para persistência e envio
+    if (!cb.getAttribute('data-disciplina')) {
+      cb.setAttribute('data-disciplina', disciplina);
+    }
+
+    return {
+      id: cb.value,
+      nome: profNome,
+      disciplina: disciplina,
+      cargahoraria: cb.getAttribute('data-cargahoraria') || 0
+    };
+  });
 
   // Hide the full list
   listaProfs.style.display = 'none';
@@ -179,28 +273,50 @@ function confirmarProfessores(id) {
       </div>
     `;
   } else {
-    const tags = selecionados.map(p => `
-      <span style="display:inline-flex; align-items:center; gap:4px; padding:4px 10px; border-radius:16px; background:#e8f3ec; border:1px solid #b6dfc4; font-size:0.75rem; font-weight:600; color:#14532d">
-        <i class="bi bi-person-check" style="font-size:0.688rem"></i> ${p.nome}
-      </span>
-    `).join('');
+    const rows = selecionados.map(p => {
+      const discVal = p.disciplina || '';
+      const chVal = p.cargahoraria || 0;
+      return `
+        <div style="display:flex; flex-wrap:wrap; align-items:center; justify-content:space-between; gap:10px; padding:8px 0; border-bottom:1px solid #f3f4f6">
+          <div style="flex:1; min-width:200px; display:flex; align-items:center; gap:6px;">
+            <i class="bi bi-person-check-fill" style="color:#1c6e36; font-size:0.875rem"></i>
+            <span style="font-size:0.813rem; font-weight:600; color:#1f2937">${p.nome}</span>
+          </div>
+          <div style="display:flex; gap:10px; flex-wrap:wrap; align-items:center;">
+            <div style="display:flex; align-items:center; gap:4px;">
+              <span style="font-size:0.75rem; color:#4b5563">Disciplina:</span>
+              <input type="text" class="form-control form-control-sm" style="width:160px; font-size:0.75rem; padding:2px 6px" 
+                value="${escapeHtml(discVal)}" placeholder="Ex: Estatística" 
+                oninput="updateProfDados('${id}', '${p.id}', 'disciplina', this.value)">
+            </div>
+            <div style="display:flex; align-items:center; gap:4px;">
+              <span style="font-size:0.75rem; color:#4b5563">Qtd Horas:</span>
+              <input type="number" class="form-control form-control-sm" style="width:70px; font-size:0.75rem; padding:2px 6px" 
+                value="${chVal}" min="0" placeholder="0" 
+                oninput="updateProfDados('${id}', '${p.id}', 'cargahoraria', this.value)">
+            </div>
+          </div>
+        </div>
+      `;
+    }).join('');
 
     resumoProfs.innerHTML = `
-      <div style="border:1px solid #e5e7eb; border-radius:8px; padding:10px 12px; background:#fafbfc">
-        <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:8px">
-          <span style="font-size:0.75rem; font-weight:600; color:#374151">
-            <i class="bi bi-people-fill" style="color:#1c6e36"></i> ${selecionados.length} professor(es) selecionado(s)
+      <div style="border:1px solid #e5e7eb; border-radius:8px; padding:12px; background:#fafbfc">
+        <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:12px; border-bottom:1.5px solid #e5e7eb; padding-bottom:8px">
+          <span style="font-size:0.813rem; font-weight:700; color:#374151">
+            <i class="bi bi-people-fill" style="color:#1c6e36"></i> Equipe Docente Selecionada (${selecionados.length})
           </span>
           <button type="button" class="btn btn-sm btn-outline-primary" style="font-size:0.688rem; padding:2px 10px; border-radius:6px" onclick="editarProfessores('${id}')">
-            <i class="bi bi-pencil"></i> Editar
+            <i class="bi bi-pencil"></i> Editar Seleção
           </button>
         </div>
-        <div style="display:flex; flex-wrap:wrap; gap:6px">${tags}</div>
+        <div style="display:flex; flex-direction:column; gap:4px">${rows}</div>
       </div>
     `;
   }
 
   resumoProfs.style.display = 'block';
+  recalcularSomaCargaHoraria();
 }
 
 function editarProfessores(id) {
@@ -210,6 +326,18 @@ function editarProfessores(id) {
 
   resumoProfs.style.display = 'none';
   listaProfs.style.display = 'block';
+}
+
+function recalcularSomaCargaHoraria() {
+  const inputs = document.querySelectorAll('.bloco-curso input.form-check-input:checked');
+  let total = 0;
+  inputs.forEach(input => {
+    total += parseInt(input.getAttribute('data-cargahoraria')) || 0;
+  });
+  const campoCH = document.getElementById('campo-ch');
+  if (campoCH) {
+    campoCH.value = total;
+  }
 }
 
 function prepararEnvio() {
@@ -223,7 +351,11 @@ function prepararEnvio() {
 
     const professores = Array.from(
       bloco.querySelectorAll('input.form-check-input:checked')
-    ).map(input => input.value);
+    ).map(input => ({
+      id_pessoa: input.value,
+      disciplina: input.getAttribute('data-disciplina') || '',
+      cargahoraria: parseInt(input.getAttribute('data-cargahoraria')) || 0
+    }));
 
     resultado.push({ cursoId, professores });
   });
@@ -367,6 +499,9 @@ document.addEventListener('DOMContentLoaded', function () {
   window.confirmarProfessores = confirmarProfessores;
   window.editarProfessores = editarProfessores;
   window.removerAnexo = removerAnexo;
+  window.updateProfDados = updateProfDados;
+  window.filtrarProfessoresPorPeriodo = filtrarProfessoresPorPeriodo;
+  window.recalcularSomaCargaHoraria = recalcularSomaCargaHoraria;
   
   inicializarAnexos();
 
@@ -389,11 +524,28 @@ document.addEventListener('DOMContentLoaded', function () {
             selecionarCurso(idDoBloco, item.cursoId);
 
             if (Array.isArray(item.professores)) {
-              item.professores.forEach(profId => {
+              item.professores.forEach(profObj => {
+                const isObj = typeof profObj === 'object' && profObj !== null;
+                const profId = isObj ? profObj.id_pessoa : profObj;
                 const checkbox = ultimoBloco.querySelector(`input.form-check-input[value="${profId}"]`);
                 if (checkbox) {
                   checkbox.checked = true;
+                  if (isObj) {
+                    checkbox.setAttribute('data-disciplina', profObj.disciplina || '');
+                    checkbox.setAttribute('data-cargahoraria', profObj.cargahoraria || '0');
+                  }
                   toggleProfChip(checkbox, idDoBloco);
+
+                  // Seleciona o período letivo com base no professor restaurado
+                  const chip = checkbox.closest('.prof-chip');
+                  if (chip) {
+                    const period = chip.getAttribute('data-periodo');
+                    const selectPeriod = ultimoBloco.querySelector(`#periodo_${idDoBloco}`);
+                    if (selectPeriod && period) {
+                      selectPeriod.value = period;
+                      filtrarProfessoresPorPeriodo(idDoBloco, period);
+                    }
+                  }
                 }
               });
               // Auto-confirm to show summary
@@ -406,6 +558,7 @@ document.addEventListener('DOMContentLoaded', function () {
       console.error('Erro ao carregar seleções prévias:', error);
     }
   }
+  recalcularSomaCargaHoraria();
 });
 function removerAnexoSalvo(idProjeto, idAnexo, from) {
   if (!confirm('Deseja remover este anexo?')) return;
@@ -437,14 +590,20 @@ function editarLocal(id, endereco, bairro, cidade, cep) {
   div.scrollIntoView({ behavior: 'smooth' });
 }
 
-function editarInstituicao(id, nome, sigla, id_tipo) {
+function preencherDadosInstituicao(select) {
+  const opt = select.options[select.selectedIndex];
+  document.getElementById('display-inst-sigla').value = opt ? (opt.dataset.sigla || '') : '';
+  document.getElementById('display-inst-tipo').value = opt ? (opt.dataset.tipo || '') : '';
+}
+
+function editarInstituicao(id) {
   const div = document.getElementById('form-add-inst');
   const form = div.querySelector('form');
   div.style.display = 'block';
   form.action = form.action.replace(/\/instituicao(\/.*)?$/, '') + '/instituicao/' + id + '/edit';
-  form.querySelector('[name="nome"]').value = nome;
-  form.querySelector('[name="sigla"]').value = sigla;
-  form.querySelector('[name="id_tipo_instituicao"]').value = id_tipo;
+  const select = form.querySelector('#select-instituicao');
+  select.value = id;
+  preencherDadosInstituicao(select);
   form.querySelector('button[type="submit"]').innerHTML = '<i class="bi bi-check-lg"></i> Salvar Alterações';
   div.scrollIntoView({ behavior: 'smooth' });
 }

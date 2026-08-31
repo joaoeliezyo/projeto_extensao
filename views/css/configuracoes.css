@@ -1,0 +1,208 @@
+.config-tabs {
+  flex-wrap: wrap;
+  gap: 2px;
+  border-bottom: 2px solid var(--line);
+}
+
+.config-tabs .nav-link {
+  font-size: 0.7rem;
+  padding: 7px 10px;
+  color: var(--muted);
+  border: 1px solid transparent;
+  border-bottom: none;
+  border-radius: var(--radius-xs) var(--radius-xs) 0 0;
+  white-space: nowrap;
+}
+
+.config-tabs .nav-link.active {
+  color: var(--brand);
+  font-weight: 700;
+  background: #fff;
+  border-color: var(--line);
+  border-bottom-color: #fff;
+  margin-bottom: -2px;
+}
+
+.config-tabs .nav-link:hover:not(.active) {
+  color: var(--text);
+  background: var(--bg);
+}
+
+.cfg-table {
+  font-size: 0.813rem;
+  margin-bottom: 0;
+}
+
+.cfg-table th {
+  font-size: 0.7rem;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  color: var(--muted);
+  padding: 8px 12px;
+}
+
+.cfg-table td {
+  padding: 6px 12px;
+  vertical-align: middle;
+}
+
+.cfg-actions {
+  display: flex;
+  gap: 4px;
+  align-items: center;
+}
+
+.cfg-actions .btn {
+  padding: 3px 7px;
+  font-size: 0.7rem;
+}
+
+.cfg-text {
+  font-size: 0.813rem;
+}
+
+.cfg-edit-form input {
+  font-size: 0.813rem;
+  padding: 4px 8px;
+}
+
+tr.cfg-editing {
+  background: #fefce8 !important;
+}
+
+/* Modal */
+.cfg-modal-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(0, 0, 0, 0.4);
+  z-index: 9999;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.cfg-modal {
+  background: #fff;
+  border-radius: var(--radius);
+  padding: 24px;
+  max-width: 480px;
+  width: 90%;
+  box-shadow: 0 8px 30px rgba(0, 0, 0, 0.15);
+}
+
+.cfg-modal h5 {
+  font-size: 0.938rem;
+  margin-bottom: 16px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.cfg-modal .cfg-modal-field {
+  margin-bottom: 12px;
+}
+
+.cfg-modal .cfg-modal-field label {
+  font-size: 0.75rem;
+  font-weight: 600;
+  margin-bottom: 4px;
+  display: block;
+  color: var(--text);
+}
+
+.cfg-modal .cfg-modal-field input,
+.cfg-modal .cfg-modal-field select {
+  width: 100%;
+  padding: 8px 10px;
+  border: 1px solid var(--line);
+  border-radius: var(--radius-xs);
+  font-size: 0.813rem;
+}
+
+.cfg-modal .cfg-modal-field input:focus,
+.cfg-modal .cfg-modal-field select:focus {
+  border-color: var(--brand);
+  outline: none;
+  box-shadow: 0 0 0 3px rgba(28, 110, 54, 0.1);
+}
+
+.cfg-modal .cfg-modal-actions {
+  display: flex;
+  gap: 8px;
+  justify-content: flex-end;
+  margin-top: 16px;
+}
+
+.cfg-modal .cfg-confirm-name {
+  font-weight: 700;
+  color: var(--text);
+  background: var(--bg);
+  padding: 2px 6px;
+  border-radius: 4px;
+}
+
+.cfg-modal p {
+  font-size: 0.813rem;
+  color: var(--muted);
+  margin-bottom: 12px;
+}
+
+.cfg-modal input.cfg-input-error {
+  border-color: var(--bs-danger) !important;
+}
+
+.cfg-modal .cfg-error-msg {
+  color: var(--bs-danger);
+  font-size: 0.75rem;
+  margin-top: -8px;
+  margin-bottom: 10px;
+  display: none;
+}
+
+/* Paginação */
+.cfg-pagination {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 8px 0;
+  font-size: 0.75rem;
+  color: var(--muted);
+}
+
+.cfg-pagination .cfg-pag-info {
+  font-size: 0.7rem;
+}
+
+.cfg-pagination .cfg-pag-btns {
+  display: flex;
+  gap: 2px;
+}
+
+.cfg-pagination .cfg-pag-btn {
+  padding: 4px 10px;
+  border: 1px solid var(--line);
+  border-radius: var(--radius-xs);
+  background: #fff;
+  color: var(--text);
+  cursor: pointer;
+  font-size: 0.7rem;
+  font-weight: 500;
+}
+
+.cfg-pagination .cfg-pag-btn:hover {
+  background: var(--bg);
+}
+
+.cfg-pagination .cfg-pag-btn.active {
+  background: var(--brand);
+  color: #fff;
+  border-color: var(--brand);
+}
+
+.cfg-pagination .cfg-pag-btn:disabled {
+  opacity: 0.4;
+  cursor: default;
+}

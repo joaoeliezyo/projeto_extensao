@@ -1,4 +1,5 @@
 <%- include('../cabecalho', { titulo: isEdit ? 'Editar Projeto' : 'Cadastrar Projeto' }) %>
+<link href="https://cdn.jsdelivr.net/npm/quill@2.0.2/dist/quill.snow.css" rel="stylesheet">
 
 <% const registro = projeto_extensao || {}; %>
 <% const registroId = registro.id_projeto; %>
@@ -19,6 +20,7 @@
     <p class="text-muted mb-4" style="font-size:0.75rem">Preencha os campos seguindo a ordem do Plano de Extensão UNI-CET</p>
 
     <form method="POST"
+    id="form-projeto"
     action="<%= isEdit && registroId ? '/projeto_extensao/' + registroId + '/edit' : '/projeto_extensao/cadastrar' %>"
     enctype="multipart/form-data"
     onsubmit="prepararEnvio()">
@@ -107,7 +109,8 @@
           <div class="col-md-4">
             <label class="form-label" for="campo-ch">Carga Horária Total</label>
             <input type="number" name="carga_horaria_total" id="campo-ch" min="0" class="form-control"
-              value="<%= registro.carga_horaria_total || '' %>" placeholder="Ex: 40">
+              value="<%= registro.carga_horaria_total || '' %>" placeholder="Calculado automaticamente" readonly style="background-color: #e9ecef; cursor: not-allowed;">
+            <small class="text-muted" style="font-size:0.7rem">Soma da CH de todos os professores</small>
           </div>
         </div>
 
@@ -135,19 +138,23 @@
       </div>
 
       <!-- ===== II - OBJETIVOS ===== -->
-      <div class="border rounded p-3 mb-4">
+      <div class="border rounded p-3 mb-4 bg-white">
         <h6 class="fw-bold mb-3"><i class="bi bi-2-circle"></i> II - Objetivo(s)</h6>
         <p class="text-muted" style="font-size:0.7rem;margin-bottom:6px">Estabeleça os objetivos usando verbos como: desenvolver, organizar, capacitar, demonstrar, contribuir, colaborar, valorizar, aplicar.</p>
-        <label class="visually-hidden" for="campo-objetivo">Objetivo</label>
-        <textarea name="objetivo" id="campo-objetivo" class="form-control" rows="4" placeholder="Descreva os objetivos da atividade de extensão..."><%= registro.objetivo || '' %></textarea>
+        <input type="hidden" name="objetivo" id="hidden-objetivo">
+        <div id="editor-container-objetivo" style="min-height: 200px; background: #fff;">
+          <%- registro.objetivo || '' %>
+        </div>
       </div>
 
       <!-- ===== III - METODOLOGIA ===== -->
-      <div class="border rounded p-3 mb-4">
+      <div class="border rounded p-3 mb-4 bg-white">
         <h6 class="fw-bold mb-3"><i class="bi bi-3-circle"></i> III - Metodologia</h6>
         <p class="text-muted" style="font-size:0.7rem;margin-bottom:6px">Descreva os procedimentos, o roteiro claro e detalhado das etapas e atividades a serem executadas.</p>
-        <label class="visually-hidden" for="campo-metodologia">Metodologia</label>
-        <textarea name="metodologia" id="campo-metodologia" class="form-control" rows="4" placeholder="Descreva a metodologia do projeto..."><%= registro.metodologia || '' %></textarea>
+        <input type="hidden" name="metodologia" id="hidden-metodologia">
+        <div id="editor-container-metodologia" style="min-height: 200px; background: #fff;">
+          <%- registro.metodologia || '' %>
+        </div>
       </div>
 
             <!-- ===== IV - ANEXOS ===== -->
@@ -235,7 +242,7 @@
       </div>
 
       <!-- ===== AÇÕES ===== -->
-      <div class="d-flex gap-2">
+      <div class="d-flex justify-content-end gap-2">
         <a href="/projeto_extensao" class="btn btn-secondary btn-sm"><i class="bi bi-arrow-left"></i> Voltar</a>
         <button class="btn btn-primary btn-sm" type="submit"><i class="bi bi-check-lg"></i> Salvar Projeto</button>
       </div>
@@ -253,4 +260,62 @@
   <%- JSON.stringify(typeof cursosPreSelecionados !== 'undefined' ? cursosPreSelecionados : []) %>
 </script>
 <script src="/js/projeto_extensao.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/quill@2.0.2/dist/quill.js"></script>
+<script>
+  // Inicializar o Quill Editor para o campo Objetivo
+  var quillObjetivo = new Quill('#editor-container-objetivo', {
+    theme: 'snow',
+    modules: {
+      toolbar: [
+        ['bold', 'italic', 'underline', 'strike'],        // toggled buttons
+        [{ 'list': 'ordered'}, { 'list': 'bullet' }],
+        [{ 'script': 'sub'}, { 'script': 'super' }],      // superscript/subscript
+        [{ 'indent': '-1'}, { 'indent': '+1' }],          // outdent/indent
+        [{ 'header': [1, 2, 3, 4, 5, 6, false] }],
+        [{ 'color': [] }, { 'background': [] }],          // dropdown with defaults from theme
+        [{ 'align': [] }],
+        ['clean']                                         // remove formatting button
+      ]
+    }
+  });
+
+  // Inicializar o Quill Editor para o campo Metodologia
+  var quillMetodologia = new Quill('#editor-container-metodologia', {
+    theme: 'snow',
+    modules: {
+      toolbar: [
+        ['bold', 'italic', 'underline', 'strike'],        // toggled buttons
+        [{ 'list': 'ordered'}, { 'list': 'bullet' }],
+        [{ 'script': 'sub'}, { 'script': 'super' }],      // superscript/subscript
+        [{ 'indent': '-1'}, { 'indent': '+1' }],          // outdent/indent
+        [{ 'header': [1, 2, 3, 4, 5, 6, false] }],
+        [{ 'color': [] }, { 'background': [] }],          // dropdown with defaults from theme
+        [{ 'align': [] }],
+        ['clean']                                         // remove formatting button
+      ]
+    }
+  });
+
+  // Antes do envio do formulário, copia o conteúdo em HTML do editor Quill para o campo oculto
+  var formProjeto = document.getElementById('form-projeto');
+  if (formProjeto) {
+    formProjeto.addEventListener('submit', function(e) {
+      // Objetivo
+      var hiddenObjetivo = document.getElementById('hidden-objetivo');
+      var htmlObj = quillObjetivo.root.innerHTML;
+      if (htmlObj === '<p><br></p>') {
+        htmlObj = '';
+      }
+      hiddenObjetivo.value = htmlObj;
+
+      // Metodologia
+      var hiddenMetodologia = document.getElementById('hidden-metodologia');
+      var htmlMet = quillMetodologia.root.innerHTML;
+      if (htmlMet === '<p><br></p>') {
+        htmlMet = '';
+      }
+      hiddenMetodologia.value = htmlMet;
+    });
+  }
+</script>
 <%- include('../rodape') %>
