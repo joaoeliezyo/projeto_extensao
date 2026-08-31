@@ -52,11 +52,11 @@
                 <td><%= d.hora %></td>
                 <td><%= d.local %></td>
                 <td>
-                  <a href="/cronograma/<%= d.id %>/edit" class="btn btn-sm btn-outline-secondary" style="font-size:0.75rem; padding:2px 5px" title="Editar">
+                  <a href="/cronograma/<%= d.id %>/edit" class="btn btn-sm btn-outline-secondary btn-tbl-action" title="Editar">
                     <i class="bi bi-pencil"></i>
                   </a>
-                  <form method="POST" action="/cronograma/<%= d.id %>/delete" style="display: inline;">
-                    <button type="submit" class="btn btn-sm btn-outline-danger" style="font-size:0.75rem; padding:2px 5px" title="Excluir" onclick="return confirm('Tem certeza?')">
+                  <form method="POST" action="/cronograma/<%= d.id %>/delete" class="d-inline">
+                    <button type="submit" class="btn btn-sm btn-outline-danger btn-tbl-action" title="Excluir" onclick="return confirm('Tem certeza?')">
                       <i class="bi bi-trash"></i>
                     </button>
                   </form>

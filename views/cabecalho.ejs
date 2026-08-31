@@ -98,11 +98,11 @@
 
       <!-- Flash Messages -->
       <% if (typeof flash !== 'undefined' && flash) { %>
-        <% const borderCol = flash.type === 'error' ? '#842029' : flash.type === 'warning' ? '#664d03' : '#1c6e36'; %>
-        <div class="alert alert-<%= flash.type === 'error' ? 'danger' : flash.type === 'warning' ? 'warning' : 'success' %> alert-dismissible fade show d-flex align-items-center mb-0" role="alert" style="position: fixed; top: 24px; right: 24px; z-index: 99999; min-width: 300px; max-width: 450px; box-shadow: 0 0.5rem 1rem rgba(0, 0, 0, 0.15); border-radius: 8px; font-size:0.85rem; padding: 12px 20px; border: 1.5px solid <%= borderCol %>; transform: translateX(120%); opacity: 0; transition: all 0.35s cubic-bezier(0.175, 0.885, 0.32, 1.275);" id="server-flash-container">
-          <i class="bi <%= flash.type === 'error' ? 'bi-exclamation-triangle' : flash.type === 'warning' ? 'bi-exclamation-circle' : 'bi-check-circle' %> me-2" style="font-size: 1.1rem; flex-shrink: 0;"></i>
-          <span style="flex-grow: 1; padding-right: 12px;"><%= flash.message %></span>
-          <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close" style="font-size:0.65rem; margin-top: -2px;"></button>
+        <% const flashModClass = flash.type === 'error' ? 'server-flash-danger' : flash.type === 'warning' ? 'server-flash-warning' : 'server-flash-success'; %>
+        <div class="alert alert-<%= flash.type === 'error' ? 'danger' : flash.type === 'warning' ? 'warning' : 'success' %> alert-dismissible fade show d-flex align-items-center mb-0 server-flash-container <%= flashModClass %>" role="alert" id="server-flash-container">
+          <i class="bi <%= flash.type === 'error' ? 'bi-exclamation-triangle' : flash.type === 'warning' ? 'bi-exclamation-circle' : 'bi-check-circle' %> me-2 server-flash-icon"></i>
+          <span class="server-flash-text"><%= flash.message %></span>
+          <button type="button" class="btn-close server-flash-close" data-bs-dismiss="alert" aria-label="Close"></button>
         </div>
         <script>
           window.addEventListener('load', function() {

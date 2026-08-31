@@ -448,58 +448,55 @@
               </div>
 
               <div class="section-title">IX - REFERÊNCIAS</div>
-              <div class="form-line" style="min-height: 35px; margin-bottom: 15px; white-space: normal; height: auto;">
+              <div class="form-line mb-3">
                 <%- safe(p.referencias) %>
               </div>
 
-              <div class="section-title">X- AUTENTICAÇÃO</div>
+              <div class="section-title pdf-auth-section">X- AUTENTICAÇÃO</div>
               <div class="date-row">
-                Teresina, <span
-                  style="border-bottom: 1px solid #000; min-width: 35px; display: inline-block; text-align: center;">
+                Teresina, <span class="pdf-date-blank-35">
                   <%= authDia %>
-                </span> de <span
-                  style="border-bottom: 1px solid #000; min-width: 90px; display: inline-block; text-align: center;">
+                </span> de <span class="pdf-date-blank-90">
                   <%= authMes %>
-                </span> de 20<span
-                  style="border-bottom: 1px solid #000; min-width: 30px; display: inline-block; text-align: center;">
+                </span> de 20<span class="pdf-date-blank-30">
                   <%= authAnoStr %>
                 </span>.
               </div>
 
-              <div style="margin-top: 25px;">
+              <div class="pdf-auth-section">
                 <!-- 1. Área dos Professores -->
-                <div style="font-weight: bold; font-size: 11pt; border-bottom: 2px solid #0056b3; padding-bottom: 5px; margin-bottom: 15px; text-transform: uppercase; color: #0056b3;">
+                <div class="pdf-auth-heading">
                   Professor(es)
                 </div>
                 <% if (p.assinaturasProfessoresPlano && p.assinaturasProfessoresPlano.length > 0) { %>
-                  <div style="display: flex; flex-direction: column; gap: 12px; margin-bottom: 20px;">
+                  <div class="pdf-auth-list">
                     <% p.assinaturasProfessoresPlano.forEach(ass => { %>
-                      <div class="assinatura-box" style="display: flex; justify-content: center; align-items: center; gap: 20px; border: 1px solid #d0e1fd; padding: 10px 15px; border-radius: 8px; background-color: #f8fbff; max-width: 550px; margin: 0 auto; page-break-inside: avoid;">
+                      <div class="assinatura-box pdf-auth-card">
                         <!-- Imagem Unicet -->
                         <div>
-                          <img src="<%= logoSrc %>" alt="Unicet" style="width: 75px; height: 75px; object-fit: contain;">
+                          <img src="<%= logoSrc %>" alt="Unicet" class="pdf-auth-logo">
                         </div>
                         <!-- Nome e Código de Validação -->
-                        <div style="text-align: center; margin: 0 15px; flex: 1;">
-                          <p style="margin: 0; font-weight: bold; font-size: 10.5pt; text-transform: uppercase; color: #333;">
+                        <div class="pdf-auth-info">
+                          <p class="pdf-auth-title">
                             <%= ass.nome %>
                           </p>
-                          <p style="margin: 5px 0 0 0; font-size: 9pt; color: #555; line-height: 1.2;">
+                          <p class="pdf-auth-meta">
                             Código de validação:<br>
-                            <strong style="font-family: monospace; font-size: 10pt; color: #111;"><%= ass.Assinatura %></strong>
+                            <strong class="pdf-auth-hash"><%= ass.Assinatura %></strong>
                           </p>
                         </div>
                         <!-- QR Code -->
                         <div>
                           <% const url_validacao = baseUrl + '/validar?codigo=' + ass.Assinatura; %>
                           <img src="https://api.qrserver.com/v1/create-qr-code/?size=70x70&data=<%= encodeURIComponent(url_validacao) %>"
-                               alt="QR Code de Validação" style="width: 70px; height: 70px;">
+                               alt="QR Code de Validação" class="pdf-auth-qr">
                         </div>
                       </div>
                     <% }) %>
                   </div>
                 <% } else { %>
-                  <div class="sig-wrapper" style="margin-bottom: 25px;">
+                  <div class="sig-wrapper pdf-sig-wrapper">
                     <div class="sig-container">
                       <div class="sig-line"></div>
                       <div class="sig-label">Docente responsável</div>
@@ -508,32 +505,32 @@
                 <% } %>
 
                 <!-- 2. Área dos Coordenadores -->
-                <div style="font-weight: bold; font-size: 11pt; border-bottom: 2px solid #0056b3; padding-bottom: 5px; margin-top: 25px; margin-bottom: 15px; text-transform: uppercase; color: #0056b3;">
+                <div class="pdf-auth-heading mt-25">
                   Coordenação(ões)
                 </div>
                 <% if (p.assinaturasCoordenadoresPlano && p.assinaturasCoordenadoresPlano.length > 0) { %>
-                  <div style="display: flex; flex-direction: column; gap: 12px; margin-bottom: 20px;">
+                  <div class="pdf-auth-list">
                     <% p.assinaturasCoordenadoresPlano.forEach(ass => { %>
-                      <div class="assinatura-box" style="display: flex; justify-content: center; align-items: center; gap: 20px; border: 1px solid #d0e1fd; padding: 10px 15px; border-radius: 8px; background-color: #f8fbff; max-width: 550px; margin: 0 auto; page-break-inside: avoid;">
+                      <div class="assinatura-box pdf-auth-card">
                         <!-- Imagem Unicet -->
                         <div>
-                          <img src="<%= logoSrc %>" alt="Unicet" style="width: 75px; height: 75px; object-fit: contain;">
+                          <img src="<%= logoSrc %>" alt="Unicet" class="pdf-auth-logo">
                         </div>
                         <!-- Nome e Código de Validação -->
-                        <div style="text-align: center; margin: 0 15px; flex: 1;">
-                          <p style="margin: 0; font-weight: bold; font-size: 10.5pt; text-transform: uppercase; color: #333;">
+                        <div class="pdf-auth-info">
+                          <p class="pdf-auth-title">
                             <%= ass.nome %>
                           </p>
-                          <p style="margin: 5px 0 0 0; font-size: 9pt; color: #555; line-height: 1.2;">
+                          <p class="pdf-auth-meta">
                             Código de validação:<br>
-                            <strong style="font-family: monospace; font-size: 10pt; color: #111;"><%= ass.Assinatura %></strong>
+                            <strong class="pdf-auth-hash"><%= ass.Assinatura %></strong>
                           </p>
                         </div>
                         <!-- QR Code -->
                         <div>
                           <% const url_validacao = baseUrl + '/validar?codigo=' + ass.Assinatura; %>
                           <img src="https://api.qrserver.com/v1/create-qr-code/?size=70x70&data=<%= encodeURIComponent(url_validacao) %>"
-                               alt="QR Code de Validação" style="width: 70px; height: 70px;">
+                               alt="QR Code de Validação" class="pdf-auth-qr">
                         </div>
                       </div>
                     <% }) %>

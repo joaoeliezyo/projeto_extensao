@@ -11,9 +11,9 @@
 <div class="d-flex justify-content-between align-items-center mb-4">
   <div>
     <h1 class="mb-1">Bem-vindo, <%= sessionUsuario %>!</h1>
-    <p class="text-muted mb-0" style="font-size:0.875rem">
+    <p class="text-muted mb-0 helper">
       Gerenciador de Projetos de Extensão
-      <span class="badge bg-secondary ms-2" style="font-size:0.625rem; text-transform:uppercase"><%= perfil || 'professor' %></span>
+      <span class="badge bg-secondary ms-2 badge-role"><%= perfil || 'professor' %></span>
     </p>
   </div>
   <span class="badge bg-info">
@@ -24,53 +24,53 @@
 <!-- KPIs -->
 <div class="row mb-4">
   <div class="col-md-3 mb-3">
-    <div class="card module-card" style="border-left: 4px solid var(--bs-primary);">
+    <div class="card module-card card-kpi-primary">
       <div class="card-body">
         <div class="d-flex justify-content-between align-items-center">
           <div>
-            <p class="text-muted mb-1" style="font-size:0.688rem; text-transform:uppercase; letter-spacing:0.05em">Total de Projetos</p>
+            <p class="text-muted mb-1 kpi-label">Total de Projetos</p>
             <h2 class="mb-0 fw-bold"><%= s.totalProjetos || 0 %></h2>
           </div>
-          <div style="font-size:2rem; color:var(--bs-primary); opacity:0.3"><i class="bi bi-briefcase-fill"></i></div>
+          <div class="kpi-icon-primary"><i class="bi bi-briefcase-fill"></i></div>
         </div>
       </div>
     </div>
   </div>
   <div class="col-md-3 mb-3">
-    <div class="card module-card" style="border-left: 4px solid var(--bs-success);">
+    <div class="card module-card card-kpi-success">
       <div class="card-body">
         <div class="d-flex justify-content-between align-items-center">
           <div>
-            <p class="text-muted mb-1" style="font-size:0.688rem; text-transform:uppercase; letter-spacing:0.05em">Aprovados</p>
-            <h2 class="mb-0 fw-bold" style="color:var(--bs-success)"><%= (sc.aprovado || 0) + (sc.em_execucao || 0) + (sc.concluido || 0) %></h2>
+            <p class="text-muted mb-1 kpi-label">Aprovados</p>
+            <h2 class="mb-0 fw-bold text-success"><%= (sc.aprovado || 0) + (sc.em_execucao || 0) + (sc.concluido || 0) %></h2>
           </div>
-          <div style="font-size:2rem; color:var(--bs-success); opacity:0.3"><i class="bi bi-check-circle-fill"></i></div>
+          <div class="kpi-icon-success"><i class="bi bi-check-circle-fill"></i></div>
         </div>
       </div>
     </div>
   </div>
   <div class="col-md-3 mb-3">
-    <div class="card module-card" style="border-left: 4px solid var(--bs-warning);">
+    <div class="card module-card card-kpi-warning">
       <div class="card-body">
         <div class="d-flex justify-content-between align-items-center">
           <div>
-            <p class="text-muted mb-1" style="font-size:0.688rem; text-transform:uppercase; letter-spacing:0.05em">Em Avaliação</p>
-            <h2 class="mb-0 fw-bold" style="color:var(--bs-warning)"><%= sc.em_avaliacao || 0 %></h2>
+            <p class="text-muted mb-1 kpi-label">Em Avaliação</p>
+            <h2 class="mb-0 fw-bold text-warning"><%= sc.em_avaliacao || 0 %></h2>
           </div>
-          <div style="font-size:2rem; color:var(--bs-warning); opacity:0.3"><i class="bi bi-hourglass-split"></i></div>
+          <div class="kpi-icon-warning"><i class="bi bi-hourglass-split"></i></div>
         </div>
       </div>
     </div>
   </div>
   <div class="col-md-3 mb-3">
-    <div class="card module-card" style="border-left: 4px solid var(--brand);">
+    <div class="card module-card card-kpi-brand">
       <div class="card-body">
         <div class="d-flex justify-content-between align-items-center">
           <div>
-            <p class="text-muted mb-1" style="font-size:0.688rem; text-transform:uppercase; letter-spacing:0.05em">Pessoas Cadastradas</p>
+            <p class="text-muted mb-1 kpi-label">Pessoas Cadastradas</p>
             <h2 class="mb-0 fw-bold"><%= s.totalPessoas || 0 %></h2>
           </div>
-          <div style="font-size:2rem; color:var(--brand); opacity:0.3"><i class="bi bi-people-fill"></i></div>
+          <div class="kpi-icon-brand"><i class="bi bi-people-fill"></i></div>
         </div>
       </div>
     </div>
@@ -85,39 +85,39 @@
         <h6 class="fw-bold mb-3"><i class="bi bi-bar-chart"></i> Projetos por Status</h6>
         <div class="row text-center">
           <div class="col-4 col-md-2">
-            <div class="p-2 rounded" style="background:#f3f4f6">
-              <div class="fw-bold" style="font-size:1.25rem"><%= sc.rascunho || 0 %></div>
-              <small class="text-muted" style="font-size:0.625rem">RASCUNHO</small>
+            <div class="status-stat-box status-stat-rascunho">
+              <div class="status-stat-val"><%= sc.rascunho || 0 %></div>
+              <small class="text-muted status-stat-lbl">RASCUNHO</small>
             </div>
           </div>
           <div class="col-4 col-md-2">
-            <div class="p-2 rounded" style="background:#fef3c7">
-              <div class="fw-bold" style="font-size:1.25rem; color:#92400e"><%= sc.em_avaliacao || 0 %></div>
-              <small style="font-size:0.625rem; color:#92400e">EM AVALIAÇÃO</small>
+            <div class="status-stat-box status-stat-avaliacao">
+              <div class="status-stat-val"><%= sc.em_avaliacao || 0 %></div>
+              <small class="status-stat-lbl">EM AVALIAÇÃO</small>
             </div>
           </div>
           <div class="col-4 col-md-2">
-            <div class="p-2 rounded" style="background:#dcfce7">
-              <div class="fw-bold" style="font-size:1.25rem; color:#166534"><%= sc.aprovado || 0 %></div>
-              <small style="font-size:0.625rem; color:#166534">APROVADO</small>
+            <div class="status-stat-box status-stat-aprovado">
+              <div class="status-stat-val"><%= sc.aprovado || 0 %></div>
+              <small class="status-stat-lbl">APROVADO</small>
             </div>
           </div>
           <div class="col-4 col-md-2">
-            <div class="p-2 rounded" style="background:#e0f2fe">
-              <div class="fw-bold" style="font-size:1.25rem; color:#075985"><%= sc.em_execucao || 0 %></div>
-              <small style="font-size:0.625rem; color:#075985">EM EXECUÇÃO</small>
+            <div class="status-stat-box status-stat-execucao">
+              <div class="status-stat-val"><%= sc.em_execucao || 0 %></div>
+              <small class="status-stat-lbl">EM EXECUÇÃO</small>
             </div>
           </div>
           <div class="col-4 col-md-2">
-            <div class="p-2 rounded" style="background:#dbeafe">
-              <div class="fw-bold" style="font-size:1.25rem; color:#1e40af"><%= sc.concluido || 0 %></div>
-              <small style="font-size:0.625rem; color:#1e40af">CONCLUÍDO</small>
+            <div class="status-stat-box status-stat-concluido">
+              <div class="status-stat-val"><%= sc.concluido || 0 %></div>
+              <small class="status-stat-lbl">CONCLUÍDO</small>
             </div>
           </div>
           <div class="col-4 col-md-2">
-            <div class="p-2 rounded" style="background:#fee2e2">
-              <div class="fw-bold" style="font-size:1.25rem; color:#991b1b"><%= sc.rejeitado || 0 %></div>
-              <small style="font-size:0.625rem; color:#991b1b">REJEITADO</small>
+            <div class="status-stat-box status-stat-rejeitado">
+              <div class="status-stat-val"><%= sc.rejeitado || 0 %></div>
+              <small class="status-stat-lbl">REJEITADO</small>
             </div>
           </div>
         </div>
@@ -131,12 +131,12 @@
         <% if (s.projetosPorCurso && s.projetosPorCurso.length > 0) { %>
           <% s.projetosPorCurso.forEach(c => { %>
             <div class="d-flex justify-content-between align-items-center mb-2">
-              <span style="font-size:0.75rem; max-width:70%; overflow:hidden; text-overflow:ellipsis; white-space:nowrap" title="<%= c.nome_curso %>"><%= c.nome_curso %></span>
+              <span class="course-item-name" title="<%= c.nome_curso %>"><%= c.nome_curso %></span>
               <span class="badge bg-primary"><%= c.total %></span>
             </div>
           <% }) %>
         <% } else { %>
-          <p class="text-muted text-center" style="font-size:0.75rem">Nenhum curso vinculado</p>
+          <p class="text-muted text-center helper">Nenhum curso vinculado</p>
         <% } %>
       </div>
     </div>
@@ -147,32 +147,32 @@
 <h5 class="fw-bold mb-3"><i class="bi bi-lightning"></i> Acesso Rápido</h5>
 <div class="row mb-4">
   <div class="col-md-3 mb-3">
-    <div class="card module-card" style="border-left: 4px solid var(--bs-success);">
+    <div class="card module-card card-kpi-success">
       <div class="card-body text-center">
-        <div class="card-icon" style="color: var(--bs-success);"><i class="bi bi-briefcase-fill"></i></div>
+        <div class="card-icon success"><i class="bi bi-briefcase-fill"></i></div>
         <h5 class="card-title">Projetos</h5>
-        <p class="card-text text-muted" style="font-size:0.75rem">Projetos de Extensão</p>
+        <p class="card-text text-muted helper">Projetos de Extensão</p>
         <a href="/projeto_extensao" class="btn btn-primary btn-sm">Acessar</a>
       </div>
     </div>
   </div>
   <div class="col-md-3 mb-3">
-    <div class="card module-card" style="border-left: 4px solid var(--brand);">
+    <div class="card module-card card-kpi-brand">
       <div class="card-body text-center">
-        <div class="card-icon" style="color: var(--brand);"><i class="bi bi-people-fill"></i></div>
+        <div class="card-icon brand"><i class="bi bi-people-fill"></i></div>
         <h5 class="card-title">Pessoas</h5>
-        <p class="card-text text-muted" style="font-size:0.75rem">Cadastro de pessoas</p>
+        <p class="card-text text-muted helper">Cadastro de pessoas</p>
         <a href="/pessoa" class="btn btn-primary btn-sm">Acessar</a>
       </div>
     </div>
   </div>
   <% if (isAdmin || isCoord) { %>
   <div class="col-md-3 mb-3">
-    <div class="card module-card" style="border-left: 4px solid #6366f1;">
+    <div class="card module-card card-kpi-indigo">
       <div class="card-body text-center">
-        <div class="card-icon" style="color: #6366f1;"><i class="bi bi-person-gear"></i></div>
+        <div class="card-icon indigo"><i class="bi bi-person-gear"></i></div>
         <h5 class="card-title">Usuários</h5>
-        <p class="card-text text-muted" style="font-size:0.75rem">Gerenciar acessos</p>
+        <p class="card-text text-muted helper">Gerenciar acessos</p>
         <a href="/usuarios" class="btn btn-primary btn-sm">Acessar</a>
       </div>
     </div>
@@ -180,9 +180,9 @@
   <div class="col-md-3 mb-3">
     <div class="card module-card">
       <div class="card-body text-center">
-        <div class="card-icon" style="color: var(--brand);"><i class="bi bi-gear"></i></div>
+        <div class="card-icon brand"><i class="bi bi-gear"></i></div>
         <h5 class="card-title">Configurações</h5>
-        <p class="card-text text-muted" style="font-size:0.75rem">Tabelas do sistema</p>
+        <p class="card-text text-muted helper">Tabelas do sistema</p>
         <a href="/configuracoes" class="btn btn-outline-primary btn-sm">Gerenciar</a>
       </div>
     </div>

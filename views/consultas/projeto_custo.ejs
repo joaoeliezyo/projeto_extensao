@@ -103,11 +103,11 @@ if (dados && dados.length > 0) {
                 <td><%= d.justificativa || '-' %></td>
                 <td><%= d.fonte_recurso || '-' %></td>
                 <td>
-                  <a href="/projeto_custo/<%= d.Id %>/edit" class="btn btn-sm btn-outline-secondary" style="font-size:0.75rem; padding:2px 5px" title="Editar">
+                  <a href="/projeto_custo/<%= d.Id %>/edit" class="btn btn-sm btn-outline-secondary btn-tbl-action" title="Editar">
                     <i class="bi bi-pencil"></i>
                   </a>
                   <form action="/projeto_custo/<%= d.Id %>/delete" method="POST" class="d-inline">
-                    <button type="submit" class="btn btn-sm btn-outline-danger" style="font-size:0.75rem; padding:2px 5px" title="Excluir" onclick="return confirm('Tem certeza que deseja excluir este custo?')">
+                    <button type="submit" class="btn btn-sm btn-outline-danger btn-tbl-action" title="Excluir" onclick="return confirm('Tem certeza que deseja excluir este custo?')">
                       <i class="bi bi-trash"></i>
                     </button>
                   </form>

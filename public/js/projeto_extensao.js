@@ -28,8 +28,8 @@ const options = cursosDisponiveis.map(curso => `
   const html = `
     <div class="border rounded p-3 mb-3 bloco-curso" id="bloco-${id}">
       <div class="d-flex justify-content-between align-items-center mb-2">
-        <strong style="font-size:0.875rem"><i class="bi bi-mortarboard"></i> Curso</strong>
-        <button type="button" class="btn btn-sm btn-outline-danger" style="font-size:0.688rem; padding:2px 8px" onclick="removerBlocoCurso('${id}')">
+        <strong class="fs-7"><i class="bi bi-mortarboard"></i> Curso</strong>
+        <button type="button" class="btn btn-sm btn-outline-danger btn-tbl-action" onclick="removerBlocoCurso('${id}')">
           <i class="bi bi-x-lg"></i> Remover
         </button>
       </div>
@@ -41,10 +41,10 @@ const options = cursosDisponiveis.map(curso => `
         </select>
       </div>
 
-      <div id="area-coord-${id}" class="d-none" style="background:#e8f3ec; border:1px solid #b6dfc4; border-radius:8px; padding:8px 12px; margin-bottom:12px; font-size:0.813rem"></div>
+      <div id="area-coord-${id}" class="d-none curso-coord-box"></div>
 
       <!-- Resumo dos selecionados (visível quando lista está fechada) -->
-      <div id="resumo-profs-${id}" style="display:none"></div>
+      <div id="resumo-profs-${id}" class="d-none"></div>
 
       <!-- Lista de seleção (colapsável) -->
       <div id="lista-profs-${id}" class="mt-2"></div>
@@ -114,12 +114,12 @@ function selecionarCurso(id, cursoId) {
   }
 
   areaCoord.innerHTML = curso.coordenador
-    ? `<i class="bi bi-person-badge" style="color:#1c6e36"></i> <strong>Coordenador:</strong> ${curso.coordenador.nome}`
-    : `<i class="bi bi-person-badge" style="color:#9ca3af"></i> <strong>Coordenador:</strong> <span class="text-muted">Não definido</span>`;
+    ? `<i class="bi bi-person-badge text-success"></i> <strong>Coordenador:</strong> ${curso.coordenador.nome}`
+    : `<i class="bi bi-person-badge text-muted"></i> <strong>Coordenador:</strong> <span class="text-muted">Não definido</span>`;
   areaCoord.classList.remove('d-none');
 
   if (!Array.isArray(curso.professores) || curso.professores.length === 0) {
-    listaProfs.innerHTML = `<p class="text-muted mb-0" style="font-size:0.75rem"><i class="bi bi-info-circle"></i> Nenhum professor vinculado a este curso.</p>`;
+    listaProfs.innerHTML = `<p class="text-muted mb-0 helper"><i class="bi bi-info-circle"></i> Nenhum professor vinculado a este curso.</p>`;
     resumoProfs.style.display = 'none';
     return;
   }
@@ -132,45 +132,39 @@ function selecionarCurso(id, cursoId) {
 
   // Render the selectable list with a Periodo Letivo select dropdown (starts visible)
   listaProfs.innerHTML = `
-    <div style="border:1px solid #e5e7eb; border-radius:8px; padding:12px; background:#fafbfc">
+    <div class="curso-profs-box">
       <!-- Select do Período Letivo -->
       <div class="mb-3">
-        <label class="form-label fw-semibold" style="font-size:0.75rem; color:#374151" for="periodo_${id}">
+        <label class="form-label fw-semibold helper text-dark" for="periodo_${id}">
           <i class="bi bi-calendar-event"></i> Período Letivo da Disciplina
         </label>
-        <select class="form-select form-select-sm" id="periodo_${id}" onchange="filtrarProfessoresPorPeriodo('${id}', this.value)" style="font-size:0.813rem">
+        <select class="form-select form-select-sm fs-7" id="periodo_${id}" onchange="filtrarProfessoresPorPeriodo('${id}', this.value)">
           <option value="">-- Selecione o Período Letivo --</option>
           ${periodOptions}
         </select>
       </div>
 
-      <div class="d-flex justify-content-between align-items-center mb-2 container-contador-${id}" style="display:none !important">
-        <span style="font-size:0.75rem; font-weight:600; color:#374151">
+      <div class="d-flex justify-content-between align-items-center mb-2 container-contador-${id} d-none">
+        <span class="helper fw-semibold text-dark">
           <i class="bi bi-people"></i> Selecione os professores
         </span>
-        <span class="text-muted" style="font-size:0.688rem" id="contador-${id}">0 selecionado(s)</span>
+        <span class="text-muted helper" id="contador-${id}">0 selecionado(s)</span>
       </div>
       
       <!-- Container dos Chips -->
-      <div style="display:flex; flex-wrap:wrap; gap:6px;" id="chips-container-${id}">
+      <div class="d-flex flex-wrap gap-2" id="chips-container-${id}">
         ${curso.professores.map(prof => `
-          <label class="prof-chip" for="prof_${id}_${prof.id_pessoa}" data-periodo="${prof.periodo_letivo}" style="
-            display:none; align-items:center; gap:6px;
-            padding:6px 12px; border-radius:20px;
-            border:1.5px solid #d1d5db; background:#fff;
-            font-size:0.813rem; cursor:pointer;
-            transition:all 0.15s ease; user-select:none;
-          ">
+          <label class="prof-chip" for="prof_${id}_${prof.id_pessoa}" data-periodo="${prof.periodo_letivo}">
             <input class="form-check-input" type="checkbox" value="${prof.id_pessoa}" id="prof_${id}_${prof.id_pessoa}"
-              data-nome="${prof.nome}" style="width:14px; height:14px; margin:0; flex-shrink:0"
+              data-nome="${prof.nome}"
               onchange="toggleProfChip(this, '${id}')">
             <span>${prof.nome}</span>
           </label>
         `).join('')}
       </div>
 
-      <div style="margin-top:10px; text-align:right; display:none !important" class="container-confirmar-${id}">
-        <button type="button" class="btn btn-sm btn-primary" style="font-size:0.688rem; padding:4px 14px; border-radius:6px" onclick="confirmarProfessores('${id}')">
+      <div class="mt-2 text-end d-none container-confirmar-${id}">
+        <button type="button" class="btn btn-sm btn-primary btn-tbl-action" onclick="confirmarProfessores('${id}')">
           <i class="bi bi-check-lg"></i> Confirmar
         </button>
       </div>
@@ -265,9 +259,9 @@ function confirmarProfessores(id) {
   // Build summary with tags + edit button
   if (selecionados.length === 0) {
     resumoProfs.innerHTML = `
-      <div style="border:1px solid #e5e7eb; border-radius:8px; padding:10px 12px; background:#fafbfc; display:flex; justify-content:space-between; align-items:center">
-        <span style="font-size:0.75rem; color:#9ca3af"><i class="bi bi-person-x"></i> Nenhum professor selecionado</span>
-        <button type="button" class="btn btn-sm btn-outline-primary" style="font-size:0.688rem; padding:2px 10px; border-radius:6px" onclick="editarProfessores('${id}')">
+      <div class="curso-profs-box d-flex justify-content-between align-items-center">
+        <span class="text-muted helper"><i class="bi bi-person-x"></i> Nenhum professor selecionado</span>
+        <button type="button" class="btn btn-sm btn-outline-primary btn-tbl-action" onclick="editarProfessores('${id}')">
           <i class="bi bi-pencil"></i> Editar
         </button>
       </div>
@@ -277,21 +271,21 @@ function confirmarProfessores(id) {
       const discVal = p.disciplina || '';
       const chVal = p.cargahoraria || 0;
       return `
-        <div style="display:flex; flex-wrap:wrap; align-items:center; justify-content:space-between; gap:10px; padding:8px 0; border-bottom:1px solid #f3f4f6">
-          <div style="flex:1; min-width:200px; display:flex; align-items:center; gap:6px;">
-            <i class="bi bi-person-check-fill" style="color:#1c6e36; font-size:0.875rem"></i>
-            <span style="font-size:0.813rem; font-weight:600; color:#1f2937">${p.nome}</span>
+        <div class="prof-item-row">
+          <div class="d-flex align-items-center gap-2 flex-grow-1 min-w-200">
+            <i class="bi bi-person-check-fill text-success fs-7"></i>
+            <span class="fs-7 fw-semibold text-dark">${p.nome}</span>
           </div>
-          <div style="display:flex; gap:10px; flex-wrap:wrap; align-items:center;">
-            <div style="display:flex; align-items:center; gap:4px;">
-              <span style="font-size:0.75rem; color:#4b5563">Disciplina:</span>
-              <input type="text" class="form-control form-control-sm" style="width:160px; font-size:0.75rem; padding:2px 6px" 
+          <div class="d-flex gap-2 flex-wrap align-items-center">
+            <div class="d-flex align-items-center gap-1">
+              <span class="helper text-muted">Disciplina:</span>
+              <input type="text" class="form-control form-control-sm prof-field-disc" 
                 value="${escapeHtml(discVal)}" placeholder="Ex: Estatística" 
                 oninput="updateProfDados('${id}', '${p.id}', 'disciplina', this.value)">
             </div>
-            <div style="display:flex; align-items:center; gap:4px;">
-              <span style="font-size:0.75rem; color:#4b5563">Qtd Horas:</span>
-              <input type="number" class="form-control form-control-sm" style="width:70px; font-size:0.75rem; padding:2px 6px" 
+            <div class="d-flex align-items-center gap-1">
+              <span class="helper text-muted">Qtd Horas:</span>
+              <input type="number" class="form-control form-control-sm prof-field-ch" 
                 value="${chVal}" min="0" placeholder="0" 
                 oninput="updateProfDados('${id}', '${p.id}', 'cargahoraria', this.value)">
             </div>
@@ -301,16 +295,16 @@ function confirmarProfessores(id) {
     }).join('');
 
     resumoProfs.innerHTML = `
-      <div style="border:1px solid #e5e7eb; border-radius:8px; padding:12px; background:#fafbfc">
-        <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:12px; border-bottom:1.5px solid #e5e7eb; padding-bottom:8px">
-          <span style="font-size:0.813rem; font-weight:700; color:#374151">
-            <i class="bi bi-people-fill" style="color:#1c6e36"></i> Equipe Docente Selecionada (${selecionados.length})
+      <div class="curso-profs-box">
+        <div class="d-flex justify-content-between align-items-center mb-2 pb-2 border-bottom">
+          <span class="fs-7 fw-bold text-dark">
+            <i class="bi bi-people-fill text-success"></i> Equipe Docente Selecionada (${selecionados.length})
           </span>
-          <button type="button" class="btn btn-sm btn-outline-primary" style="font-size:0.688rem; padding:2px 10px; border-radius:6px" onclick="editarProfessores('${id}')">
+          <button type="button" class="btn btn-sm btn-outline-primary btn-tbl-action" onclick="editarProfessores('${id}')">
             <i class="bi bi-pencil"></i> Editar Seleção
           </button>
         </div>
-        <div style="display:flex; flex-direction:column; gap:4px">${rows}</div>
+        <div class="d-flex flex-column gap-1">${rows}</div>
       </div>
     `;
   }
@@ -718,9 +712,9 @@ function showDynamicAlert(message, type = 'success') {
   const icon = type === 'danger' ? 'bi-exclamation-triangle' : 'bi-check-circle';
   
   wrapper.innerHTML = `
-    <i class="bi ${icon} me-2" style="font-size: 1.1rem; flex-shrink: 0;"></i>
-    <span style="flex-grow: 1; padding-right: 12px;">${message}</span>
-    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close" style="font-size:0.65rem; margin-top: -2px;"></button>
+    <i class="bi ${icon} me-2 server-flash-icon"></i>
+    <span class="server-flash-text">${message}</span>
+    <button type="button" class="btn-close server-flash-close" data-bs-dismiss="alert" aria-label="Close"></button>
   `;
   
   document.body.appendChild(wrapper);

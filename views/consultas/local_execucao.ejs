@@ -36,12 +36,12 @@
       <table class="table table-hover cfg-table">
         <thead class="table-light">
           <tr>
-            <th style="width:50px">ID</th>
+            <th class="th-w-50">ID</th>
             <th>Endereço</th>
             <th>CEP</th>
             <th>Bairro</th>
             <th>Cidade</th>
-            <th style="width:80px">Ações</th>
+            <th class="th-w-80">Ações</th>
           </tr>
         </thead>
         <tbody>
@@ -55,9 +55,9 @@
                 <td><%= item.cidade || '-' %></td>
                 <td>
                   <div class="cfg-actions">
-                    <a href="/local_execucao/<%= item.id_local %>/edit" class="btn btn-sm btn-outline-secondary" style="font-size:0.75rem; padding:2px 5px" title="Editar"><i class="bi bi-pencil"></i></a>
-                    <form method="POST" action="/local_execucao/<%= item.id_local %>/delete" style="display:inline" onsubmit="return confirm('Excluir este local?')">
-                      <button type="submit" class="btn btn-sm btn-outline-danger" style="font-size:0.75rem; padding:2px 5px" title="Excluir"><i class="bi bi-trash"></i></button>
+                    <a href="/local_execucao/<%= item.id_local %>/edit" class="btn btn-sm btn-outline-secondary btn-tbl-action" title="Editar"><i class="bi bi-pencil"></i></a>
+                    <form method="POST" action="/local_execucao/<%= item.id_local %>/delete" class="d-inline" onsubmit="return confirm('Excluir este local?')">
+                      <button type="submit" class="btn btn-sm btn-outline-danger btn-tbl-action" title="Excluir"><i class="bi bi-trash"></i></button>
                     </form>
                   </div>
                 </td>

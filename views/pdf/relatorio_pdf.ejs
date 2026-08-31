@@ -69,7 +69,7 @@
 
       <div class="form-row">
         <div class="form-label">TIPO DE EXTENSÃO:</div>
-        <div class="form-line" style="font-weight: bold; font-size: 12px;">
+        <div class="form-line pdf-bold-12">
           <%= safe(p.tipo_plano_nome) %>
         </div>
       </div>
@@ -79,7 +79,7 @@
           <%= safe(p.titulo) %>
         </div>
       </div>
-      <div class="form-row" style="margin-bottom: 15px;">
+      <div class="form-row mb-3">
         <div class="form-label">DATA:</div>
         <div class="form-line">
           <%= formatDate(p.created_at || new Date()) %>
@@ -120,26 +120,32 @@
         </div>
       </div>
 
-      <div class="section-title">II - EQUIPE EXECUTORA</div>
+      <div class="section-title">II - COORDENAÇÃO E EQUIPE DE TRABALHO</div>
       <div class="form-row">
-        <div class="form-label">COORDENADOR(A):</div>
+        <div class="form-label">COORDENADOR DA AÇÃO:</div>
         <div class="form-line">
           <%= safe(p.coordenador_nome) %>
         </div>
       </div>
+      <div class="form-row">
+        <div class="form-label">CURSO(S) VINCULADO(S):</div>
+        <div class="form-line">
+          <%= safe(p.cursos) %>
+        </div>
+      </div>
       <div class="form-block-container">
         <div class="form-label">EQUIPE DOCENTE E/OU TÉCNICA:</div>
-        <div class="form-value-block" style="min-height: 60px;">
+        <div class="form-value-block pdf-min-h-60">
           <%= getPessoasStr() %>
         </div>
       </div>
       <div class="form-block-container">
         <div class="form-label">ESTUDANTES ENVOLVIDOS:</div>
-        <div class="form-value-block" style="min-height: 60px;"></div>
+        <div class="form-value-block pdf-min-h-60"></div>
       </div>
       <div class="form-block-container">
         <div class="form-label">OUTROS PARTICIPANTES:</div>
-        <div class="form-value-block" style="min-height: 40px;"></div>
+        <div class="form-value-block pdf-min-h-40"></div>
       </div>
 
       <div class="section-title">III - PÚBLICO-ALVO E ABRANGÊNCIA</div>
@@ -182,25 +188,25 @@
       <div class="section-title">IV - OBJETIVOS DA AÇÃO</div>
       <div class="form-block-container">
         <div class="form-label">OBJETIVO GERAL:</div>
-        <div class="form-value-block" style="min-height: 60px; white-space: normal;">
+        <div class="form-value-block pdf-min-h-60">
           <%- safe(p.objetivo) %>
         </div>
       </div>
       <div class="form-block-container">
         <div class="form-label">OBJETIVOS ESPECÍFICOS:</div>
-        <div class="form-value-block" style="min-height: 100px;"></div>
+        <div class="form-value-block pdf-min-h-100"></div>
       </div>
 
       <div class="section-title">V - JUSTIFICATIVA</div>
       <div class="form-block-container">
-        <div class="form-value-block" style="min-height: 160px;">
+        <div class="form-value-block pdf-min-h-160">
           <%- safe(p.justificativa) %>
         </div>
       </div>
 
       <div class="section-title">VI - METODOLOGIA</div>
       <div class="form-block-container">
-        <div class="form-value-block" style="min-height: 180px; white-space: normal;">
+        <div class="form-value-block pdf-min-h-180">
           <%- safe(p.metodologia) %>
         </div>
       </div>
@@ -209,10 +215,10 @@
       <table>
         <thead>
           <tr>
-            <th style="width: 15%;">Data</th>
-            <th style="width: 40%;">Atividade Realizada</th>
-            <th style="width: 25%;">Local</th>
-            <th style="width: 20%;">Participantes Envolvidos</th>
+            <th class="pdf-col-15">Data</th>
+            <th class="pdf-col-40">Atividade Realizada</th>
+            <th class="pdf-col-25">Local</th>
+            <th class="pdf-col-20">Participantes Envolvidos</th>
           </tr>
         </thead>
         <tbody>
@@ -223,17 +229,20 @@
                   <%= formatDate(c.data) %>
                 </td>
                 <td>
-                  <%= c.etapa || '' %>
+                  <%= c.etapa %>
                 </td>
                 <td>
-                  <%= c.local || '' %>
+                  <%= c.local %>
                 </td>
-                <td class="text-center"></td>
+                <td></td>
               </tr>
               <% }) %>
                 <% } else { %>
                   <tr>
-                    <td colspan="4" class="text-center">Nenhuma atividade registrada</td>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                    <td></td>
                   </tr>
                   <% } %>
         </tbody>
@@ -256,7 +265,7 @@
 
       <div class="section-title">VIII - RESULTADOS ALCANÇADOS</div>
       <div class="form-block-container">
-        <div class="form-value-block" style="min-height: 250px;">
+        <div class="form-value-block pdf-min-h-250">
           <%- safe(p.resultados_alcancados) %>
         </div>
       </div>
@@ -264,20 +273,20 @@
       <div class="section-title">IX - AVALIAÇÃO DA AÇÃO</div>
       <div class="form-block-container">
         <div class="form-label">Avaliação da comunidade/público participante:</div>
-        <div class="form-value-block" style="min-height: 140px;">
+        <div class="form-value-block pdf-min-h-140">
           <%- safe(p.avaliacao_comunidade) %>
         </div>
       </div>
       <div class="form-block-container">
         <div class="form-label">Avaliação interna da equipe executora:</div>
-        <div class="form-value-block" style="min-height: 140px;">
+        <div class="form-value-block pdf-min-h-140">
           <%- safe(p.avaliacao_equipe) %>
         </div>
       </div>
 
       <div class="section-title">X - PRODUTOS GERADOS (SE HOUVER)</div>
       <div class="form-block-container">
-        <div class="form-value-block" style="min-height: 110px;">
+        <div class="form-value-block pdf-min-h-110">
           <%- safe(p.produtos_gerados) %>
         </div>
       </div>
@@ -299,7 +308,7 @@
 
       <div class="section-title">XI - VINCULAÇÃO COM OS ODS (Agenda 2030)</div>
       <div class="form-block-container">
-        <div class="form-value-block" style="min-height: 90px;">
+        <div class="form-value-block pdf-min-h-90">
           <%- safe(p.ods) %>
         </div>
       </div>
@@ -308,8 +317,8 @@
       <table>
         <thead>
           <tr>
-            <th style="width: 70%;">Atividade</th>
-            <th style="width: 30%;">Carga Horária (h)</th>
+            <th class="pdf-col-70">Atividade</th>
+            <th class="pdf-col-30">Carga Horária (h)</th>
           </tr>
         </thead>
         <tbody>
@@ -320,8 +329,8 @@
             </td>
           </tr>
           <tr>
-            <td class="text-right" style="font-weight: bold; padding-right: 8px;">Total</td>
-            <td class="text-center" style="font-weight: bold;">
+            <td class="text-right fw-bold pe-2">Total</td>
+            <td class="text-center fw-bold">
               <%= p.carga_horaria_total || '0' %> h
             </td>
           </tr>
@@ -329,7 +338,7 @@
       </table>
 
       <div class="section-title">XIII - OBSERVAÇÃO FINAL</div>
-      <p style="font-size: 11px; text-align: justify; margin-top: 8px;">
+      <p class="pdf-text-justify">
         Este relatório atende às diretrizes da Resolução CNE/CES nº 7/2018 e às orientações da política de extensão da
         instituição, visando demonstrar o impacto social da ação, sua articulação com o ensino e a formação cidadã dos
         estudantes.
@@ -337,43 +346,41 @@
         <%- safe(p.observacao_final) %>
       </p>
 
-      <div class="section-title" style="margin-top: 25px;">XIV - AUTENTICAÇÃO</div>
+      <div class="section-title pdf-auth-section">XIV - AUTENTICAÇÃO</div>
       <div class="date-row">
         Teresina,
-        <span style="border-bottom: 1px solid #000; min-width: 35px; display: inline-block; text-align: center;">
+        <span class="pdf-date-blank-35">
           <%= authDia %>
         </span> de
-        <span style="border-bottom: 1px solid #000; min-width: 90px; display: inline-block; text-align: center;">
+        <span class="pdf-date-blank-90">
           <%= authMes %>
         </span> de
-        20<span style="border-bottom: 1px solid #000; min-width: 30px; display: inline-block; text-align: center;">
+        20<span class="pdf-date-blank-30">
           <%= authAnoStr %>
         </span>.
       </div>
 
-      <div style="margin-top: 25px;">
+      <div class="pdf-auth-section">
         <!-- 1. Área dos Professores -->
-        <div
-          style="font-weight: bold; font-size: 11pt; border-bottom: 2px solid #0056b3; padding-bottom: 5px; margin-bottom: 15px; text-transform: uppercase; color: #0056b3;">
+        <div class="pdf-auth-heading">
           Professor(es)
         </div>
         <% if (p.assinaturasProfessoresRelatorio && p.assinaturasProfessoresRelatorio.length> 0) { %>
-          <div style="display: flex; flex-direction: column; gap: 12px; margin-bottom: 20px;">
+          <div class="pdf-auth-list">
             <% p.assinaturasProfessoresRelatorio.forEach(ass=> { %>
-              <div class="assinatura-box"
-                style="display: flex; justify-content: center; align-items: center; gap: 20px; border: 1px solid #d0e1fd; padding: 10px 15px; border-radius: 8px; background-color: #f8fbff; max-width: 550px; margin: 0 auto; page-break-inside: avoid;">
+              <div class="assinatura-box pdf-auth-card">
                 <!-- Imagem Unicet -->
                 <div>
-                  <img src="<%= logoSrc %>" alt="Unicet" style="width: 75px; height: 75px; object-fit: contain;">
+                  <img src="<%= logoSrc %>" alt="Unicet" class="pdf-auth-logo">
                 </div>
                 <!-- Nome e Código de Validação -->
-                <div style="text-align: center; margin: 0 15px; flex: 1;">
-                  <p style="margin: 0; font-weight: bold; font-size: 10.5pt; text-transform: uppercase; color: #333;">
+                <div class="pdf-auth-info">
+                  <p class="pdf-auth-title">
                     <%= ass.nome %>
                   </p>
-                  <p style="margin: 5px 0 0 0; font-size: 9pt; color: #555; line-height: 1.2;">
+                  <p class="pdf-auth-meta">
                     Código de validação:<br>
-                    <strong style="font-family: monospace; font-size: 10pt; color: #111;">
+                    <strong class="pdf-auth-hash">
                       <%= ass.Assinatura %>
                     </strong>
                   </p>
@@ -383,17 +390,17 @@
                   <% const url_validacao=baseUrl + '/validar?codigo=' + ass.Assinatura; %>
                     <img
                       src="https://api.qrserver.com/v1/create-qr-code/?size=70x70&data=<%= encodeURIComponent(url_validacao) %>"
-                      alt="QR Code de Validação" style="width: 70px; height: 70px;">
+                      alt="QR Code de Validação" class="pdf-auth-qr">
                 </div>
               </div>
               <% }) %>
           </div>
           <% } else { %>
-            <div class="sig-wrapper" style="margin-bottom: 25px;">
+            <div class="sig-wrapper pdf-sig-wrapper">
               <div class="sig-container">
                 <div class="sig-line"></div>
                 <div class="sig-label">Docente responsável</div>
-                <div style="font-size:10px; margin-top:2px">
+                <div class="pdf-sig-meta">
                   <%= safe(p.coordenador_nome) %>
                 </div>
               </div>
@@ -401,28 +408,25 @@
             <% } %>
 
               <!-- 2. Área dos Coordenadores -->
-              <div
-                style="font-weight: bold; font-size: 11pt; border-bottom: 2px solid #0056b3; padding-bottom: 5px; margin-top: 25px; margin-bottom: 15px; text-transform: uppercase; color: #0056b3;">
+              <div class="pdf-auth-heading pdf-auth-heading mt-25">
                 Coordenação(ões)
               </div>
               <% if (p.assinaturasCoordenadoresRelatorio && p.assinaturasCoordenadoresRelatorio.length> 0) { %>
-                <div style="display: flex; flex-direction: column; gap: 12px; margin-bottom: 20px;">
+                <div class="pdf-auth-list">
                   <% p.assinaturasCoordenadoresRelatorio.forEach(ass=> { %>
-                    <div class="assinatura-box"
-                      style="display: flex; justify-content: center; align-items: center; gap: 20px; border: 1px solid #d0e1fd; padding: 10px 15px; border-radius: 8px; background-color: #f8fbff; max-width: 550px; margin: 0 auto; page-break-inside: avoid;">
+                    <div class="assinatura-box pdf-auth-card">
                       <!-- Imagem Unicet -->
                       <div>
-                        <img src="<%= logoSrc %>" alt="Unicet" style="width: 75px; height: 75px; object-fit: contain;">
+                        <img src="<%= logoSrc %>" alt="Unicet" class="pdf-auth-logo">
                       </div>
                       <!-- Nome e Código de Validação -->
-                      <div style="text-align: center; margin: 0 15px; flex: 1;">
-                        <p
-                          style="margin: 0; font-weight: bold; font-size: 10.5pt; text-transform: uppercase; color: #333;">
+                      <div class="pdf-auth-info">
+                        <p class="pdf-auth-title">
                           <%= ass.nome %>
                         </p>
-                        <p style="margin: 5px 0 0 0; font-size: 9pt; color: #555; line-height: 1.2;">
+                        <p class="pdf-auth-meta">
                           Código de validação:<br>
-                          <strong style="font-family: monospace; font-size: 10pt; color: #111;">
+                          <strong class="pdf-auth-hash">
                             <%= ass.Assinatura %>
                           </strong>
                         </p>
@@ -432,7 +436,7 @@
                         <% const url_validacao=baseUrl + '/validar?codigo=' + ass.Assinatura; %>
                           <img
                             src="https://api.qrserver.com/v1/create-qr-code/?size=70x70&data=<%= encodeURIComponent(url_validacao) %>"
-                            alt="QR Code de Validação" style="width: 70px; height: 70px;">
+                            alt="QR Code de Validação" class="pdf-auth-qr">
                       </div>
                     </div>
                     <% }) %>
@@ -447,9 +451,9 @@
                   <% } %>
       </div>
 
-      <div class="section-title" style="margin-top: 35px;">XV - ANEXOS</div>
+      <div class="section-title pdf-auth-section">XV - ANEXOS</div>
       <div class="form-block-container">
-        <div class="form-value-block" style="min-height: 100px;">
+        <div class="form-value-block pdf-min-h-100">
           <%= safe(p.anexos) %>
         </div>
       </div>

@@ -1675,3 +1675,349 @@ a:focus-visible {
   border-radius: 4px;
   min-height: 40px;
 }
+
+.readonly-preview-box {
+  height: auto;
+  min-height: 80px;
+  white-space: pre-wrap;
+}
+
+.readonly-preview-sm {
+  height: auto;
+  min-height: 38px;
+}
+
+/* ===== Toast / Flash Messages do Servidor ===== */
+.server-flash-container {
+  position: fixed;
+  top: 24px;
+  right: 24px;
+  z-index: 99999;
+  min-width: 300px;
+  max-width: 450px;
+  box-shadow: 0 0.5rem 1rem rgba(0, 0, 0, 0.15);
+  border-radius: 8px;
+  font-size: 0.85rem;
+  padding: 12px 20px;
+  transform: translateX(120%);
+  opacity: 0;
+  transition: all 0.35s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+}
+
+.server-flash-container.server-flash-danger {
+  border: 1.5px solid #842029;
+}
+
+.server-flash-container.server-flash-warning {
+  border: 1.5px solid #664d03;
+}
+
+.server-flash-container.server-flash-success {
+  border: 1.5px solid #1c6e36;
+}
+
+.server-flash-icon {
+  font-size: 1.1rem;
+  flex-shrink: 0;
+}
+
+.server-flash-text {
+  flex-grow: 1;
+  padding-right: 12px;
+}
+
+.server-flash-close {
+  font-size: 0.65rem;
+  margin-top: -2px;
+}
+
+/* ===== Dashboard: KPIs & Status ===== */
+.badge-role {
+  font-size: 0.625rem;
+  text-transform: uppercase;
+}
+
+.card-kpi-primary {
+  border-left: 4px solid var(--bs-primary) !important;
+}
+
+.card-kpi-success {
+  border-left: 4px solid var(--bs-success) !important;
+}
+
+.card-kpi-warning {
+  border-left: 4px solid var(--bs-warning) !important;
+}
+
+.card-kpi-brand {
+  border-left: 4px solid var(--brand) !important;
+}
+
+.card-kpi-indigo {
+  border-left: 4px solid #6366f1 !important;
+}
+
+.kpi-label {
+  font-size: 0.688rem;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
+.kpi-icon-primary {
+  font-size: 2rem;
+  color: var(--bs-primary);
+  opacity: 0.3;
+}
+
+.kpi-icon-success {
+  font-size: 2rem;
+  color: var(--bs-success);
+  opacity: 0.3;
+}
+
+.kpi-icon-warning {
+  font-size: 2rem;
+  color: var(--bs-warning);
+  opacity: 0.3;
+}
+
+.kpi-icon-brand {
+  font-size: 2rem;
+  color: var(--brand);
+  opacity: 0.3;
+}
+
+.kpi-icon-indigo {
+  font-size: 2rem;
+  color: #6366f1;
+  opacity: 0.3;
+}
+
+.card-icon.brand {
+  color: var(--brand);
+}
+
+.card-icon.success {
+  color: var(--bs-success);
+}
+
+.card-icon.indigo {
+  color: #6366f1;
+}
+
+.status-stat-box {
+  padding: 8px;
+  border-radius: 6px;
+}
+
+.status-stat-rascunho {
+  background: #f3f4f6;
+}
+
+.status-stat-avaliacao {
+  background: #fef3c7;
+  color: #92400e;
+}
+
+.status-stat-aprovado {
+  background: #dcfce7;
+  color: #166534;
+}
+
+.status-stat-execucao {
+  background: #e0f2fe;
+  color: #075985;
+}
+
+.status-stat-concluido {
+  background: #dbeafe;
+  color: #1e40af;
+}
+
+.status-stat-rejeitado {
+  background: #fee2e2;
+  color: #991b1b;
+}
+
+.status-stat-val {
+  font-weight: 700;
+  font-size: 1.25rem;
+}
+
+.status-stat-lbl {
+  font-size: 0.625rem;
+  text-transform: uppercase;
+}
+
+.course-item-name {
+  font-size: 0.75rem;
+  max-width: 70%;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+/* ===== Tabela / Colunas & Ações ===== */
+.th-w-40 { width: 40px; }
+.th-w-50 { width: 50px; }
+.th-w-60 { width: 60px; }
+.th-w-70 { width: 70px; }
+.th-w-80 { width: 80px; }
+.th-w-100 { width: 100px; }
+.th-w-120 { width: 120px; }
+.th-w-130 { width: 130px; }
+.th-w-140 { width: 140px; }
+.th-w-160 { width: 160px; }
+.th-w-180 { width: 180px; }
+.th-w-200 { width: 200px; }
+
+.btn-tbl-action {
+  font-size: 0.75rem;
+  padding: 2px 6px;
+}
+
+.empty-state-icon {
+  font-size: 1.5rem;
+  opacity: 0.3;
+}
+
+.empty-state-icon-lg {
+  font-size: 2rem;
+  opacity: 0.3;
+}
+
+/* ===== Formulários & Editores ===== */
+.form-card-narrow {
+  max-width: 600px;
+  margin: 0 auto;
+}
+
+.form-card-login {
+  max-width: 420px;
+  width: 100%;
+}
+
+.quill-editor-box {
+  min-height: 150px;
+  background: #fff;
+}
+
+.btn-flex-gap {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+}
+
+/* ===== Anexos & Miniaturas ===== */
+.anexo-thumb {
+  width: 22px;
+  height: 22px;
+  object-fit: cover;
+  border-radius: 3px;
+  border: 1px solid var(--line);
+}
+
+.anexo-icon-pdf {
+  color: #e74c3c;
+  font-size: 1.2rem;
+}
+
+.anexo-icon-doc {
+  color: #2b579a;
+  font-size: 1.2rem;
+}
+
+.anexo-icon-xls {
+  color: #217346;
+  font-size: 1.2rem;
+}
+
+.anexo-icon-file {
+  color: var(--muted);
+  font-size: 1.2rem;
+}
+
+.anexo-dropzone-icon {
+  color: var(--brand);
+  font-size: 1.1rem;
+}
+
+.anexo-ext-badge {
+  font-size: 11px;
+  font-family: monospace;
+  color: var(--muted);
+  margin-left: 4px;
+  font-weight: 400;
+}
+
+.anexo-btn-disabled {
+  opacity: 0.45;
+  cursor: default;
+}
+
+/* ===== Cursos & Professores Dinâmicos (JS) ===== */
+.curso-coord-box {
+  background: #e8f3ec;
+  border: 1px solid #b6dfc4;
+  border-radius: 8px;
+  padding: 8px 12px;
+  margin-bottom: 12px;
+  font-size: 0.813rem;
+}
+
+.curso-profs-box {
+  border: 1px solid #e5e7eb;
+  border-radius: 8px;
+  padding: 12px;
+  background: #fafbfc;
+}
+
+.prof-item-row {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+  padding: 8px 0;
+  border-bottom: 1px solid #f3f4f6;
+}
+
+.prof-field-disc {
+  width: 160px;
+  font-size: 0.75rem;
+  padding: 2px 6px;
+}
+
+.prof-field-ch {
+  width: 70px;
+  font-size: 0.75rem;
+  padding: 2px 6px;
+}
+
+.prof-chips-wrapper {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+}
+
+.prof-check-sm {
+  width: 14px;
+  height: 14px;
+  margin: 0;
+  flex-shrink: 0;
+}
+
+.prof-empty-card {
+  border: 1px solid #e5e7eb;
+  border-radius: 8px;
+  padding: 10px 12px;
+  background: #fafbfc;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.prof-docente-badge {
+  color: var(--brand);
+  font-size: 0.875rem;
+}

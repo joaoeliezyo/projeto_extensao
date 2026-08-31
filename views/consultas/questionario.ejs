@@ -11,7 +11,7 @@
     <div class="d-flex justify-content-between align-items-center mb-4 pb-3 border-bottom">
       <div>
         <h1 class="fs-4 fw-bold mb-1"><i class="bi bi-clipboard-check me-2"></i>Questionários de Impacto</h1>
-        <p class="text-muted mb-0" style="font-size:0.8rem"><%= p.titulo || '' %></p>
+        <p class="text-muted mb-0 helper"><%= p.titulo || '' %></p>
       </div>
       <a href="/projeto_extensao/<%= id %>/questionarios/novo" class="btn btn-primary btn-sm">
         <i class="bi bi-plus-circle"></i> Novo Questionário
@@ -23,16 +23,16 @@
     <div class="row g-3 mb-4">
       <div class="col-md-4">
         <div class="card bg-light p-3">
-          <h6 class="fw-bold mb-2" style="font-size:0.8rem"><i class="bi bi-people"></i> Total de Respostas</h6>
+          <h6 class="fw-bold mb-2 helper"><i class="bi bi-people"></i> Total de Respostas</h6>
           <span class="fs-3 fw-bold text-primary"><%= r.total %></span>
         </div>
       </div>
       <div class="col-md-4">
         <div class="card bg-light p-3">
-          <h6 class="fw-bold mb-2" style="font-size:0.8rem"><i class="bi bi-star"></i> Avaliação do Conteúdo</h6>
+          <h6 class="fw-bold mb-2 helper"><i class="bi bi-star"></i> Avaliação do Conteúdo</h6>
           <% if (r.avalCounts) { %>
             <% Object.entries(r.avalCounts).sort((a,b) => b[1]-a[1]).forEach(([k,v]) => { %>
-              <div class="d-flex justify-content-between" style="font-size:0.8rem">
+              <div class="d-flex justify-content-between helper">
                 <span><%= k %></span>
                 <strong><%= Math.round(v/r.total*100) %>%</strong>
               </div>
@@ -42,10 +42,10 @@
       </div>
       <div class="col-md-4">
         <div class="card bg-light p-3">
-          <h6 class="fw-bold mb-2" style="font-size:0.8rem"><i class="bi bi-check2-circle"></i> Atendeu Expectativas</h6>
+          <h6 class="fw-bold mb-2 helper"><i class="bi bi-check2-circle"></i> Atendeu Expectativas</h6>
           <% if (r.expCounts) { %>
             <% Object.entries(r.expCounts).sort((a,b) => b[1]-a[1]).forEach(([k,v]) => { %>
-              <div class="d-flex justify-content-between" style="font-size:0.8rem">
+              <div class="d-flex justify-content-between helper">
                 <span><%= k %></span>
                 <strong><%= Math.round(v/r.total*100) %>%</strong>
               </div>
@@ -61,13 +61,13 @@
       <table class="table table-hover">
         <thead class="table-light">
           <tr>
-            <th style="width:40px">#</th>
+            <th class="th-w-40">#</th>
             <th>Data</th>
             <th>Faixa Etária</th>
             <th>Escolaridade</th>
             <th>Avaliação</th>
             <th>Expectativas</th>
-            <th style="width:100px">Ações</th>
+            <th class="th-w-100">Ações</th>
           </tr>
         </thead>
         <tbody>
@@ -75,19 +75,19 @@
             <% dados.forEach((q, idx) => { %>
               <tr>
                 <td><span class="badge bg-secondary"><%= idx + 1 %></span></td>
-                <td style="font-size:0.8rem"><%= q.data_realizacao ? new Date(q.data_realizacao).toLocaleDateString('pt-BR') : '-' %></td>
-                <td style="font-size:0.8rem"><%= q.faixa_etaria || '-' %></td>
-                <td style="font-size:0.8rem"><%= q.escolaridade || '-' %></td>
+                <td><%= q.data_realizacao ? new Date(q.data_realizacao).toLocaleDateString('pt-BR') : '-' %></td>
+                <td><%= q.faixa_etaria || '-' %></td>
+                <td><%= q.escolaridade || '-' %></td>
                 <td>
                   <% const avalColors = { Excelente:'success', Bom:'info', Regular:'warning', Ruim:'danger', 'Péssimo':'danger' }; %>
-                  <span class="badge bg-<%= avalColors[q.aval_conteudo] || 'secondary' %>" style="font-size:0.75rem"><%= q.aval_conteudo || '-' %></span>
+                  <span class="badge bg-<%= avalColors[q.aval_conteudo] || 'secondary' %> badge-role"><%= q.aval_conteudo || '-' %></span>
                 </td>
-                <td style="font-size:0.8rem"><%= q.expectativas || '-' %></td>
+                <td><%= q.expectativas || '-' %></td>
                 <td>
                   <div class="d-flex gap-1">
-                    <a href="/projeto_extensao/<%= id %>/questionarios/<%= q.id %>/edit" class="btn btn-sm btn-outline-secondary" style="font-size:0.75rem; padding:2px 6px" title="Editar"><i class="bi bi-pencil"></i></a>
-                    <form method="POST" action="/projeto_extensao/<%= id %>/questionarios/<%= q.id %>/delete" style="display:inline" onsubmit="return confirm('Excluir este questionário?')">
-                      <button type="submit" class="btn btn-sm btn-outline-danger" style="font-size:0.75rem; padding:2px 6px" title="Excluir"><i class="bi bi-trash"></i></button>
+                    <a href="/projeto_extensao/<%= id %>/questionarios/<%= q.id %>/edit" class="btn btn-sm btn-outline-secondary btn-tbl-action" title="Editar"><i class="bi bi-pencil"></i></a>
+                    <form method="POST" action="/projeto_extensao/<%= id %>/questionarios/<%= q.id %>/delete" class="d-inline" onsubmit="return confirm('Excluir este questionário?')">
+                      <button type="submit" class="btn btn-sm btn-outline-danger btn-tbl-action" title="Excluir"><i class="bi bi-trash"></i></button>
                     </form>
                   </div>
                 </td>
@@ -96,7 +96,7 @@
           <% } else { %>
             <tr>
               <td colspan="7" class="text-center py-5 text-muted">
-                <i class="bi bi-clipboard-x" style="font-size:2rem;opacity:0.3"></i>
+                <i class="bi bi-clipboard-x empty-state-icon-lg"></i>
                 <p class="mt-2 mb-0">Nenhum questionário registrado</p>
                 <a href="/projeto_extensao/<%= id %>/questionarios/novo" class="btn btn-primary btn-sm mt-2"><i class="bi bi-plus-circle"></i> Registrar primeiro questionário</a>
               </td>

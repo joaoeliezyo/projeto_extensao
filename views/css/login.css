@@ -54,6 +54,10 @@ body {
   margin: 0 0 6px;
 }
 
+.login-body .form-group-password {
+  margin-top: 14px;
+}
+
 .login-body .input-group {
   border: 1px solid #e5e7eb;
   border-radius: 8px;
